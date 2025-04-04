@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Flight;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class FlightController extends Controller
+{
+    // Hiển thị danh sách chuyến bay
+    public function index()
+    {
+        $flights = Flight::all();
+        return response()->json($flights, 200);
+    }
+
+    // Thêm mới chuyến bay
+    public function store(Request $request)
+    {
+        $validate = Validator::make(
+            $request->all(),
+            [
+                'departure' => ['required'],
+                'destination' => ['required'],
+                'departure_time' => ['required'],
+                'arrival_time' => ['required'],
+                'price' => ['required'],
+                'seats' => ['required'],
+                'available_seats' => ['required']
+            ]
+        );
+
+        if ($validate->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validate->errors()->toArray()
+            ], 401);
+        }
+
+        $data = $request;
+
+        Flight::create($data);
+        return response()->json([
+            'message' => 'success',
+            'data' => $data
+        ], 200);
+    }
+}
