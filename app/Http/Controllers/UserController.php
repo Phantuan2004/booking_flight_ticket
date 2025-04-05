@@ -5,20 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Airline;
 use App\Models\Booking;
 use App\Models\Flight;
+use App\Models\Guest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
     // Hiển thị giao diện trang chủ
-    public function index() {
+    public function index()
+    {
         // Hiển thị 3 chuyến bay ngẫu nhiên ra trang chủ
         $flights = Flight::all()->random(3);
         return view('index', compact('flights'));
     }
 
     // Phưởng thức tìm kiếm chuyến bay và giao diện kết quả tìm kiếm trang đặt vé
-    public function search_flights(Request $request) {
+    public function search_flights(Request $request)
+    {
         $departure = $request->input('departure');
         $destination = $request->input('destination');
         $departure_time = $request->input('departure_time');
@@ -47,7 +52,8 @@ class UserController extends Controller
     }
 
     // Hiển thị giao diện trang xác nhận
-    public function xacnhan(Request $request) {
+    public function xacnhan(Request $request)
+    {
         $flight = Flight::find($request->input('flight_id'));
 
         if (!$flight) {
@@ -60,10 +66,12 @@ class UserController extends Controller
         $full_name = $request->input('full_name', '');
         $phone = $request->input('phone', '');
         $email = $request->input('email', '');
+        $address = $request->input('address', '');
 
         $full_name = is_array($full_name) ? implode(' ', array_filter((array)$full_name, 'is_string')) : (string)$full_name;
         $phone = is_array($phone) ? implode(' ', array_filter((array)$phone, 'is_string')) : (string)$phone;
         $email = is_array($email) ? implode(' ', array_filter((array)$email, 'is_string')) : (string)$email;
+        $address = is_array($address) ? implode(' ', array_filter((array)$address, 'is_string')) : (string)$address;
 
         // Lưu thông tin vào session đúng cách
         session([
@@ -72,6 +80,7 @@ class UserController extends Controller
             'full_name' => is_array($full_name) ? implode(' ', $full_name) : strval($full_name),
             'phone' => is_array($phone) ? implode(' ', $phone) : strval($phone),
             'email' => is_array($email) ? implode(' ', $email) : strval($email),
+            'address' => is_array($address) ? implode(' ', $address) : strval($address)
         ]);
 
         // Xử lý thời gian bay
@@ -87,13 +96,26 @@ class UserController extends Controller
         $year = $departureTime->year;
 
         return view('xacnhan', compact(
-            'flight', 'passengers', 'childrens', 'full_name', 'phone', 'email',
-            'hour', 'hourArrival', 'minute', 'minuteArrival', 'day', 'month', 'year'
+            'flight',
+            'passengers',
+            'childrens',
+            'full_name',
+            'phone',
+            'email',
+            'address',
+            'hour',
+            'hourArrival',
+            'minute',
+            'minuteArrival',
+            'day',
+            'month',
+            'year'
         ));
     }
 
     // Hiển thị giao diện trang thanh toán
-    public function thanhtoan(Request $request) {
+    public function thanhtoan(Request $request)
+    {
         $flight = Flight::find($request->input('flight_id'));
 
         if (!$flight) {
@@ -105,10 +127,12 @@ class UserController extends Controller
         $full_name = $request->input('full_name') ?? session('full_name', '');
         $phone = $request->input('phone') ?? session('phone', '');
         $email = $request->input('email') ?? session('email', '');
+        $address = $request->input('address') ?? session('address', '');
 
         $full_name = is_array($full_name) ? implode(' ', array_filter((array)$full_name, 'is_string')) : (string)$full_name;
         $phone = is_array($phone) ? implode(' ', array_filter((array)$phone, 'is_string')) : (string)$phone;
         $email = is_array($email) ? implode(' ', array_filter((array)$email, 'is_string')) : (string)$email;
+        $address = is_array($address) ? implode(' ', array_filter((array)$address, 'is_string')) : (string)$address;
 
         $departureTime = Carbon::parse($flight->departure_time);
         $arrivalTime = Carbon::parse($flight->arrival_time);
@@ -121,13 +145,26 @@ class UserController extends Controller
         $year = $departureTime->year;
 
         return view('thanhtoan', compact(
-            'flight', 'passengers', 'childrens', 'full_name', 'phone', 'email',
-            'hour', 'hourArrival', 'minute', 'minuteArrival', 'day', 'month', 'year'
+            'flight',
+            'passengers',
+            'childrens',
+            'full_name',
+            'phone',
+            'email',
+            'address',
+            'hour',
+            'hourArrival',
+            'minute',
+            'minuteArrival',
+            'day',
+            'month',
+            'year'
         ));
     }
 
 
-    public function thanhcong(Request $request) {
+    public function thanhcong(Request $request)
+    {
         $flight = Flight::find($request->input('flight_id'));
 
         if (!$flight) {
@@ -146,10 +183,12 @@ class UserController extends Controller
         $full_name = $request->input('full_name') ?? session('full_name', '');
         $phone = $request->input('phone') ?? session('phone', '');
         $email = $request->input('email') ?? session('email', '');
+        $address = $request->input('address') ?? session('address', '');
 
         $full_name = is_array($full_name) ? implode(' ', array_filter((array)$full_name, 'is_string')) : (string)$full_name;
         $phone = is_array($phone) ? implode(' ', array_filter((array)$phone, 'is_string')) : (string)$phone;
         $email = is_array($email) ? implode(' ', array_filter((array)$email, 'is_string')) : (string)$email;
+        $address = is_array($address) ? implode(' ', array_filter((array)$address, 'is_string')) : (string)$address;
 
         $departureTime = Carbon::parse($flight->departure_time);
         $arrivalTime = Carbon::parse($flight->arrival_time);
@@ -165,14 +204,15 @@ class UserController extends Controller
         $totalPrice = $flight->price * (is_array($passengers) ? count($passengers) : 0) + $flight->price * (is_array($childrens) ? count($childrens) : 0) + 50.0 + 20.0;
 
         // Check người dùng có tài khoản
-        if (auth()->check()) {
-            $user = auth()->user();
+        if (Auth::check()) {
+            $user = \Illuminate\Support\Facades\Auth::user();
             $data = [
                 'booking_code' => $booking_code,
                 'user_id' => $user->id,
                 'name' => $full_name,
                 'phone' => $phone,
                 'email' => $email,
+                'address' => $address,
                 'flight_id' => $flight->id,
                 'total_price' => $totalPrice,
                 'created_at' => now(),
@@ -187,6 +227,7 @@ class UserController extends Controller
                 'name' => $full_name,
                 'phone' => $phone,
                 'email' => $email,
+                'address' => $address,
                 'total_price' => $totalPrice,
                 'created_at' => now(),
                 'updated_at' => now()
@@ -195,52 +236,86 @@ class UserController extends Controller
 
         Booking::create($data);
 
+        if (!Auth::check()) {
+            $guest = Guest::updateOrCreate(
+                ['phone' => $phone], // Kiểm tra nếu số điện thoại đã tồn tại
+                [
+                    'name' => $full_name,
+                    'email' => $email,
+                    'address' => $address,
+                    'last_booking_date' => now()
+                ]
+            );
+
+            // Nếu bản ghi vừa tạo mới (chưa có booking_count), thì đặt booking_count = 1
+            if ($guest->wasRecentlyCreated) {
+                $guest->booking_count = 1;
+            } else {
+                $guest->increment('booking_count'); // Nếu đã tồn tại thì tăng booking_count
+            }
+
+            $guest->save(); // Lưu lại bản ghi
+        }
+
         // Trừ số ghế trên database tương ứng với tổng số hành khách đặt vé bay
-        $flight->available_seats -= $total_passengers;
-        $flight->save();
+        if ($flight->available_seats >= $total_passengers) {
+            $flight->decrement('available_seats', $total_passengers);
+        } else {
+            return redirect()->back()->withErrors(['error' => 'Số ghế không đủ!']);
+        }
 
         return view('thanhcong', compact(
-            'flight', 'passengers', 'childrens', 'total_passengers', 'booking_code',
-            'hour', 'hourArrival', 'minute', 'minuteArrival', 'day', 'month', 'year',
-            'full_name', 'phone', 'email'
+            'flight',
+            'passengers',
+            'childrens',
+            'total_passengers',
+            'booking_code',
+            'hour',
+            'hourArrival',
+            'minute',
+            'minuteArrival',
+            'day',
+            'month',
+            'year',
+            'full_name',
+            'phone',
+            'email',
+            'address',
         ));
     }
 
     // Hiển thị giao diện trang liên hẹ
-    public function lienhe() {
+    public function lienhe()
+    {
         return view('lienhe');
     }
 
     // Hiển thị danh sách chuyến bay
-    public function flights() {
+    public function flights()
+    {
         $flights = Flight::all();
         return view('index', compact('flights'));
     }
 
     // Hiển thị chi tiết chuyến bay
-    public function flight_detail(Flight $id) {
+    public function flight_detail(Flight $id)
+    {
         $show = Flight::query()->find($id);
         return view('index', compact('show'));
     }
 
     // Hiển thị kết quả tìm kiếm
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $search = $request->search;
         $flights = Flight::query()->where('name', 'like', "%$search%")->get();
         return view('index', compact('flights'));
     }
 
     // Hiển thị hãng bay
-    public function airlines() {
+    public function airlines()
+    {
         $airlines = Airline::all();
         return view('index', compact('airlines'));
-    }
-
-    // Thêm chuyến bay vào lựa chọn
-    public function add_flight(Request $request) {
-        $flight = Flight::query()->find($request->flight_id);
-        $user = auth()->user();
-        $user->flights()->attach($flight);
-        return redirect()->back();
     }
 }

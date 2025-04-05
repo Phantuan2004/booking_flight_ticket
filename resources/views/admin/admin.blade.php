@@ -512,7 +512,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($guests as $guest)
+                                @foreach ($guestUsers as $guest)
                                     <tr>
                                         <td>{{ $guest->name }} <span
                                                 class="badge bg-secondary">{{ $guest->user ? 'Account' : 'Guest' }}</span>
@@ -520,10 +520,9 @@
                                         <td>{{ $guest->phone }}<br>{{ $guest->email }}</td>
                                         <td>{{ $guest->address }}</td>
                                         <td>{{ $guest->booking_count }}</td>
-                                        <td>{{ $guest->last_booking_date }}</td>
+                                        <td>{{ $guest->created_at }}</td>
                                         <td>
-                                            <form action="{{ route('cancel-booking', $booking->id) }}"
-                                                method="POST">
+                                            <form action="{{ route('cancel-booking', $guest->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-danger"
                                                     onclick="return confirm('Xác nhận hủy vé?')">

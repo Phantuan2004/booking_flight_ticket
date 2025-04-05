@@ -15,5 +15,6 @@ class Guest extends Model
         'email',
         'address',
         'booking_count',
+        'last_booking_date',
     ];
 }

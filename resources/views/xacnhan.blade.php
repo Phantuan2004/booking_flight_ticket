@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -490,291 +491,309 @@
         }
     </style>
 </head>
+
 <body>
-<header>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Sky<span>Jet</span></div>
+                <nav>
+                    <ul>
+                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
+                        <li><a href="{{ route('datve') }}">Đặt Vé</a></li>
+                        <li><a href="#">Khuyến Mãi</a></li>
+                        <li><a href="#">Lịch Bay</a></li>
+                        <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-title">
+        <div class="container">
+            <h1>Nhập Thông Tin Hành Khách</h1>
+        </div>
+    </div>
+
+    <div class="steps-container">
+        <div class="booking-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-text">Tìm Chuyến Bay</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">Chọn Chuyến Bay</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step active">
+                <div class="step-number">3</div>
+                <div class="step-text">Thông Tin Hành Khách</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-text">Thanh Toán</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-text">Hoàn Tất</div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="header-content">
-            <div class="logo">Sky<span>Jet</span></div>
-            <nav>
-                <ul>
-                    <li><a href="{{route('index')}}">Trang Chủ</a></li>
-                    <li><a href="{{route('datve')}}">Đặt Vé</a></li>
-                    <li><a href="#">Khuyến Mãi</a></li>
-                    <li><a href="#">Lịch Bay</a></li>
-                    <li><a href="{{route('lienhe')}}">Liên Hệ</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</header>
+        <!-- Mở form ở đây, bao quanh toàn bộ nội dung -->
+        <form action="{{ route('thanhtoan') }}" method="POST">
+            @csrf
+            <input type="hidden" name="flight_id" value="{{ $flight->id }}">
+            <input type="hidden" name="departure" value="{{ $flight->departure }}">
+            <input type="hidden" name="destination" value="{{ $flight->destination }}">
+            <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
+            <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
+            <input type="hidden" name="price" value="{{ $flight->price }}">
+            <input type="hidden" name="passengers" value="{{ $passengers }}">
+            <input type="hidden" name="childrens" value="{{ $childrens }}">
 
-<div class="page-title">
-    <div class="container">
-        <h1>Nhập Thông Tin Hành Khách</h1>
-    </div>
-</div>
-
-<div class="steps-container">
-    <div class="booking-steps">
-        <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-text">Tìm Chuyến Bay</div>
-        </div>
-        <div class="step-divider"></div>
-        <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-text">Chọn Chuyến Bay</div>
-        </div>
-        <div class="step-divider"></div>
-        <div class="step active">
-            <div class="step-number">3</div>
-            <div class="step-text">Thông Tin Hành Khách</div>
-        </div>
-        <div class="step-divider"></div>
-        <div class="step">
-            <div class="step-number">4</div>
-            <div class="step-text">Thanh Toán</div>
-        </div>
-        <div class="step-divider"></div>
-        <div class="step">
-            <div class="step-number">5</div>
-            <div class="step-text">Hoàn Tất</div>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Mở form ở đây, bao quanh toàn bộ nội dung -->
-    <form action="{{ route('thanhtoan') }}" method="POST">
-        @csrf
-        <input type="hidden" name="flight_id" value="{{ $flight->id }}">
-        <input type="hidden" name="departure" value="{{ $flight->departure }}">
-        <input type="hidden" name="destination" value="{{ $flight->destination }}">
-        <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
-        <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
-        <input type="hidden" name="price" value="{{ $flight->price }}">
-        <input type="hidden" name="passengers" value="{{ $passengers }}">
-        <input type="hidden" name="childrens" value="{{ $childrens }}">
-
-        <div class="confirmation-content">
-            <div class="passenger-details">
-                <div class="confirmation-box">
-                    <h2 class="confirmation-title">Chi Tiết Chuyến Bay</h2>
-                    <div class="flight-info-container">
-                        <div class="flight-date">
-                            <div class="date-number">{{$day}}</div>
-                            <div class="date-month">Tháng {{$month}}</div>
+            <div class="confirmation-content">
+                <div class="passenger-details">
+                    <div class="confirmation-box">
+                        <h2 class="confirmation-title">Chi Tiết Chuyến Bay</h2>
+                        <div class="flight-info-container">
+                            <div class="flight-date">
+                                <div class="date-number">{{ $day }}</div>
+                                <div class="date-month">Tháng {{ $month }}</div>
+                            </div>
+                            <div class="flight-details">
+                                <div class="flight-route">
+                                    <div class="airport-code">{{ $flight->departure }}</div>
+                                    <div class="flight-arrow">→</div>
+                                    <div class="airport-code">{{ $flight->destination }}</div>
+                                </div>
+                                <div class="flight-times">
+                                    <div class="departure-time">{{ $hour }}:{{ $minute }}</div>
+                                    <div class="flight-duration">2h 10m</div>
+                                    <div class="arrival-time">{{ $hourArrival }}:{{ $minuteArrival }}</div>
+                                </div>
+                                <div class="airport-names">
+                                    {{ $flight->departure }} - {{ $flight->destination }}
+                                </div>
+                                <div class="airline-info">
+                                    <div class="airline-logo">{{ $flight->logo }}</div>
+                                    <div class="airline-name">{{ $flight->airline->name }}</div>
+                                    <div class="flight-number">{{ $flight->flight_code }}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flight-details">
-                            <div class="flight-route">
-                                <div class="airport-code">{{$flight->departure}}</div>
-                                <div class="flight-arrow">→</div>
-                                <div class="airport-code">{{$flight->destination}}</div>
+                    </div>
+
+                    <div class="confirmation-box">
+                        <h2 class="confirmation-title">Thông Tin Hành Khách</h2>
+                        <div class="passenger-form">
+                            <p class="form-title">
+                                Vui lòng nhập thông tin cho tất cả hành khách
+                            </p>
+
+                            @for ($i = 1; $i <= $passengers; $i++)
+                                <div class="passenger-card">
+                                    <div class="passenger-header">
+                                        <h3>Hành khách {{ $i }}</h3>
+                                        <div class="passenger-type">Người lớn</div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="required-field">Họ</label>
+                                            <input name="passengers[{{ $i }}][last_name]" type="text"
+                                                placeholder="Ví dụ: Nguyễn" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Tên đệm & tên</label>
+                                            <input name="passengers[{{ $i }}][first_name]" type="text"
+                                                placeholder="Ví dụ: Văn A" />
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="required-field">Ngày sinh</label>
+                                            <input name="passengers[{{ $i }}][birth_date]"
+                                                type="date" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Giới tính</label>
+                                            <select name="passengers[{{ $i }}][gender]">
+                                                <option value="">Chọn giới tính</option>
+                                                <option value="male">Nam</option>
+                                                <option value="female">Nữ</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endfor
+
+                            @for ($i = 1; $i <= $childrens; $i++)
+                                <div class="passenger-card">
+                                    <div class="passenger-header">
+                                        <h3>Trẻ em {{ $i }}</h3>
+                                        <div class="passenger-type">Trẻ em</div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="required-field">Họ</label>
+                                            <input name="childrens[{{ $i }}][last_name]" type="text"
+                                                placeholder="Ví dụ: Nguyễn" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Tên đệm & tên</label>
+                                            <input name="childrens[{{ $i }}][first_name]" type="text"
+                                                placeholder="Ví dụ: Văn A" />
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="required-field">Ngày sinh</label>
+                                            <input name="childrens[{{ $i }}][birth_date]"
+                                                type="date" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Giới tính</label>
+                                            <select name="childrens[{{ $i }}][gender]">
+                                                <option value="">Chọn giới tính</option>
+                                                <option value="male">Nam</option>
+                                                <option value="female">Nữ</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
+
+                    <div class="confirmation-box">
+                        <h2 class="confirmation-title">Thông Tin Liên Hệ</h2>
+                        <div class="contact-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Họ và tên</label>
+                                    <input name="full_name" id="full_name" type="text"
+                                        placeholder="Nhập họ và tên người liên hệ" />
+                                </div>
                             </div>
-                            <div class="flight-times">
-                                <div class="departure-time">{{$hour}}:{{$minute}}</div>
-                                <div class="flight-duration">2h 10m</div>
-                                <div class="arrival-time">{{$hourArrival}}:{{$minuteArrival}}</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Số điện thoại</label>
+                                    <input name="phone" id="phone" type="tel"
+                                        placeholder="Nhập số điện thoại" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="required-field">Email</label>
+                                    <input name="email" id="email" type="email"
+                                        placeholder="Nhập địa chỉ email" />
+                                </div>
                             </div>
-                            <div class="airport-names">
-                                {{$flight->departure}} - {{$flight->destination}}
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Địa chỉ</label>
+                                    <input name="address" id="address" type="text"
+                                        placeholder="Nơi ở hiện tại" />
+                                </div>
                             </div>
-                            <div class="airline-info">
-                                <div class="airline-logo">{{$flight->logo}}</div>
-                                <div class="airline-name">{{$flight->airline->name}}</div>
-                                <div class="flight-number">{{$flight->flight_code}}</div>
+                            <div class="form-note">
+                                Thông tin liên hệ sẽ được sử dụng để gửi thông tin vé và liên
+                                lạc trong trường hợp cần thiết
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="confirmation-box">
+                        <h2 class="confirmation-title">Phương Thức Thanh Toán</h2>
+                        <div class="payment-options">
+                            <div class="payment-method">
+                                <label class="payment-label">
+                                    <input type="radio" name="payment" value="credit" checked />
+                                    Thanh toán bằng thẻ tín dụng/ghi nợ
+                                </label>
+                                <div class="payment-cards">
+                                    <div class="card-icon">VISA</div>
+                                    <div class="card-icon">MC</div>
+                                    <div class="card-icon">JCB</div>
+                                </div>
+                            </div>
+                            <div class="payment-method">
+                                <label class="payment-label">
+                                    <input type="radio" name="payment" value="bank" />
+                                    Thanh toán qua ngân hàng trực tuyến
+                                </label>
+                            </div>
+                            <div class="payment-method">
+                                <label class="payment-label">
+                                    <input type="radio" name="payment" value="ewallet" />
+                                    Thanh toán qua ví điện tử (Momo, ZaloPay, VNPay)
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="confirmation-box">
-                    <h2 class="confirmation-title">Thông Tin Hành Khách</h2>
-                    <div class="passenger-form">
-                        <p class="form-title">
-                            Vui lòng nhập thông tin cho tất cả hành khách
-                        </p>
-
-                        @for($i = 1; $i <= $passengers; $i++)
-                            <div class="passenger-card">
-                                <div class="passenger-header">
-                                    <h3>Hành khách {{$i}}</h3>
-                                    <div class="passenger-type">Người lớn</div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="required-field">Họ</label>
-                                        <input name="passengers[{{$i}}][last_name]" type="text" placeholder="Ví dụ: Nguyễn" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Tên đệm & tên</label>
-                                        <input name="passengers[{{$i}}][first_name]" type="text" placeholder="Ví dụ: Văn A" />
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="required-field">Ngày sinh</label>
-                                        <input name="passengers[{{$i}}][birth_date]" type="date" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Giới tính</label>
-                                        <select name="passengers[{{$i}}][gender]">
-                                            <option value="">Chọn giới tính</option>
-                                            <option value="male">Nam</option>
-                                            <option value="female">Nữ</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        @endfor
-
-                        @for($i = 1; $i <= $childrens; $i++)
-                            <div class="passenger-card">
-                                <div class="passenger-header">
-                                    <h3>Trẻ em {{$i}}</h3>
-                                    <div class="passenger-type">Trẻ em</div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="required-field">Họ</label>
-                                        <input name="childrens[{{$i}}][last_name]" type="text" placeholder="Ví dụ: Nguyễn" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Tên đệm & tên</label>
-                                        <input name="childrens[{{$i}}][first_name]" type="text" placeholder="Ví dụ: Văn A" />
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label class="required-field">Ngày sinh</label>
-                                        <input name="childrens[{{$i}}][birth_date]" type="date" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="required-field">Giới tính</label>
-                                        <select name="childrens[{{$i}}][gender]">
-                                            <option value="">Chọn giới tính</option>
-                                            <option value="male">Nam</option>
-                                            <option value="female">Nữ</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        @endfor
+                <div class="price-summary">
+                    <h2 class="summary-title">Tổng Kết Đặt Vé</h2>
+                    <div class="price-row">
+                        <div class="price-title">{{ $flight->departure }} - {{ $flight->destination }}</div>
+                        <div class="price-value">{{ $day }}-{{ $month }}-{{ $year }}</div>
                     </div>
-                </div>
-
-                <div class="confirmation-box">
-                    <h2 class="confirmation-title">Thông Tin Liên Hệ</h2>
-                    <div class="contact-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="required-field">Họ và tên</label>
-                                <input name="full_name" id="full_name"
-                                       type="text"
-                                       placeholder="Nhập họ và tên người liên hệ"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="required-field">Số điện thoại</label>
-                                <input name="phone" id="phone" type="tel" placeholder="Nhập số điện thoại" />
-                            </div>
-                            <div class="form-group">
-                                <label class="required-field">Email</label>
-                                <input name="email" id="email" type="email" placeholder="Nhập địa chỉ email" />
-                            </div>
-                        </div>
-                        <div class="form-note">
-                            Thông tin liên hệ sẽ được sử dụng để gửi thông tin vé và liên
-                            lạc trong trường hợp cần thiết
+                    <div class="price-row">
+                        <div class="price-title">{{ $flight->airline->name }} ({{ $flight->flight_number }})</div>
+                        <div class="price-value">{{ $hour }}:{{ $minute }} -
+                            {{ $hourArrival }}:{{ $minuteArrival }}</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Người lớn (x{{ $passengers }})</div>
+                        <div class="price-value">{{ $flight->price * $passengers }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Trẻ em (x{{ $childrens }})</div>
+                        <div class="price-value">{{ $flight->price * $childrens * 0.5 }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Thuế & Phí</div>
+                        <div class="price-value">50.000 VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Phí dịch vụ</div>
+                        <div class="price-value">20.000 VNĐ</div>
+                    </div>
+                    <div class="total-row">
+                        <div>Tổng cộng</div>
+                        <div>{{ $flight->price * $passengers + $flight->price * $childrens + 50.0 + 20.0 }} VNĐ
                         </div>
                     </div>
-                </div>
-
-                <div class="confirmation-box">
-                    <h2 class="confirmation-title">Phương Thức Thanh Toán</h2>
-                    <div class="payment-options">
-                        <div class="payment-method">
-                            <label class="payment-label">
-                                <input type="radio" name="payment" value="credit" checked />
-                                Thanh toán bằng thẻ tín dụng/ghi nợ
-                            </label>
-                            <div class="payment-cards">
-                                <div class="card-icon">VISA</div>
-                                <div class="card-icon">MC</div>
-                                <div class="card-icon">JCB</div>
-                            </div>
-                        </div>
-                        <div class="payment-method">
-                            <label class="payment-label">
-                                <input type="radio" name="payment" value="bank" />
-                                Thanh toán qua ngân hàng trực tuyến
-                            </label>
-                        </div>
-                        <div class="payment-method">
-                            <label class="payment-label">
-                                <input type="radio" name="payment" value="ewallet" />
-                                Thanh toán qua ví điện tử (Momo, ZaloPay, VNPay)
-                            </label>
-                        </div>
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="terms" name="terms" required />
+                        <label for="terms" class="terms-text">
+                            Tôi đã đọc và đồng ý với
+                            <a href="#">Điều khoản và Điều kiện</a> của SkyJet, bao gồm các
+                            chính sách về hoàn vé và đổi vé.
+                        </label>
+                    </div>
+                    <div class="buttons-container">
+                        <button class="continue-btn" type="submit">TIẾP TỤC</button>
+                        <a href="javascript:history.back()"><button class="back-btn" type="button">QUAY
+                                LẠI</button></a>
                     </div>
                 </div>
             </div>
+        </form>
+    </div>
 
-            <div class="price-summary">
-                <h2 class="summary-title">Tổng Kết Đặt Vé</h2>
-                <div class="price-row">
-                    <div class="price-title">{{$flight->departure}} - {{$flight->destination}}</div>
-                    <div class="price-value">{{$day}}-{{$month}}-{{$year}}</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">{{$flight->airline->name}} ({{$flight->flight_number}})</div>
-                    <div class="price-value">{{$hour}}:{{$minute}} - {{$hourArrival}}:{{$minuteArrival}}</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Người lớn (x{{ $passengers }})</div>
-                    <div class="price-value">{{$flight->price * $passengers}} VNĐ</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                    <div class="price-value">{{$flight->price * $childrens * 0.5 }} VNĐ</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Thuế & Phí</div>
-                    <div class="price-value">50.000 VNĐ</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Phí dịch vụ</div>
-                    <div class="price-value">20.000 VNĐ</div>
-                </div>
-                <div class="total-row">
-                    <div>Tổng cộng</div>
-                    <div>{{$flight->price * $passengers + $flight->price * $childrens + 50.000 + 20.000}} VNĐ</div>
-                </div>
-                <div class="terms-checkbox">
-                    <input type="checkbox" id="terms" name="terms" required />
-                    <label for="terms" class="terms-text">
-                        Tôi đã đọc và đồng ý với
-                        <a href="#">Điều khoản và Điều kiện</a> của SkyJet, bao gồm các
-                        chính sách về hoàn vé và đổi vé.
-                    </label>
-                </div>
-                <div class="buttons-container">
-                    <button class="continue-btn" type="submit">TIẾP TỤC</button>
-                    <a href="javascript:history.back()"><button class="back-btn" type="button">QUAY LẠI</button></a>
-                </div>
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2025 SkyJet. Tất cả quyền được bảo lưu.</p>
             </div>
         </div>
-    </form>
-</div>
-
-<footer>
-    <div class="container">
-        <div class="copyright">
-            <p>&copy; 2025 SkyJet. Tất cả quyền được bảo lưu.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
 </body>
+
 </html>

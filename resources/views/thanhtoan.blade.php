@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -513,273 +514,287 @@
         }
     </style>
 </head>
+
 <body>
-<header>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Sky<span>Jet</span></div>
+                <nav>
+                    <ul>
+                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
+                        <li><a href="{{ route('datve') }}">Đặt Vé</a></li>
+                        <li><a href="#">Khuyến Mãi</a></li>
+                        <li><a href="#">Lịch Bay</a></li>
+                        <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-title">
+        <div class="container">
+            <h1>Thanh Toán Đặt Vé</h1>
+        </div>
+    </div>
+
+    <div class="steps-container">
+        <div class="booking-steps">
+            <div class="step completed">
+                <div class="step-number">1</div>
+                <div class="step-text">Tìm Chuyến Bay</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step completed">
+                <div class="step-number">2</div>
+                <div class="step-text">Chọn Chuyến Bay</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step completed">
+                <div class="step-number">3</div>
+                <div class="step-text">Thông Tin Hành Khách</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step active">
+                <div class="step-number">4</div>
+                <div class="step-text">Thanh Toán</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-text">Hoàn Tất</div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="header-content">
-            <div class="logo">Sky<span>Jet</span></div>
-            <nav>
-                <ul>
-                    <li><a href="{{route('index')}}">Trang Chủ</a></li>
-                    <li><a href="{{route('datve')}}">Đặt Vé</a></li>
-                    <li><a href="#">Khuyến Mãi</a></li>
-                    <li><a href="#">Lịch Bay</a></li>
-                    <li><a href="{{route('lienhe')}}">Liên Hệ</a></li>
-                </ul>
-            </nav>
+        <div class="timer-container">
+            <div class="timer-text">Thời gian hoàn tất thanh toán</div>
+            <div class="timer">14:59</div>
         </div>
-    </div>
-</header>
 
-<div class="page-title">
-    <div class="container">
-        <h1>Thanh Toán Đặt Vé</h1>
-    </div>
-</div>
-
-<div class="steps-container">
-    <div class="booking-steps">
-        <div class="step completed">
-            <div class="step-number">1</div>
-            <div class="step-text">Tìm Chuyến Bay</div>
-        </div>
-        <div class="step-divider"></div>
-        <div class="step completed">
-            <div class="step-number">2</div>
-            <div class="step-text">Chọn Chuyến Bay</div>
-        </div>
-        <div class="step-divider"></div>
-        <div class="step completed">
-            <div class="step-number">3</div>
-            <div class="step-text">Thông Tin Hành Khách</div>
-        </div>
-        <div class="step-divider"></div>
-        <div class="step active">
-            <div class="step-number">4</div>
-            <div class="step-text">Thanh Toán</div>
-        </div>
-        <div class="step-divider"></div>
-        <div class="step">
-            <div class="step-number">5</div>
-            <div class="step-text">Hoàn Tất</div>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="timer-container">
-        <div class="timer-text">Thời gian hoàn tất thanh toán</div>
-        <div class="timer">14:59</div>
-    </div>
-
-    <div class="payment-content">
-        <div class="payment-details">
-            <div class="payment-box">
-                <h2 class="payment-title">Thông Tin Thanh Toán</h2>
-                <div class="payment-method-selection">
-                    <div class="method-tabs">
-                        <div class="method-tab active">Thẻ tín dụng/ghi nợ</div>
-                        <div class="method-tab">Internet Banking</div>
-                        <div class="method-tab">Ví điện tử</div>
-                    </div>
-
-                    <div class="card-form">
-                        <div class="card-icons">
-                            <div class="card-icon active">VISA</div>
-                            <div class="card-icon">MC</div>
-                            <div class="card-icon">JCB</div>
-                            <div class="card-icon">AMEX</div>
+        <div class="payment-content">
+            <div class="payment-details">
+                <div class="payment-box">
+                    <h2 class="payment-title">Thông Tin Thanh Toán</h2>
+                    <div class="payment-method-selection">
+                        <div class="method-tabs">
+                            <div class="method-tab active">Thẻ tín dụng/ghi nợ</div>
+                            <div class="method-tab">Internet Banking</div>
+                            <div class="method-tab">Ví điện tử</div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="required-field">Số thẻ</label>
-                                <input type="text" placeholder="XXXX XXXX XXXX XXXX" />
+                        <div class="card-form">
+                            <div class="card-icons">
+                                <div class="card-icon active">VISA</div>
+                                <div class="card-icon">MC</div>
+                                <div class="card-icon">JCB</div>
+                                <div class="card-icon">AMEX</div>
                             </div>
-                        </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="required-field">Tên chủ thẻ</label>
-                                <input type="text" placeholder="Tên in trên thẻ" />
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="required-field">Ngày hết hạn</label>
-                                <div class="form-row" style="margin-bottom: 0">
-                                    <select>
-                                        <option value="">Tháng</option>
-                                        <option value="01">01</option>
-                                        <option value="02">02</option>
-                                        <option value="03">03</option>
-                                        <option value="04">04</option>
-                                        <option value="05">05</option>
-                                        <option value="06">06</option>
-                                        <option value="07">07</option>
-                                        <option value="08">08</option>
-                                        <option value="09">09</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                    </select>
-                                    <select>
-                                        <option value="">Năm</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2026">2026</option>
-                                        <option value="2027">2027</option>
-                                        <option value="2028">2028</option>
-                                        <option value="2029">2029</option>
-                                        <option value="2030">2030</option>
-                                    </select>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Số thẻ</label>
+                                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" />
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="required-field">Mã CVV/CVC</label>
-                                <input type="text" placeholder="XXX" />
-                            </div>
-                        </div>
 
-                        <div class="security-info">
-                            <div class="security-icon">🔒</div>
-                            <div>
-                                Thông tin thanh toán được bảo mật bằng công nghệ mã hóa SSL
-                                256-bit.
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Tên chủ thẻ</label>
+                                    <input type="text" placeholder="Tên in trên thẻ" />
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Ngày hết hạn</label>
+                                    <div class="form-row" style="margin-bottom: 0">
+                                        <select>
+                                            <option value="">Tháng</option>
+                                            <option value="01">01</option>
+                                            <option value="02">02</option>
+                                            <option value="03">03</option>
+                                            <option value="04">04</option>
+                                            <option value="05">05</option>
+                                            <option value="06">06</option>
+                                            <option value="07">07</option>
+                                            <option value="08">08</option>
+                                            <option value="09">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                        </select>
+                                        <select>
+                                            <option value="">Năm</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2026">2026</option>
+                                            <option value="2027">2027</option>
+                                            <option value="2028">2028</option>
+                                            <option value="2029">2029</option>
+                                            <option value="2030">2030</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="required-field">Mã CVV/CVC</label>
+                                    <input type="text" placeholder="XXX" />
+                                </div>
+                            </div>
+
+                            <div class="security-info">
+                                <div class="security-icon">🔒</div>
+                                <div>
+                                    Thông tin thanh toán được bảo mật bằng công nghệ mã hóa SSL
+                                    256-bit.
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="review-box">
-                <h2 class="review-title">Xác Nhận Thông Tin Đặt Vé</h2>
-                <div class="flight-info-container">
-                    <div class="flight-date">
-                        <div class="date-number">{{$day}}</div>
-                        <div class="date-month">Tháng {{$month}}</div>
-                    </div>
-                    <div class="flight-details">
-                        <div class="flight-route">
-                            <div class="airport-code">{{$flight->departure}}</div>
-                            <div class="flight-arrow">→</div>
-                            <div class="airport-code">{{$flight->destination}}</div>
+                <div class="review-box">
+                    <h2 class="review-title">Xác Nhận Thông Tin Đặt Vé</h2>
+                    <div class="flight-info-container">
+                        <div class="flight-date">
+                            <div class="date-number">{{ $day }}</div>
+                            <div class="date-month">Tháng {{ $month }}</div>
                         </div>
-                        <div class="flight-times">
-                            <div class="departure-time">{{$hour}}:{{$minute}}</div>
-                            <div class="flight-duration">2h 10m</div>
-                            <div class="arrival-time">{{$hourArrival}}:{{$minuteArrival}}</div>
-                        </div>
-                        <div class="airport-names">
-                            {{$flight->departure}} → {{$flight->destination}}
-                        </div>
-                        <div class="airline-info">
-                            <div class="airline-logo">{{$flight->airline->logo}}</div>
-                            <div class="airline-name">{{$flight->airline->name}}</div>
-                            <div class="flight-number">{{$flight->flight_code}}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="passenger-summary">
-                    <div class="passenger-count">
-                        Hành khách (
-                        {{ (is_array($passengers) ? count($passengers) : 0) + (is_array($childrens) ? count($childrens) : 0) }}
-                        )
-                    </div>
-                    @if(is_array($passengers) || is_object($passengers))
-                        @foreach($passengers as $index => $passenger)
-                            <div class="passenger-info">
-                                {{ $index  }}. {{ $passenger['last_name'] ?? 'Lỗi dữ liệu' }} {{ $passenger['first_name'] ?? 'Lỗi dữ liệu' }}
+                        <div class="flight-details">
+                            <div class="flight-route">
+                                <div class="airport-code">{{ $flight->departure }}</div>
+                                <div class="flight-arrow">→</div>
+                                <div class="airport-code">{{ $flight->destination }}</div>
                             </div>
-                        @endforeach
-                    @else
-                        <div>Không có dữ liệu hành khách.</div>
-                    @endif
-
-                    @if(is_array($childrens) || is_object($childrens))
-                        @foreach($childrens as $index => $child)
-                            <div class="passenger-info">
-                                {{ count($passengers) + $index  }}. {{ $child['last_name'] ?? 'Lỗi dữ liệu' }} {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
+                            <div class="flight-times">
+                                <div class="departure-time">{{ $hour }}:{{ $minute }}</div>
+                                <div class="flight-duration">2h 10m</div>
+                                <div class="arrival-time">{{ $hourArrival }}:{{ $minuteArrival }}</div>
                             </div>
-                        @endforeach
-                    @endif
+                            <div class="airport-names">
+                                {{ $flight->departure }} → {{ $flight->destination }}
+                            </div>
+                            <div class="airline-info">
+                                <div class="airline-logo">{{ $flight->airline->logo }}</div>
+                                <div class="airline-name">{{ $flight->airline->name }}</div>
+                                <div class="flight-number">{{ $flight->flight_code }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="passenger-summary">
+                        <div class="passenger-count">
+                            Hành khách (
+                            {{ (is_array($passengers) ? count($passengers) : 0) + (is_array($childrens) ? count($childrens) : 0) }}
+                            )
+                        </div>
+                        @if (is_array($passengers) || is_object($passengers))
+                            @foreach ($passengers as $index => $passenger)
+                                <div class="passenger-info">
+                                    {{ $index }}. {{ $passenger['last_name'] ?? 'Lỗi dữ liệu' }}
+                                    {{ $passenger['first_name'] ?? 'Lỗi dữ liệu' }}
+                                </div>
+                            @endforeach
+                        @else
+                            <div>Không có dữ liệu hành khách.</div>
+                        @endif
+
+                        @if (is_array($childrens) || is_object($childrens))
+                            @foreach ($childrens as $index => $child)
+                                <div class="passenger-info">
+                                    {{ count($passengers) + $index }}. {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
+                                    {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+
+                    <div class="contact-info">
+                        <div><strong>Thông tin liên hệ:</strong></div>
+                        <div>{{ $full_name }}</div>
+                        <div>Điện thoại: {{ $phone }}</div>
+                        <div>Email: {{ $email }}</div>
+                        <div>Địa chỉ: {{ $address }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-summary">
+                <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
+                <div class="price-row">
+                    <div class="price-title">{{ $flight->departure }} - {{ $flight->destination }}</div>
+                    <div class="price-value">{{ $day }}-{{ $month }}-{{ $year }}</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">{{ $flight->airline->name }} ({{ $flight->flight_code }})</div>
+                    <div class="price-value">{{ $hour }}:{{ $minute }} -
+                        {{ $hourArrival }}:{{ $minuteArrival }}</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Người lớn (x{{ is_array($passengers) ? count($passengers) : 0 }})</div>
+                    <div class="price-value">{{ $flight->price * is_array($passengers) ? count($passengers) : 0 }}0
+                        VNĐ</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Trẻ em (x{{ is_array($childrens) ? count($childrens) : 0 }})</div>
+                    <div class="price-value">{{ $flight->price * is_array($childrens) ? count($childrens) : 0 }}0 VNĐ
+                    </div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Thuế & Phí</div>
+                    <div class="price-value">50.000 VNĐ</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Phí dịch vụ</div>
+                    <div class="price-value">20.000 VNĐ</div>
+                </div>
+                <div class="total-row">
+                    <div>Tổng cộng</div>
+                    <div>
+                        {{ $flight->price * (is_array($passengers) ? count($passengers) : 0) + $flight->price * (is_array($childrens) ? count($childrens) : 0) + 50.0 + 20.0 }}0
+                        VNĐ</div>
                 </div>
 
-                <div class="contact-info">
-                    <div><strong>Thông tin liên hệ:</strong></div>
-                    <div>{{$full_name }}</div>
-                    <div>Điện thoại: {{$phone}}</div>
-                    <div>Email: {{$email}}</div>
+                <div class="payment-notice">
+                    Lưu ý: Vé máy bay sẽ được gửi qua email sau khi thanh toán hoàn tất.
+                    Vui lòng kiểm tra email của bạn và hộp thư spam.
                 </div>
-            </div>
-        </div>
 
-        <div class="price-summary">
-            <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
-            <div class="price-row">
-                <div class="price-title">{{$flight->departure}} - {{$flight->destination}}</div>
-                <div class="price-value">{{$day}}-{{$month}}-{{$year}}</div>
+                <form action="{{ route('thanhcong') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="flight_id" value="{{ $flight->id }}">
+                    <input type="hidden" name="departure" value="{{ $flight->departure }}">
+                    <input type="hidden" name="destination" value="{{ $flight->destination }}">
+                    <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
+                    <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
+                    <input type="hidden" name="price" value="{{ $flight->price }}">
+                    <input type="hidden" name="totalPrice"
+                        value="{{ $flight->price * (is_array($passengers) ? count($passengers) : 0) + $flight->price * (is_array($childrens) ? count($childrens) : 0) + 50.0 + 20.0 }}">
+                    <input type="hidden" name="passenger_count"
+                        value="{{ is_array($passengers) ? count($passengers) : 0 }}">
+                    <input type="hidden" name="children_count"
+                        value="{{ is_array($childrens) ? count($childrens) : 0 }}">
+                    <input type="hidden" name="passengers_data" value="{{ json_encode($passengers) }}">
+                    <input type="hidden" name="childrens_data" value="{{ json_encode($childrens) }}">
+                    <input type="hidden" name="full_name" value="{{ $full_name }}">
+                    <input type="hidden" name="phone" value="{{ $phone }}">
+                    <input type="hidden" name="email" value="{{ $email }}">
+                    <input type="hidden" name="address" value="{{ $address }}">
+                    <button class="confirm-btn" type="submit">XÁC NHẬN THANH TOÁN</button>
+                </form>
+                <button class="back-btn">QUAY LẠI</button>
             </div>
-            <div class="price-row">
-                <div class="price-title">{{$flight->airline->name}} ({{$flight->flight_code}})</div>
-                <div class="price-value">{{$hour}}:{{$minute}} - {{$hourArrival}}:{{$minuteArrival}}</div>
-            </div>
-            <div class="price-row">
-                <div class="price-title">Người lớn (x{{ is_array($passengers) ? count($passengers) : 0 }})</div>
-                <div class="price-value">{{ $flight->price * is_array($passengers) ? count($passengers) : 0 }}0 VNĐ</div>
-            </div>
-            <div class="price-row">
-                <div class="price-title">Trẻ em (x{{ is_array($childrens) ? count($childrens) : 0 }})</div>
-                <div class="price-value">{{ $flight->price * is_array($childrens) ? count($childrens) : 0 }}0 VNĐ</div>
-            </div>
-            <div class="price-row">
-                <div class="price-title">Thuế & Phí</div>
-                <div class="price-value">50.000 VNĐ</div>
-            </div>
-            <div class="price-row">
-                <div class="price-title">Phí dịch vụ</div>
-                <div class="price-value">20.000 VNĐ</div>
-            </div>
-            <div class="total-row">
-                <div>Tổng cộng</div>
-                <div>{{ $flight->price * (is_array($passengers) ? count($passengers) : 0) + $flight->price * (is_array($childrens) ? count($childrens) : 0) + 50.000 + 20.000 }}0 VNĐ</div>
-            </div>
-
-            <div class="payment-notice">
-                Lưu ý: Vé máy bay sẽ được gửi qua email sau khi thanh toán hoàn tất.
-                Vui lòng kiểm tra email của bạn và hộp thư spam.
-            </div>
-
-            <form action="{{ route('thanhcong') }}" method="POST">
-                @csrf
-                <input type="hidden" name="flight_id" value="{{ $flight->id }}">
-                <input type="hidden" name="departure" value="{{ $flight->departure }}">
-                <input type="hidden" name="destination" value="{{ $flight->destination }}">
-                <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
-                <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
-                <input type="hidden" name="price" value="{{ $flight->price }}">
-                <input type="hidden" name="totalPrice" value="{{ $flight->price * (is_array($passengers) ? count($passengers) : 0) + $flight->price * (is_array($childrens) ? count($childrens) : 0) + 50.000 + 20.000 }}">
-                <input type="hidden" name="passenger_count" value="{{ is_array($passengers) ? count($passengers) : 0 }}">
-                <input type="hidden" name="children_count" value="{{ is_array($childrens) ? count($childrens) : 0 }}">
-                <input type="hidden" name="passengers_data" value="{{ json_encode($passengers) }}">
-                <input type="hidden" name="childrens_data" value="{{ json_encode($childrens) }}">
-                <input type="hidden" name="full_name" value="{{ $full_name }}">
-                <input type="hidden" name="phone" value="{{ $phone }}">
-                <input type="hidden" name="email" value="{{ $email }}">
-                <button class="confirm-btn" type="submit">XÁC NHẬN THANH TOÁN</button>
-            </form>
-            <button class="back-btn">QUAY LẠI</button>
         </div>
     </div>
-</div>
 
-<footer>
-    <div class="container">
-        <div class="copyright">
-            <p>&copy; 2025 SkyJet. Tất cả quyền được bảo lưu.</p>
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2025 SkyJet. Tất cả quyền được bảo lưu.</p>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
 </body>
+
 </html>
