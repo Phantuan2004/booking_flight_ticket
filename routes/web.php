@@ -23,6 +23,3 @@ Route::post('/admin/cancel-booking/{id}', [\App\Http\Controllers\AdminController
 Route::post('/admin/add-user', [AdminController::class, 'adduser'])->name('add-user');
 Route::put('/admin/edit-user/{id}', [AdminController::class, 'editUser'])->name('edit-user');
 Route::delete('/admin/delete-user/{id}', [AdminController::class, 'deleteUser'])->name('delete-user');
-
-Route::get('/admin/get-user-guest', [GuestController::class, 'getUserGuest'])->name('get-user-guest');
-Route::delete('/admin/delete-user-guest/{id}', [GuestController::class, 'deleteUserGuest'])->name('delete-user-guest');

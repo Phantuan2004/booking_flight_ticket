@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Flight;
 use App\Models\Airline;
+use App\Models\Guest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -26,8 +27,10 @@ class AdminController extends Controller
         // Tổng doanh thu
         $totalRevenue = $bookings->sum('total_price');
         // Hiển thị người dùng
-        $users = User::all();
-        return view('admin/admin', compact('flights', 'airlines', 'bookings', 'statusAll', 'totalFlights', 'totalBookings', 'totalRevenue', 'users'));
+        $users = User::where('role', 'user')->paginate(5, ["*"], 'page_users');
+        // Hiển thị người dùng vãng lai
+        $guestUsers = Guest::query()->paginate(5, ["*"], 'page_guests');
+        return view('admin/admin', compact('flights', 'airlines', 'bookings', 'statusAll', 'totalFlights', 'totalBookings', 'totalRevenue', 'users', 'guestUsers'));
     }
 
     // Thêm mới chuyến bay
@@ -95,24 +98,6 @@ class AdminController extends Controller
         return redirect()->back();
     }
 
-    // Hủy vé đã bán
-    public function cancel(Request $request, Booking $id)
-    {
-        // Khi hủy thì sẽ thay đổi trạng thái vé bay sang "hủy"
-        $id->update([
-            'status' => 'hủy'
-        ]);
-        $request->session()->flash('success', 'Hủy vé thành công');
-
-        // Cập nhật lại số ghế khi hủy vé
-        $flight = Flight::find($id->flight_id);
-        if ($flight) {
-            $flight->increment('available_seats', 1);
-        }
-
-        return redirect()->back();
-    }
-
     // ** Chức năng quản lý người dùng
     public function addUser(Request $request)
     {
@@ -155,12 +140,7 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Sửa người dùng thành công!');
     }
-    public function deleteUser(Request $request, User $id)
-    {
-        $id->delete();
-        $request->session()->flash('success', 'Xóa người dùng thành công');
-        return redirect()->back();
-    }
+
     public function searchFlight(Request $request)
     {
         $query = Flight::query();
@@ -178,5 +158,32 @@ class AdminController extends Controller
         $flights = $query->with('airline')->paginate(5, ["*"], 'page_flights');
 
         return view('admin/admin', compact('flights'));
+    }
+
+    //* Các chức năng hủy, xóa dữ liệu
+    // Hủy vé
+    public function cancel(Request $request, Booking $id)
+    {
+        // Khi hủy thì sẽ thay đổi trạng thái vé bay sang "hủy"
+        $id->update([
+            'status' => 'hủy'
+        ]);
+        $request->session()->flash('success', 'Hủy vé thành công');
+
+        // Cập nhật lại số ghế khi hủy vé
+        $flight = Flight::find($id->flight_id);
+        if ($flight) {
+            $flight->increment('available_seats', 1);
+        }
+
+        return redirect()->back();
+    }
+
+    // Xóa tài khoản người dùng
+    public function deleteUser(Request $request, User $id)
+    {
+        $id->delete();
+        $request->session()->flash('success', 'Xóa người dùng thành công');
+        return redirect()->back();
     }
 }

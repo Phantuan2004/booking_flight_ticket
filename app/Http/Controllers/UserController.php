@@ -37,6 +37,10 @@ class UserController extends Controller
             ->where('available_seats', '>=', $passengers)
             ->get();
 
+        // Định dạng hiển thị giá tiền
+        foreach ($flights as $flight) {
+            $flight->formatted_price = number_format($flight->price, 0, ',', '.') . ' VNĐ';
+        }
         // Lưu thông tin vào session
         session([
             'search_data' => [
@@ -83,6 +87,13 @@ class UserController extends Controller
             'address' => is_array($address) ? implode(' ', $address) : strval($address)
         ]);
 
+        // Xử lý giá tiền
+        $adult_price = $flight->price * $passengers;
+        $child_price = $flight->price * $childrens * 0.5;
+        $tax_fee = 50000;
+        $service_fee = 20000;
+        $total_price = $adult_price + $child_price + $tax_fee + $service_fee;
+
         // Xử lý thời gian bay
         $departureTime = Carbon::parse($flight->departure_time);
         $flightStart = Carbon::parse($flight->flight_start);
@@ -103,6 +114,11 @@ class UserController extends Controller
             'phone',
             'email',
             'address',
+            'adult_price',
+            'child_price',
+            'tax_fee',
+            'service_fee',
+            'total_price',
             'hour',
             'hourArrival',
             'minute',
@@ -122,20 +138,26 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => 'Chuyến bay không tồn tại!']);
         }
 
-        $passengers = $request->input('passengers') ?? session('passengers', []);
-        $childrens = $request->input('childrens') ?? session('childrens', []);
-        $full_name = $request->input('full_name') ?? session('full_name', '');
-        $phone = $request->input('phone') ?? session('phone', '');
-        $email = $request->input('email') ?? session('email', '');
-        $address = $request->input('address') ?? session('address', '');
+        // Lấy số lượng hành khách
+        $passengers = (int) $request->input('passengers', session('passengers', 0));
+        $childrens = (int) $request->input('childrens', session('childrens', 0));
 
-        $full_name = is_array($full_name) ? implode(' ', array_filter((array)$full_name, 'is_string')) : (string)$full_name;
-        $phone = is_array($phone) ? implode(' ', array_filter((array)$phone, 'is_string')) : (string)$phone;
-        $email = is_array($email) ? implode(' ', array_filter((array)$email, 'is_string')) : (string)$email;
-        $address = is_array($address) ? implode(' ', array_filter((array)$address, 'is_string')) : (string)$address;
+        // Xử lý thông tin khách hàng
+        $full_name = trim($request->input('full_name', session('full_name', '')));
+        $phone = trim($request->input('phone', session('phone', '')));
+        $email = trim($request->input('email', session('email', '')));
+        $address = trim($request->input('address', session('address', '')));
 
-        $departureTime = Carbon::parse($flight->departure_time);
-        $arrivalTime = Carbon::parse($flight->arrival_time);
+        // Xử lý giá vé
+        $adult_price = $flight->price * $passengers;
+        $child_price = $childrens > 0 ? ($flight->price * $childrens * 0.5) : 0;
+        $tax_fee = 50000;
+        $service_fee = 20000;
+        $total_price = $adult_price + $child_price + $tax_fee + $service_fee;
+
+        // Xử lý thời gian bay
+        $departureTime = Carbon::parse($flight->flight_start);
+        $arrivalTime = Carbon::parse($flight->flight_end);
         $hour = $departureTime->hour;
         $minute = $departureTime->minute;
         $hourArrival = $arrivalTime->hour;
@@ -144,6 +166,7 @@ class UserController extends Controller
         $month = $departureTime->month;
         $year = $departureTime->year;
 
+        // Truyền dữ liệu sang view
         return view('thanhtoan', compact(
             'flight',
             'passengers',
@@ -152,6 +175,11 @@ class UserController extends Controller
             'phone',
             'email',
             'address',
+            'adult_price',
+            'child_price',
+            'tax_fee',
+            'service_fee',
+            'total_price',
             'hour',
             'hourArrival',
             'minute',
@@ -161,6 +189,7 @@ class UserController extends Controller
             'year'
         ));
     }
+
 
 
     public function thanhcong(Request $request)
@@ -190,8 +219,8 @@ class UserController extends Controller
         $email = is_array($email) ? implode(' ', array_filter((array)$email, 'is_string')) : (string)$email;
         $address = is_array($address) ? implode(' ', array_filter((array)$address, 'is_string')) : (string)$address;
 
-        $departureTime = Carbon::parse($flight->departure_time);
-        $arrivalTime = Carbon::parse($flight->arrival_time);
+        $departureTime = Carbon::parse($flight->flight_start);
+        $arrivalTime = Carbon::parse($flight->flight_end);
         $hour = $departureTime->hour;
         $minute = $departureTime->minute;
         $hourArrival = $arrivalTime->hour;
@@ -200,8 +229,12 @@ class UserController extends Controller
         $month = $departureTime->month;
         $year = $departureTime->year;
 
-        // Tổng giá
-        $totalPrice = $flight->price * (is_array($passengers) ? count($passengers) : 0) + $flight->price * (is_array($childrens) ? count($childrens) : 0) + 50.0 + 20.0;
+        // Xử lý giá vé
+        $adult_price = $flight->price * $passengers;
+        $child_price = $childrens > 0 ? ($flight->price * $childrens * 0.5) : 0;
+        $tax_fee = 50000;
+        $service_fee = 20000;
+        $total_price = $adult_price + $child_price + $tax_fee + $service_fee;
 
         // Check người dùng có tài khoản
         if (Auth::check()) {
@@ -214,7 +247,7 @@ class UserController extends Controller
                 'email' => $email,
                 'address' => $address,
                 'flight_id' => $flight->id,
-                'total_price' => $totalPrice,
+                'total_price' => $total_price,
                 'created_at' => now(),
                 'updated_at' => now()
             ];
@@ -228,7 +261,7 @@ class UserController extends Controller
                 'phone' => $phone,
                 'email' => $email,
                 'address' => $address,
-                'total_price' => $totalPrice,
+                'total_price' => $total_price,
                 'created_at' => now(),
                 'updated_at' => now()
             ];
@@ -281,6 +314,11 @@ class UserController extends Controller
             'phone',
             'email',
             'address',
+            'adult_price',
+            'child_price',
+            'tax_fee',
+            'service_fee',
+            'total_price'
         ));
     }
 

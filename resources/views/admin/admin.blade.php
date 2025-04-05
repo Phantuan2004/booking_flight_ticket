@@ -256,9 +256,9 @@
             </div>
             <ul class="sidebar-menu ps-0">
                 <li><a href="#" class="active"><i class="bi bi-speedometer2"></i> <span>Tổng quan</span></a></li>
-                <li><a href="#"><i class="bi bi-airplane"></i> <span>Chuyến bay</span></a></li>
-                <li><a href="#"><i class="bi bi-ticket-perforated"></i> <span>Vé</span></a></li>
-                <li><a href="#"><i class="bi bi-people"></i> <span>Khách hàng</span></a></li>
+                <li><a href="#flights"><i class="bi bi-airplane"></i> <span>Chuyến bay</span></a></li>
+                <li><a href="#management-tickets"><i class="bi bi-ticket-perforated"></i> <span>Vé bay</span></a></li>
+                <li><a href="#customers"><i class="bi bi-people"></i> <span>Khách hàng</span></a></li>
                 <li><a href="#"><i class="bi bi-percent"></i> <span>Khuyến mãi</span></a></li>
                 <li><a href="#"><i class="bi bi-bar-chart"></i> <span>Báo cáo</span></a></li>
                 <li><a href="#"><i class="bi bi-gear"></i> <span>Cài đặt</span></a></li>
@@ -298,7 +298,7 @@
 
             <!-- Flight Management -->
             <div class="data-table">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div id="flights" class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="m-0">Danh sách chuyến bay</h3>
                     <button class="add-btn" type="button" data-bs-toggle="modal" data-bs-target="#addFlightModal">
                         <i class="bi bi-plus"></i> Thêm chuyến bay
@@ -372,7 +372,7 @@
 
             <!-- Booking Management -->
             <div class="data-table">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div id="management-tickets" class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="m-0">Quản lý vé</h3>
                 </div>
 
@@ -436,7 +436,7 @@
             <div class="data-table">
                 <div class="tabs">
                     <button class="tab-button active" onclick="openTab('customers')">Quản lý tài khoản </button>
-                    <button class="tab-button" onclick="openTab('flights')">Quản lý khách vãng lai (guest) </button>
+                    <button class="tab-button" onclick="openTab('guests')">Quản lý khách vãng lai (guest) </button>
                 </div>
 
                 <!-- Tab nội dung 1: Thông tin khách hàng -->
@@ -462,7 +462,7 @@
                             <tbody>
                                 @foreach ($users as $user)
                                     <tr>
-                                        <td>{{ $user->id }}</td>
+                                        <td>{{ $user->user_code }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>
                                             <div style="font-weight: 600; color: rgb(124, 124, 124);">
@@ -490,10 +490,13 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="pagination justify-content-center">
+                        {{ $users->appends(['page_users' => request('page_users')])->links('pagination::bootstrap-4') }}
+                    </div>
                 </div>
 
                 <!-- Tab nội dung 2: Quản lý khách vãng lai -->
-                <div id="flights" class="tab-content">
+                <div id="guests" class="tab-content">
                     <h3>Quản lý thông tin khách vãng lai </h3>
                     <div class="search-box mb-3">
                         <input type="text" placeholder="Tìm kiếm khách hàng...">
@@ -534,6 +537,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                    <div class="pagination justify-content-center">
+                        {{ $guestUsers->appends(['page_guestUsers' => request('page_guestUsers')])->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>

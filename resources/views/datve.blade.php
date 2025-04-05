@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -338,201 +339,205 @@
         }
     </style>
 </head>
+
 <body>
-<header>
-    <div class="container">
-        <div class="header-content">
-            <div class="logo">Sky<span>Jet</span></div>
-            <nav>
-                <ul>
-                    <li><a href="/trangchu.html">Trang Chủ</a></li>
-                    <li><a href="#">Đặt Vé</a></li>
-                    <li><a href="#">Khuyến Mãi</a></li>
-                    <li><a href="#">Lịch Bay</a></li>
-                    <li><a href="/lienhe.html">Liên Hệ</a></li>
-                </ul>
-            </nav>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Sky<span>Jet</span></div>
+                <nav>
+                    <ul>
+                        <li><a href="/trangchu.html">Trang Chủ</a></li>
+                        <li><a href="#">Đặt Vé</a></li>
+                        <li><a href="#">Khuyến Mãi</a></li>
+                        <li><a href="#">Lịch Bay</a></li>
+                        <li><a href="/lienhe.html">Liên Hệ</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="page-title">
+        <div class="container">
+            <h1>Kết Quả Tìm Kiếm Chuyến Bay</h1>
         </div>
     </div>
-</header>
 
-<div class="page-title">
     <div class="container">
-        <h1>Kết Quả Tìm Kiếm Chuyến Bay</h1>
-    </div>
-</div>
-
-<div class="container">
-    <div class="booking-content">
-        <div class="flight-selection">
-            <div class="filter-panel">
-                <h2 class="filter-title">Lọc Kết Quả</h2>
-                <div class="filter-form">
-                    <div class="filter-group">
-                        <label>Hãng Hàng Không</label>
-                        <select>
-                            <option>Tất cả hãng</option>
-                            <option>Vietnam Airlines</option>
-                            <option>Vietjet Air</option>
-                            <option>Bamboo Airways</option>
-                            <option>Pacific Airlines</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Giá</label>
-                        <select>
-                            <option>Tất cả giá</option>
-                            <option>Dưới 1.000.000</option>
-                            <option>1.000.000 - 2.000.000</option>
-                            <option>Trên 2.000.000</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Thời Gian Bay</label>
-                        <select>
-                            <option>Tất cả</option>
-                            <option>Sáng (00:00 - 12:00)</option>
-                            <option>Chiều (12:00 - 18:00)</option>
-                            <option>Tối (18:00 - 24:00)</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Sắp Xếp</label>
-                        <select>
-                            <option>Giá thấp nhất</option>
-                            <option>Thời gian bay ngắn nhất</option>
-                            <option>Khởi hành sớm nhất</option>
-                            <option>Khởi hành muộn nhất</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="filter-btn">Áp Dụng</button>
-            </div>
-
-            <div class="flight-list">
-                @if($flights->isEmpty())
-                    <h2 style="text-align: center; color: red;">Không tìm thấy chuyến bay phù hợp, vui lòng chọn chuyến bay khác!</h2>
-                @else
-                    @foreach($flights as $flight)
-                        <div class="flight-card">
-                            <div class="airline-logo">{{ $flight->airline->logo }}</div>
-                            <div class="flight-info">
-                                <div class="flight-time">
-                                    <div class="time">{{ $flight->departure_time }}</div>
-                                    <div class="duration">{{$flight->duration}}</div>
-                                    <div class="time">{{ $flight->arrival_time }}</div>
-                                </div>
-                                <div class="flight-route">
-                                    {{ $flight->departure }} - {{ $flight->destination }}
-                                </div>
-                                <div class="airline-name">{{ $flight->airline->name }}</div>
-                            </div>
-                            <div class="flight-details">
-                                <div class="price">{{ $flight->price . '0 VNĐ'}}</div>
-                                <form action="{{ route('xacnhan') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="flight_id" value="{{ $flight->id }}">
-                                    <input type="hidden" name="departure" value="{{ $flight->departure }}">
-                                    <input type="hidden" name="destination" value="{{ $flight->destination }}">
-                                    <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
-                                    <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
-                                    <input type="hidden" name="price" value="{{ $flight->price }}">
-                                    <input type="hidden" name="passengers" value="{{ $passengers }}">
-                                    <input type="hidden" name="childrens" value="{{ $childrens }}">
-                                    <button class="select-btn" type="submit">Chọn</button>
-                                </form>
-                            </div>
+        <div class="booking-content">
+            <div class="flight-selection">
+                <div class="filter-panel">
+                    <h2 class="filter-title">Lọc Kết Quả</h2>
+                    <div class="filter-form">
+                        <div class="filter-group">
+                            <label>Hãng Hàng Không</label>
+                            <select>
+                                <option>Tất cả hãng</option>
+                                <option>Vietnam Airlines</option>
+                                <option>Vietjet Air</option>
+                                <option>Bamboo Airways</option>
+                                <option>Pacific Airlines</option>
+                            </select>
                         </div>
-                    @endforeach
-                @endif
-            </div>
-        </div>
-
-        <div class="search-form">
-            <h2 class="search-title">Tìm Kiếm Chuyến Bay</h2>
-
-            <div class="search-radios">
-                <div class="search-radio">
-                    <label>
-                        <input type="radio" name="tripType" checked /> Một chiều
-                    </label>
+                        <div class="filter-group">
+                            <label>Giá</label>
+                            <select>
+                                <option>Tất cả giá</option>
+                                <option>Dưới 1.000.000</option>
+                                <option>1.000.000 - 2.000.000</option>
+                                <option>Trên 2.000.000</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Thời Gian Bay</label>
+                            <select>
+                                <option>Tất cả</option>
+                                <option>Sáng (00:00 - 12:00)</option>
+                                <option>Chiều (12:00 - 18:00)</option>
+                                <option>Tối (18:00 - 24:00)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Sắp Xếp</label>
+                            <select>
+                                <option>Giá thấp nhất</option>
+                                <option>Thời gian bay ngắn nhất</option>
+                                <option>Khởi hành sớm nhất</option>
+                                <option>Khởi hành muộn nhất</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="filter-btn">Áp Dụng</button>
                 </div>
-                <div class="search-radio">
-                    <label> <input type="radio" name="tripType" /> Khứ hồi </label>
+
+                <div class="flight-list">
+                    @if ($flights->isEmpty())
+                        <h2 style="text-align: center; color: red;">Không tìm thấy chuyến bay phù hợp, vui lòng chọn
+                            chuyến bay khác!</h2>
+                    @else
+                        @foreach ($flights as $flight)
+                            <div class="flight-card">
+                                <div class="airline-logo">{{ $flight->airline->logo }}</div>
+                                <div class="flight-info">
+                                    <div class="flight-time">
+                                        <div class="time">{{ $flight->departure_time }}</div>
+                                        <div class="duration">{{ $flight->duration }}</div>
+                                        <div class="time">{{ $flight->arrival_time }}</div>
+                                    </div>
+                                    <div class="flight-route">
+                                        {{ $flight->departure }} - {{ $flight->destination }}
+                                    </div>
+                                    <div class="airline-name">{{ $flight->airline->name }}</div>
+                                </div>
+                                <div class="flight-details">
+                                    <div class="price">{{ $flight->formatted_price }}</div>
+                                    <form action="{{ route('xacnhan') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="flight_id" value="{{ $flight->id }}">
+                                        <input type="hidden" name="departure" value="{{ $flight->departure }}">
+                                        <input type="hidden" name="destination" value="{{ $flight->destination }}">
+                                        <input type="hidden" name="departure_time"
+                                            value="{{ $flight->departure_time }}">
+                                        <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
+                                        <input type="hidden" name="price" value="{{ $flight->price }}">
+                                        <input type="hidden" name="passengers" value="{{ $passengers }}">
+                                        <input type="hidden" name="childrens" value="{{ $childrens }}">
+                                        <button class="select-btn" type="submit">Chọn</button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
 
-            <div class="search-group">
-                <label>Điểm đi</label>
-                <select>
-                    <option>Hà Nội (HAN)</option>
-                    <option>TP Hồ Chí Minh (SGN)</option>
-                    <option>Đà Nẵng (DAD)</option>
-                    <option>Nha Trang (CXR)</option>
-                    <option>Phú Quốc (PQC)</option>
-                </select>
-            </div>
+            <div class="search-form">
+                <h2 class="search-title">Tìm Kiếm Chuyến Bay</h2>
 
-            <div class="search-group">
-                <label>Điểm đến</label>
-                <select>
-                    <option>TP Hồ Chí Minh (SGN)</option>
-                    <option>Hà Nội (HAN)</option>
-                    <option>Đà Nẵng (DAD)</option>
-                    <option>Nha Trang (CXR)</option>
-                    <option>Phú Quốc (PQC)</option>
-                </select>
-            </div>
-
-            <div class="search-group">
-                <label>Ngày đi</label>
-                <input type="date" value="2025-04-07" />
-            </div>
-
-            <div class="search-group">
-                <label>Ngày về</label>
-                <input type="date" disabled />
-            </div>
-
-            <div class="search-group">
-                <label>Hành khách</label>
-                <div class="passenger-row">
-                    <span>Người lớn</span>
-                    <div class="passenger-count">
-                        <div class="count-btn">-</div>
-                        <div class="count-value">2</div>
-                        <div class="count-btn">+</div>
+                <div class="search-radios">
+                    <div class="search-radio">
+                        <label>
+                            <input type="radio" name="tripType" checked /> Một chiều
+                        </label>
+                    </div>
+                    <div class="search-radio">
+                        <label> <input type="radio" name="tripType" /> Khứ hồi </label>
                     </div>
                 </div>
-                <div class="passenger-row">
-                    <span>Trẻ em (2-12 tuổi)</span>
-                    <div class="passenger-count">
-                        <div class="count-btn">-</div>
-                        <div class="count-value">1</div>
-                        <div class="count-btn">+</div>
-                    </div>
-                </div>
-                <div class="passenger-row">
-                    <span>Em bé (< 2 tuổi)</span>
-                    <div class="passenger-count">
-                        <div class="count-btn">-</div>
-                        <div class="count-value">0</div>
-                        <div class="count-btn">+</div>
-                    </div>
-                </div>
-            </div>
 
-            <button class="search-btn">TÌM KIẾM</button>
+                <div class="search-group">
+                    <label>Điểm đi</label>
+                    <select>
+                        <option>Hà Nội (HAN)</option>
+                        <option>TP Hồ Chí Minh (SGN)</option>
+                        <option>Đà Nẵng (DAD)</option>
+                        <option>Nha Trang (CXR)</option>
+                        <option>Phú Quốc (PQC)</option>
+                    </select>
+                </div>
+
+                <div class="search-group">
+                    <label>Điểm đến</label>
+                    <select>
+                        <option>TP Hồ Chí Minh (SGN)</option>
+                        <option>Hà Nội (HAN)</option>
+                        <option>Đà Nẵng (DAD)</option>
+                        <option>Nha Trang (CXR)</option>
+                        <option>Phú Quốc (PQC)</option>
+                    </select>
+                </div>
+
+                <div class="search-group">
+                    <label>Ngày đi</label>
+                    <input type="date" value="2025-04-07" />
+                </div>
+
+                <div class="search-group">
+                    <label>Ngày về</label>
+                    <input type="date" disabled />
+                </div>
+
+                <div class="search-group">
+                    <label>Hành khách</label>
+                    <div class="passenger-row">
+                        <span>Người lớn</span>
+                        <div class="passenger-count">
+                            <div class="count-btn">-</div>
+                            <div class="count-value">2</div>
+                            <div class="count-btn">+</div>
+                        </div>
+                    </div>
+                    <div class="passenger-row">
+                        <span>Trẻ em (2-12 tuổi)</span>
+                        <div class="passenger-count">
+                            <div class="count-btn">-</div>
+                            <div class="count-value">1</div>
+                            <div class="count-btn">+</div>
+                        </div>
+                    </div>
+                    <div class="passenger-row">
+                        <span>Em bé (< 2 tuổi)</span>
+                                <div class="passenger-count">
+                                    <div class="count-btn">-</div>
+                                    <div class="count-value">0</div>
+                                    <div class="count-btn">+</div>
+                                </div>
+                    </div>
+                </div>
+
+                <button class="search-btn">TÌM KIẾM</button>
+            </div>
         </div>
     </div>
-</div>
 
-<footer>
-    <div class="container">
-        <div class="copyright">
-            <p>&copy; 2025 SkyJet. Tất cả quyền được bảo lưu.</p>
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2025 SkyJet. Tất cả quyền được bảo lưu.</p>
+            </div>
         </div>
-    </div>
-</footer>
+    </footer>
 </body>
+
 </html>

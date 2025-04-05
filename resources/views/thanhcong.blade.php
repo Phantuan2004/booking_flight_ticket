@@ -569,32 +569,31 @@
                     <div>Địa chỉ: {{ $address }}</div>
                 </div>
 
+
                 <div class="payment-summary">
                     <div class="payment-title">Chi tiết thanh toán:</div>
                     <div class="payment-details">
                         <div class="price-title">Người lớn (x{{ is_array($passengers) ? count($passengers) : 0 }})
                         </div>
                         <div class="price-value">
-                            {{ $flight->price * (is_array($passengers) ? count($passengers) : 0) }}0 VNĐ</div>
+                            {{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="payment-details">
                         <div class="price-title">Trẻ em (x{{ is_array($childrens) ? count($childrens) : 0 }})</div>
-                        <div class="price-value">{{ $flight->price * (is_array($childrens) ? count($childrens) : 0) }}0
-                            VNĐ</div>
+                        <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="payment-details">
                         <div>Thuế & Phí</div>
-                        <div>50.000 VNĐ</div>
+                        <div>{{ number_format(50000, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="payment-details">
                         <div>Phí dịch vụ</div>
-                        <div>20.000 VNĐ</div>
+                        <div>{{ number_format(20000, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="total-amount">
                         <div>Tổng cộng</div>
                         <div>
-                            {{ $flight->price * (is_array($passengers) ? count($passengers) : 0) + $flight->price * (is_array($childrens) ? count($childrens) : 0) + 50.0 + 20.0 }}0
-                            VNĐ</div>
+                            {{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                 </div>
             </div>
