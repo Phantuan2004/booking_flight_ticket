@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Flight;
 use App\Models\Airline;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
-    public function admin() {
+    public function admin()
+    {
         // Hiển thị danh sách chuyến bay và tổng số
         $flights = Flight::with('airline')->paginate(5, ["*"], 'page_flights');
         // Hiển thị hãng bay
@@ -23,7 +25,9 @@ class AdminController extends Controller
         $totalBookings = $bookings->count();
         // Tổng doanh thu
         $totalRevenue = $bookings->sum('total_price');
-        return view('admin/admin', compact('flights', 'airlines', 'bookings', 'statusAll', 'totalFlights', 'totalBookings', 'totalRevenue'));
+        // Hiển thị người dùng
+        $users = User::all();
+        return view('admin/admin', compact('flights', 'airlines', 'bookings', 'statusAll', 'totalFlights', 'totalBookings', 'totalRevenue', 'users'));
     }
 
     // Thêm mới chuyến bay
@@ -84,14 +88,16 @@ class AdminController extends Controller
     }
 
     // Xóa chuyến bay
-    public function delete(Request $request, Flight $id) {
+    public function delete(Request $request, Flight $id)
+    {
         $id->delete();
         $request->session()->flash('success', 'Xóa chuyến bay thành công');
         return redirect()->back();
     }
 
     // Hủy vé đã bán
-    public function cancel(Request $request, Booking $id) {
+    public function cancel(Request $request, Booking $id)
+    {
         // Khi hủy thì sẽ thay đổi trạng thái vé bay sang "hủy"
         $id->update([
             'status' => 'hủy'
@@ -105,5 +111,72 @@ class AdminController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    // ** Chức năng quản lý người dùng
+    public function addUser(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => ['required'],
+            'email' => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'confirmed'],
+            'role' => ['required'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('admin')->with('message', 'Thêm người dùng thành công!!');
+    }
+    public function editUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|confirmed',
+            'role' => 'required',
+        ]);
+
+        if ($request->filled('password')) {
+            $validated['password'] = bcrypt($request->password);
+        }
+
+        $user->update($validated);
+
+        return redirect()->back()->with('success', 'Sửa người dùng thành công!');
+    }
+    public function deleteUser(Request $request, User $id)
+    {
+        $id->delete();
+        $request->session()->flash('success', 'Xóa người dùng thành công');
+        return redirect()->back();
+    }
+    public function searchFlight(Request $request)
+    {
+        $query = Flight::query();
+
+        if ($request->has('departure') && $request->departure != '') {
+            $query->where('departure', 'like', '%' . $request->departure . '%');
+        }
+        if ($request->has('destination') && $request->destination != '') {
+            $query->where('destination', 'like', '%' . $request->destination . '%');
+        }
+        if ($request->has('departure_time') && $request->departure_time != '') {
+            $query->whereDate('departure_time', '=', date('Y-m-d', strtotime($request->departure_time)));
+        }
+
+        $flights = $query->with('airline')->paginate(5, ["*"], 'page_flights');
+
+        return view('admin/admin', compact('flights'));
     }
 }
