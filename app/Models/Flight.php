@@ -24,10 +24,13 @@ class Flight extends Model
         'status'
     ];
 
-
-
     public function airline(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Airline::class);
+    }
+
+    public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Booking::class);
     }
 }

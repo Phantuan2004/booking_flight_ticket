@@ -539,25 +539,33 @@
                 </div>
 
                 <div class="passenger-summary">
-                    <div class="passenger-count">Hành khách ({{ $total_passengers }})</div>
-                    @if (is_array($passengers) || is_object($passengers))
-                        @foreach ($passengers as $index => $passenger)
+                    <div class="passenger-count">
+                        Hành khách (
+                        {{ $passengerCount }} người lớn,
+                        {{ $childrenCount }} trẻ em
+                        )
+                    </div>
+
+
+                    @if (!empty($passengersSession))
+                        @foreach ($passengersSession as $index => $passenger)
                             <div class="passenger-info">
                                 {{ $index }}. {{ $passenger['last_name'] ?? 'Lỗi dữ liệu' }}
                                 {{ $passenger['first_name'] ?? 'Lỗi dữ liệu' }}
                             </div>
                         @endforeach
-                    @else
-                        <div>Không có dữ liệu hành khách.</div>
+
                     @endif
 
-                    @if (is_array($childrens) || is_object($childrens))
-                        @foreach ($childrens as $index => $child)
+                    @if (!empty($childrensSession))
+                        @foreach ($childrensSession as $index => $child)
                             <div class="passenger-info">
-                                {{ count($passengers) + $index }}. {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
+                                {{ count($passengersSession) + $index }}.
+                                {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
                                 {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
                             </div>
                         @endforeach
+
                     @endif
                 </div>
 

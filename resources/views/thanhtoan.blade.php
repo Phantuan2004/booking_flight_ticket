@@ -686,24 +686,25 @@
                     <div class="passenger-summary">
                         <div class="passenger-count">
                             Hành khách (
-                            {{ (is_array($passengers) ? count($passengers) : 0) + (is_array($childrens) ? count($childrens) : 0) }}
+                            {{ $passengers }} người lớn,
+                            {{ $childrens }} trẻ em
                             )
                         </div>
-                        @if (is_array($passengers) || is_object($passengers))
-                            @foreach ($passengers as $index => $passenger)
+
+                        @if (!empty($passengersSession))
+                            @foreach ($passengersSession as $index => $passenger)
                                 <div class="passenger-info">
                                     {{ $index }}. {{ $passenger['last_name'] ?? 'Lỗi dữ liệu' }}
                                     {{ $passenger['first_name'] ?? 'Lỗi dữ liệu' }}
                                 </div>
                             @endforeach
-                        @else
-                            <div>Không có dữ liệu hành khách.</div>
                         @endif
 
-                        @if (is_array($childrens) || is_object($childrens))
-                            @foreach ($childrens as $index => $child)
+                        @if (!empty($childrensSession))
+                            @foreach ($childrensSession as $index => $child)
                                 <div class="passenger-info">
-                                    {{ count($passengers) + $index }}. {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
+                                    {{ count($passengersSession) + $index }}.
+                                    {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
                                     {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
                                 </div>
                             @endforeach
@@ -759,24 +760,32 @@
 
                 <form action="{{ route('thanhcong') }}" method="POST">
                     @csrf
+                    <!-- Thông tin chuyến bay -->
                     <input type="hidden" name="flight_id" value="{{ $flight->id }}">
                     <input type="hidden" name="departure" value="{{ $flight->departure }}">
                     <input type="hidden" name="destination" value="{{ $flight->destination }}">
                     <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
                     <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
                     <input type="hidden" name="price" value="{{ $flight->price }}">
-                    <input type="hidden" name="totalPrice"
-                        value="{{ $flight->price * (is_array($passengers) ? count($passengers) : 0) + $flight->price * (is_array($childrens) ? count($childrens) : 0) + 50.0 + 20.0 }}">
-                    <input type="hidden" name="passenger_count"
-                        value="{{ is_array($passengers) ? count($passengers) : 0 }}">
-                    <input type="hidden" name="children_count"
-                        value="{{ is_array($childrens) ? count($childrens) : 0 }}">
-                    <input type="hidden" name="passengers_data" value="{{ json_encode($passengers) }}">
-                    <input type="hidden" name="childrens_data" value="{{ json_encode($childrens) }}">
+
+                    <!-- Thông tin hành khách -->
+                    <input type="hidden" name="passengers_data" value="{{ json_encode($passengersSession) }}">
+                    <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
+
+                    <!-- Thông tin liên hệ -->
                     <input type="hidden" name="full_name" value="{{ $full_name }}">
                     <input type="hidden" name="phone" value="{{ $phone }}">
                     <input type="hidden" name="email" value="{{ $email }}">
                     <input type="hidden" name="address" value="{{ $address }}">
+
+                    <!-- Thông tin thanh toán -->
+                    <input type="hidden" name="adult_price" value="{{ $adult_price }}">
+                    <input type="hidden" name="child_price" value="{{ $child_price }}">
+                    <input type="hidden" name="tax_fee" value="{{ $tax_fee }}">
+                    <input type="hidden" name="service_fee" value="{{ $service_fee }}">
+                    <input type="hidden" name="total_price" value="{{ $total_price }}">
+
+                    <!-- Nút xác nhận -->
                     <button class="confirm-btn" type="submit">XÁC NHẬN THANH TOÁN</button>
                 </form>
                 <button class="back-btn">QUAY LẠI</button>

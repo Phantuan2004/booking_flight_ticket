@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -340,250 +341,299 @@
         }
     </style>
 </head>
+
 <body>
-<header>
-    <div class="container">
-        <div class="header-content">
-            <div class="logo">Sky<span>Jet</span></div>
-            <nav>
-                <ul>
-                    <li><a href="{{route('index')}}">Trang Chủ</a></li>
-                    <li><a href="{{route('datve')}}">Đặt Vé</a></li>
-                    <li><a href="#">Khuyến Mãi</a></li>
-                    <li><a href="#">Lịch Bay</a></li>
-                    <li><a href="{{route('lienhe')}}">Liên Hệ</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</header>
-
-<section class="hero">
-    <div class="container">
-        <div class="hero-content">
-            <h1>Khám Phá Thế Giới Cùng SkyJet</h1>
-            <p>Đặt vé máy bay với giá ưu đãi nhất và tận hưởng trải nghiệm bay tuyệt vời</p>
-        </div>
-    </div>
-</section>
-
-<div class="container">
-    <div class="search-box">
-        <div class="search-tabs">
-            <div class="tab active" onclick="showForm('roundtrip')">Vé Khứ Hồi</div>
-            <div class="tab" onclick="showForm('oneway')">Vé Một Chiều</div>
-            <div class="tab" onclick="showForm('multi')">Nhiều Chặng Bay</div>
-        </div>
-
-        <!-- Form Vé Khứ Hồi -->
-        <div id="roundtrip-form" class="form-container active">
-            <form class="search-form">
-                <div class="form-group">
-                    <label>Điểm đi</label>
-                    <input type="text" placeholder="Chọn thành phố hoặc sân bay">
-                </div>
-                <div class="form-group">
-                    <label>Điểm đến</label>
-                    <input type="text" placeholder="Chọn thành phố hoặc sân bay">
-                </div>
-                <div class="form-group">
-                    <label>Ngày đi</label>
-                    <input type="date">
-                </div>
-                <div class="form-group">
-                    <label>Ngày về</label>
-                    <input type="date">
-                </div>
-                <div class="form-group">
-                    <label>Hành khách</label>
-                    <select>
-                        <option>1 Người lớn</option>
-                        <option>2 Người lớn</option>
-                        <option>3 Người lớn</option>
-                        <option>4 Người lớn</option>
-                        <option>5+ Người lớn</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Hạng ghế</label>
-                    <select>
-                        <option>Phổ thông</option>
-                        <option>Thương gia</option>
-                    </select>
-                </div>
-                <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
-            </form>
-        </div>
-
-        <!-- Form Vé Một Chiều -->
-        <div id="oneway-form" class="form-container">
-            <form class="search-form" method="GET" action="{{route('flight-search')}}">
-                <div class="form-group">
-                    <label>Điểm đi</label>
-                    <input name="departure" type="text" placeholder="Chọn thành phố hoặc sân bay">
-                </div>
-                <div class="form-group">
-                    <label>Điểm đến</label>
-                    <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay">
-                </div>
-                <div class="form-group">
-                    <label>Ngày đi</label>
-                    <input name="departure_time" type="date">
-                </div>
-                <div class="form-group">
-                    <label>Người lớn</label>
-                    <select name="passengers">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Trẻ em</label>
-                    <select name="childrens">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Hạng ghế</label>
-                    <select name="class">
-                        <option>Phổ thông</option>
-                        <option>Thương gia</option>
-                    </select>
-                </div>
-                <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
-            </form>
-        </div>
-
-        <!-- Form Nhiều Chặng Bay (placeholder) -->
-        <div id="multi-form" class="form-container">
-            <form class="search-form">
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <p>Form đặt vé nhiều chặng sẽ được cập nhật sau.</p>
-                </div>
-                <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<section class="features">
-    <div class="container">
-        <h2 class="section-title">Tại Sao Chọn SkyJet?</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <i>✈️</i>
-                <h3>Giá Tốt Nhất</h3>
-                <p>Chúng tôi đảm bảo cung cấp giá vé tốt nhất từ hơn 500 hãng hàng không trên toàn thế giới.</p>
-            </div>
-            <div class="feature-card">
-                <i>🛡️</i>
-                <h3>Đặt Vé An Toàn</h3>
-                <p>Thanh toán an toàn với đa dạng phương thức và bảo mật thông tin cá nhân tuyệt đối.</p>
-            </div>
-            <div class="feature-card">
-                <i>🏆</i>
-                <h3>Hỗ Trợ 24/7</h3>
-                <p>Đội ngũ hỗ trợ chuyên nghiệp sẵn sàng giúp đỡ bạn mọi lúc, mọi nơi.</p>
-            </div>
-            <div class="feature-card">
-                <i>🎁</i>
-                <h3>Ưu Đãi Độc Quyền</h3>
-                <p>Nhận các ưu đãi và khuyến mãi độc quyền khi đặt vé qua SkyJet.</p>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Sky<span>Jet</span></div>
+                <nav>
+                    <ul>
+                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
+                        <li><a href="{{ route('datve') }}">Đặt Vé</a></li>
+                        <li><a href="#">Khuyến Mãi</a></li>
+                        <li><a href="#">Lịch Bay</a></li>
+                        <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
-    </div>
-</section>
+    </header>
 
-<section class="popular-flights">
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Khám Phá Thế Giới Cùng SkyJet</h1>
+                <p>Đặt vé máy bay với giá ưu đãi nhất và tận hưởng trải nghiệm bay tuyệt vời</p>
+            </div>
+        </div>
+    </section>
+
     <div class="container">
-        <h2 class="section-title">Chuyến Bay Phổ Biến</h2>
-        <div class="flights-grid">
-            @foreach($flights as $flight)
-                <div class="flight-card">
-                    <div class="flight-image" style="background-image: url('/api/placeholder/400/300');"></div>
-                    <div class="flight-details">
-                        <div class="flight-route">{{$flight->departure}} - {{$flight->destination}}</div>
-                        <div class="flight-date">{{$flight->departure_time}}</div>
-                        <div class="flight-price">{{$flight->price . "0 VNĐ"}}</div>
-                        <button class="book-now">Đặt Ngay</button>
+        <div class="search-box">
+            <div class="search-tabs">
+                <div class="tab active" onclick="showForm('roundtrip')">Vé Khứ Hồi</div>
+                <div class="tab" onclick="showForm('oneway')">Vé Một Chiều</div>
+                <div class="tab" onclick="showForm('multi')">Nhiều Chặng Bay</div>
+            </div>
+
+            <!-- Form Vé Khứ Hồi -->
+            <div id="roundtrip-form" class="form-container active">
+                <form class="search-form">
+                    <div class="form-group">
+                        <label>Điểm đi</label>
+                        <input type="text" placeholder="Chọn thành phố hoặc sân bay">
                     </div>
+                    <div class="form-group">
+                        <label>Điểm đến</label>
+                        <input type="text" placeholder="Chọn thành phố hoặc sân bay">
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày đi</label>
+                        <input type="date">
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày về</label>
+                        <input type="date">
+                    </div>
+                    <div class="form-group">
+                        <label>Hành khách</label>
+                        <select>
+                            <option>1 Người lớn</option>
+                            <option>2 Người lớn</option>
+                            <option>3 Người lớn</option>
+                            <option>4 Người lớn</option>
+                            <option>5+ Người lớn</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hạng ghế</label>
+                        <select>
+                            <option>Phổ thông</option>
+                            <option>Thương gia</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
+                </form>
+            </div>
+
+            <!-- Form Vé Một Chiều -->
+            <div id="oneway-form" class="form-container">
+                <form class="search-form" method="GET" action="{{ route('flight-search') }}">
+                    <div class="form-group">
+                        <label>Điểm đi</label>
+                        <input name="departure" type="text" placeholder="Chọn thành phố hoặc sân bay">
+                    </div>
+                    <div class="form-group">
+                        <label>Điểm đến</label>
+                        <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay">
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày đi</label>
+                        <input name="departure_time" type="date">
+                    </div>
+                    <div class="form-group">
+                        <label>Người lớn</label>
+                        <select name="passengers">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Trẻ em</label>
+                        <select name="childrens">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hạng ghế</label>
+                        <select name="class">
+                            <option>Phổ thông</option>
+                            <option>Thương gia</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
+                </form>
+            </div>
+
+            <!-- Form Nhiều Chặng Bay (placeholder) -->
+            <div id="multi-form" class="form-container">
+                <form class="search-form">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <p>Form đặt vé nhiều chặng sẽ được cập nhật sau.</p>
+                    </div>
+                    <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Tại Sao Chọn SkyJet?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i>✈️</i>
+                    <h3>Giá Tốt Nhất</h3>
+                    <p>Chúng tôi đảm bảo cung cấp giá vé tốt nhất từ hơn 500 hãng hàng không trên toàn thế giới.</p>
                 </div>
-            @endforeach
+                <div class="feature-card">
+                    <i>🛡️</i>
+                    <h3>Đặt Vé An Toàn</h3>
+                    <p>Thanh toán an toàn với đa dạng phương thức và bảo mật thông tin cá nhân tuyệt đối.</p>
+                </div>
+                <div class="feature-card">
+                    <i>🏆</i>
+                    <h3>Hỗ Trợ 24/7</h3>
+                    <p>Đội ngũ hỗ trợ chuyên nghiệp sẵn sàng giúp đỡ bạn mọi lúc, mọi nơi.</p>
+                </div>
+                <div class="feature-card">
+                    <i>🎁</i>
+                    <h3>Ưu Đãi Độc Quyền</h3>
+                    <p>Nhận các ưu đãi và khuyến mãi độc quyền khi đặt vé qua SkyJet.</p>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-column">
-                <h3>SkyJet</h3>
-                <ul>
-                    <li><a href="#">Về Chúng Tôi</a></li>
-                    <li><a href="#">Điều Khoản Sử Dụng</a></li>
-                    <li><a href="#">Chính Sách Bảo Mật</a></li>
-                    <li><a href="#">Chính Sách Hoàn Vé</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Đối Tác</h3>
-                <ul>
-                    <li><a href="#">Các Hãng Hàng Không</a></li>
-                    <li><a href="#">Khách Sạn Đối Tác</a></li>
-                    <li><a href="#">Dịch Vụ Thuê Xe</a></li>
-                    <li><a href="#">Bảo Hiểm Du Lịch</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Thanh Toán</h3>
-                <ul>
-                    <li><a href="#">Visa / Mastercard</a></li>
-                    <li><a href="#">Internet Banking</a></li>
-                    <li><a href="#">Ví Điện Tử</a></li>
-                    <li><a href="#">Trả Góp</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Liên Hệ</h3>
-                <ul>
-                    <li><a href="#">Hotline: 1900 1234</a></li>
-                    <li><a href="#">Email: support@skyjet.vn</a></li>
-                    <li><a href="#">Địa Chỉ: 123 Nguyễn Huệ, Q.1, TP.HCM</a></li>
-                </ul>
+    {{-- <section class="popular-flights">
+        <div class="container">
+            <h2 class="section-title">Chuyến Bay Phổ Biến</h2>
+            <div class="flights-grid">
+                @if ($flights->count() == 0)
+                    "Không có chuyến bay phổ biến"
+                @else
+                    @foreach ($flights as $flight)
+                        <div class="flight-card">
+                            <div class="flight-image" style="background-image: url('{{ $flight->image }}');"></div>
+                            <div class="flight-details">
+                                <div class="flight-route">{{ $flight->departure }} - {{ $flight->destination }}</div>
+                                <div class="flight-date">{{ $flight->departure_time }}</div>
+                                <div class="flight-price">{{ number_format($flight->price, 0, ',', '.') }} VNĐ</div>
+                                <form action="{{ route('xacnhan') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="flight_id" value="{{ $flight->id }}">
+                                    <input type="hidden" name="departure" value="{{ $flight->departure }}">
+                                    <input type="hidden" name="destination" value="{{ $flight->destination }}">
+                                    <input type="hidden" name="departure_time"
+                                        value="{{ $flight->departure_time }}">
+                                    <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
+                                    <input type="hidden" name="price" value="{{ $flight->price }}">
+                                    <input type="hidden" name="passengers" value="{{ $passengers }}">
+                                    <input type="hidden" name="childrens" value="{{ $childrens }}">
+                                    <button class="select-btn" type="submit">Đặt ngay</button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
-        <div class="copyright">
-            <p>&copy; 2025 SkyJet. Tất cả quyền được bảo lưu.</p>
-        </div>
-    </div>
-</footer>
+    </section> --}}
 
-<script>
-    function showForm(formType) {
-        // Ẩn tất cả các form
-        document.querySelectorAll('.form-container').forEach(form => {
-            form.classList.remove('active');
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>SkyJet</h3>
+                    <ul>
+                        <li><a href="#">Về Chúng Tôi</a></li>
+                        <li><a href="#">Điều Khoản Sử Dụng</a></li>
+                        <li><a href="#">Chính Sách Bảo Mật</a></li>
+                        <li><a href="#">Chính Sách Hoàn Vé</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Đối Tác</h3>
+                    <ul>
+                        <li><a href="#">Các Hãng Hàng Không</a></li>
+                        <li><a href="#">Khách Sạn Đối Tác</a></li>
+                        <li><a href="#">Dịch Vụ Thuê Xe</a></li>
+                        <li><a href="#">Bảo Hiểm Du Lịch</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Thanh Toán</h3>
+                    <ul>
+                        <li><a href="#">Visa / Mastercard</a></li>
+                        <li><a href="#">Internet Banking</a></li>
+                        <li><a href="#">Ví Điện Tử</a></li>
+                        <li><a href="#">Trả Góp</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Liên Hệ</h3>
+                    <ul>
+                        <li><a href="#">Hotline: 1900 1234</a></li>
+                        <li><a href="#">Email: support@skyjet.vn</a></li>
+                        <li><a href="#">Địa Chỉ: 123 Nguyễn Huệ, Q.1, TP.HCM</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 SkyJet. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function showForm(formType) {
+            // Ẩn tất cả các form
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.remove('active');
+            });
+
+            // Hiển thị form được chọn
+            document.getElementById(formType + '-form').classList.add('active');
+
+            // Cập nhật trạng thái active cho tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Tìm tab đang được click và thêm class active
+            event.target.classList.add('active');
+        }
+    </script>
+
+    <script>
+        // Hiển thị thông báo khi chưa nhập thông tin chuyến bay mà đã submit
+        document.querySelector('#roundtrip-form').addEventListener('submit', function(event) {
+            const contactFormSearch = document.querySelectorAll('.form-container');
+            let allContactFormSearchFilled = true;
+            contactFormSearch.forEach(input => {
+                if (!input.value) {
+                    allContactFormSearchFilled = false;
+                }
+            });
+            if (!allContactFormSearchFilled) {
+                event.preventDefault();
+                alert('Vui lòng điền đầy đủ thông tin chuyến bay trước khi tìm kiếm.');
+            }
         });
 
-        // Hiển thị form được chọn
-        document.getElementById(formType + '-form').classList.add('active');
-
-        // Cập nhật trạng thái active cho tab
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.remove('active');
+        document.querySelector('#oneway-form').addEventListener('submit', function(event) {
+            const contactFormSearch = document.querySelectorAll('.form-container');
+            let allContactFormSearchFilled = true;
+            contactFormSearch.forEach(input => {
+                if (!input.value) {
+                    allContactFormSearchFilled = false;
+                }
+            });
+            if (!allContactFormSearchFilled) {
+                event.preventDefault();
+                alert('Vui lòng điền đầy đủ thông tin chuyến bay trước khi tìm kiếm.');
+            }
         });
-
-        // Tìm tab đang được click và thêm class active
-        event.target.classList.add('active');
-    }
-</script>
+    </script>
 </body>
+
 </html>

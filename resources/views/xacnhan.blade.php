@@ -101,6 +101,15 @@
             color: white;
         }
 
+        .step.completed .step-number {
+            background-color: #4caf50;
+        }
+
+        .step.completed .step-text {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
         .step.active .step-number {
             background-color: #003580;
         }
@@ -518,12 +527,12 @@
 
     <div class="steps-container">
         <div class="booking-steps">
-            <div class="step">
+            <div class="step completed">
                 <div class="step-number">1</div>
                 <div class="step-text">Tìm Chuyến Bay</div>
             </div>
             <div class="step-divider"></div>
-            <div class="step">
+            <div class="step completed">
                 <div class="step-number">2</div>
                 <div class="step-text">Chọn Chuyến Bay</div>
             </div>
@@ -555,8 +564,8 @@
             <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
             <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
             <input type="hidden" name="price" value="{{ $flight->price }}">
-            <input type="hidden" name="passengers" value="{{ $passengers }}">
-            <input type="hidden" name="childrens" value="{{ $childrens }}">
+            <input type="hidden" name="passengers" value="{{ json_encode($passengers) }}">
+            <input type="hidden" name="childrens" value="{{ json_encode($childrens) }}">
 
             <div class="confirmation-content">
                 <div class="passenger-details">
@@ -750,24 +759,23 @@
                     </div>
                     <div class="price-row">
                         <div class="price-title">Người lớn (x{{ $passengers }})</div>
-                        <div class="price-value">{{ $flight->price * $passengers }} VNĐ</div>
+                        <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                        <div class="price-value">{{ $flight->price * $childrens * 0.5 }} VNĐ</div>
+                        <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Thuế & Phí</div>
-                        <div class="price-value">50.000 VNĐ</div>
+                        <div class="price-value">{{ number_format(50000, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Phí dịch vụ</div>
-                        <div class="price-value">20.000 VNĐ</div>
+                        <div class="price-value">{{ number_format(20000, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="total-row">
                         <div>Tổng cộng</div>
-                        <div>{{ $flight->price * $passengers + $flight->price * $childrens + 50.0 + 20.0 }} VNĐ
-                        </div>
+                        <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="terms-checkbox">
                         <input type="checkbox" id="terms" name="terms" required />
@@ -794,6 +802,39 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Hiển thị thông báo khi chưa nhập thông tin đầy đủ mà đã submit
+        document.querySelector('form').addEventListener('submit', function(event) {
+            // Kiểm tra giá trị các trường thông tin hành khách
+            const passengerInputs = document.querySelectorAll('.passenger-card input');
+            let allPassengerFilled = true;
+            passengerInputs.forEach(input => {
+                if (!input.value) {
+                    allPassengerFilled = false;
+                }
+            });
+            if (!allPassengerFilled) {
+                event.preventDefault();
+                alert('Vui lòng điền đầy đủ thông tin hành khách.');
+                return;
+            }
+
+            // Kiểm tra giá trị các trường thông tin liên hệ
+            const contactInputs = document.querySelectorAll('.contact-form input');
+            let allContactFilled = true;
+            contactInputs.forEach(input => {
+                if (!input.value) {
+                    allContactFilled = false;
+                }
+            });
+            if (!allContactFilled) {
+                event.preventDefault();
+                alert('Vui lòng điền đầy đủ thông tin liên hệ.');
+                return;
+            }
+        })
+    </script>
 </body>
 
 </html>

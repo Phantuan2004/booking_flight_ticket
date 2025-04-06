@@ -16,8 +16,7 @@ class UserController extends Controller
     // Hiển thị giao diện trang chủ
     public function index()
     {
-        // Hiển thị 3 chuyến bay ngẫu nhiên ra trang chủ
-        $flights = Flight::all()->random(3);
+        $flights = Flight::all();
         return view('index', compact('flights'));
     }
 
@@ -138,9 +137,31 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => 'Chuyến bay không tồn tại!']);
         }
 
-        // Lấy số lượng hành khách
-        $passengers = (int) $request->input('passengers', session('passengers', 0));
-        $childrens = (int) $request->input('childrens', session('childrens', 0));
+
+        $passengersSession = $request->input('passengers');
+        // Kiểm tra nếu là chuỗi JSON, giải mã nó
+        if (is_string($passengersSession)) {
+            $passengersSession = json_decode($passengersSession, true) ?? [];
+        }
+        // Nếu không phải là mảng, lấy từ session
+        if (!is_array($passengersSession)) {
+            $passengersSession = session('passengers', []);
+        }
+
+        $childrensSession = $request->input('childrens');
+
+        // Kiểm tra nếu là chuỗi JSON, giải mã nó
+        if (is_string($childrensSession)) {
+            $childrensSession = json_decode($childrensSession, true) ?? [];
+        }
+
+        // Nếu không phải là mảng, lấy từ session
+        if (!is_array($childrensSession)) {
+            $childrensSession = session('childrens', []);
+        }
+
+        $passengers = count($passengersSession);
+        $childrens = count($childrensSession);
 
         // Xử lý thông tin khách hàng
         $full_name = trim($request->input('full_name', session('full_name', '')));
@@ -156,12 +177,13 @@ class UserController extends Controller
         $total_price = $adult_price + $child_price + $tax_fee + $service_fee;
 
         // Xử lý thời gian bay
-        $departureTime = Carbon::parse($flight->flight_start);
-        $arrivalTime = Carbon::parse($flight->flight_end);
-        $hour = $departureTime->hour;
-        $minute = $departureTime->minute;
-        $hourArrival = $arrivalTime->hour;
-        $minuteArrival = $arrivalTime->minute;
+        $departureTime = Carbon::parse($flight->departure_time);
+        $flightStart = Carbon::parse($flight->flight_start);
+        $flightEnd = Carbon::parse($flight->flight_end);
+        $hour = $flightStart->hour;
+        $minute = $flightStart->minute;
+        $hourArrival = $flightEnd->hour;
+        $minuteArrival = $flightEnd->minute;
         $day = $departureTime->day;
         $month = $departureTime->month;
         $year = $departureTime->year;
@@ -171,6 +193,8 @@ class UserController extends Controller
             'flight',
             'passengers',
             'childrens',
+            'passengersSession',
+            'childrensSession',
             'full_name',
             'phone',
             'email',
@@ -200,8 +224,33 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => 'Chuyến bay không tồn tại!']);
         }
 
-        $passenger_count = $request->input('passenger_count', 0);
-        $children_count = $request->input('children_count', 0);
+        $passengersSession = $request->input('passengers_data');
+        // Kiểm tra nếu là chuỗi JSON, giải mã nó
+        if (is_string($passengersSession)) {
+            $passengersSession = json_decode($passengersSession, true) ?? [];
+        }
+        // Nếu không phải là mảng, lấy từ session
+        if (!is_array($passengersSession)) {
+            $passengersSession = session('passengers_data', []);
+        }
+
+        $childrensSession = $request->input('childrens_data');
+
+        // Kiểm tra nếu là chuỗi JSON, giải mã nó
+        if (is_string($childrensSession)) {
+            $childrensSession = json_decode($childrensSession, true) ?? [];
+        }
+
+        // Nếu không phải là mảng, lấy từ session
+        if (!is_array($childrensSession)) {
+            $childrensSession = session('childrens_data', []);
+        }
+
+        $passengerCount = count($passengersSession);
+        $childrenCount = count($childrensSession);
+
+        $passenger_count = (int) $request->input('passengers_data', 0);
+        $children_count = (int) $request->input('childrens_data', 0);
         $total_passengers = $passenger_count + $children_count;
 
         $passengers = json_decode($request->input('passengers_data', '[]'), true) ?? [];
@@ -219,26 +268,27 @@ class UserController extends Controller
         $email = is_array($email) ? implode(' ', array_filter((array)$email, 'is_string')) : (string)$email;
         $address = is_array($address) ? implode(' ', array_filter((array)$address, 'is_string')) : (string)$address;
 
-        $departureTime = Carbon::parse($flight->flight_start);
-        $arrivalTime = Carbon::parse($flight->flight_end);
-        $hour = $departureTime->hour;
-        $minute = $departureTime->minute;
-        $hourArrival = $arrivalTime->hour;
-        $minuteArrival = $arrivalTime->minute;
+        $departureTime = Carbon::parse($flight->departure_time);
+        $flightStart = Carbon::parse($flight->flight_start);
+        $flightEnd = Carbon::parse($flight->flight_end);
+        $hour = $flightStart->hour;
+        $minute = $flightStart->minute;
+        $hourArrival = $flightEnd->hour;
+        $minuteArrival = $flightEnd->minute;
         $day = $departureTime->day;
         $month = $departureTime->month;
         $year = $departureTime->year;
 
         // Xử lý giá vé
-        $adult_price = $flight->price * $passengers;
-        $child_price = $childrens > 0 ? ($flight->price * $childrens * 0.5) : 0;
+        $adult_price = $flight->price * $passengerCount;
+        $child_price = $childrenCount > 0 ? ($flight->price * $childrenCount * 0.5) : 0;
         $tax_fee = 50000;
         $service_fee = 20000;
         $total_price = $adult_price + $child_price + $tax_fee + $service_fee;
 
         // Check người dùng có tài khoản
         if (Auth::check()) {
-            $user = \Illuminate\Support\Facades\Auth::user();
+            $user = Auth::user();
             $data = [
                 'booking_code' => $booking_code,
                 'user_id' => $user->id,
@@ -301,6 +351,10 @@ class UserController extends Controller
             'flight',
             'passengers',
             'childrens',
+            'passenger_count',
+            'children_count',
+            'passengerCount',
+            'childrenCount',
             'total_passengers',
             'booking_code',
             'hour',
@@ -318,7 +372,9 @@ class UserController extends Controller
             'child_price',
             'tax_fee',
             'service_fee',
-            'total_price'
+            'total_price',
+            'passengersSession',
+            'childrensSession',
         ));
     }
 

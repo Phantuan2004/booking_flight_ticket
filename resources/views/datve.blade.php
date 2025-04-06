@@ -35,6 +35,64 @@
             align-items: center;
         }
 
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            background-color: #f0f8ff;
+            padding: 15px 0;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .booking-steps {
+            display: flex;
+            align-items: center;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background-color: #4caf50;
+        }
+
+        .step.completed .step-text {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .step.active .step-number {
+            background-color: #003580;
+        }
+
+        .step.active .step-text {
+            color: #003580;
+            font-weight: bold;
+        }
+
+        .step-divider {
+            width: 50px;
+            height: 1px;
+            background-color: #ddd;
+            margin: 0 15px;
+        }
+
         .logo {
             font-size: 24px;
             font-weight: bold;
@@ -347,7 +405,7 @@
                 <div class="logo">Sky<span>Jet</span></div>
                 <nav>
                     <ul>
-                        <li><a href="/trangchu.html">Trang Chủ</a></li>
+                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
                         <li><a href="#">Đặt Vé</a></li>
                         <li><a href="#">Khuyến Mãi</a></li>
                         <li><a href="#">Lịch Bay</a></li>
@@ -361,6 +419,35 @@
     <div class="page-title">
         <div class="container">
             <h1>Kết Quả Tìm Kiếm Chuyến Bay</h1>
+        </div>
+    </div>
+
+    <div class="steps-container">
+        <div class="booking-steps">
+            <div class="step completed">
+                <div class="step-number">1</div>
+                <div class="step-text">Tìm Chuyến Bay</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step active">
+                <div class="step-number">2</div>
+                <div class="step-text">Chọn Chuyến Bay</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">Thông Tin Hành Khách</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-text">Thanh Toán</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-text">Hoàn Tất</div>
+            </div>
         </div>
     </div>
 

@@ -16,21 +16,37 @@ class AdminController extends Controller
     {
         // Hiển thị danh sách chuyến bay và tổng số
         $flights = Flight::with('airline')->paginate(5, ["*"], 'page_flights');
-        // Hiển thị hãng bay
+        // Hiển thị hãng bay 
         $airlines = Airline::all();
-        $totalFlights = $flights->count();
+        // Tổng chuyến bay sắp tới
+        $upcomingFlights = Flight::where('departure_time', '>', now())->count();
         // Hiển thị vé đã bán và tổng số
         $bookings = Booking::with('flight')->paginate(5, ["*"], 'page_bookings');
         // Lấy tất cả trạng thái vé
         $statusAll = Booking::select('status')->get();
         $totalBookings = $bookings->count();
+        // Tỉ lệ đặt vé thành công
+        $successfulBookings = $totalBookings > 0 ? round(($totalBookings / Flight::count()) * 100, 2) : 0;
+        // Số vé trung bình mỗi chuyến bay
+        $averageBookings = $totalBookings > 0 ? round($totalBookings / Flight::count(), 2) : 0;
+        // Tháng có doanh thu cao nhất
+        $highestRevenueFlight = Flight::with('bookings')
+            ->whereMonth('departure_time', now()->month)
+            ->withSum('bookings', 'total_price')
+            ->orderByDesc('bookings_sum_total_price')
+            ->first();
+
         // Tổng doanh thu
         $totalRevenue = $bookings->sum('total_price');
         // Hiển thị người dùng
         $users = User::where('role', 'user')->paginate(5, ["*"], 'page_users');
         // Hiển thị người dùng vãng lai
         $guestUsers = Guest::query()->paginate(5, ["*"], 'page_guests');
-        return view('admin/admin', compact('flights', 'airlines', 'bookings', 'statusAll', 'totalFlights', 'totalBookings', 'totalRevenue', 'users', 'guestUsers'));
+        // Tổng số khách hàng
+        $totalUsers = User::where('role', 'user')->count();
+        $totalGuests = Guest::count();
+        $totalCustomers = $totalUsers + $totalGuests;
+        return view('admin/admin', compact('flights', 'airlines', 'bookings', 'averageBookings', 'statusAll', 'successfulBookings', 'upcomingFlights', 'highestRevenueFlight', 'totalBookings', 'totalRevenue', 'users', 'guestUsers', 'totalCustomers', 'totalUsers', 'totalGuests'));
     }
 
     // Thêm mới chuyến bay

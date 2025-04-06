@@ -111,6 +111,12 @@
             text-align: center;
         }
 
+        .card p {
+            font-size: 1.19rem;
+            margin: 0;
+            color: var(--secondary-color);
+        }
+
         .data-table {
             width: 1270px;
             background-color: white;
@@ -252,7 +258,9 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="logo">
-                <h1>SkyTicket</h1>
+                <a href="{{ route('admin') }}" class="text-white text-decoration-none">
+                    <h1>SkyTicket</h1>
+                </a>
             </div>
             <ul class="sidebar-menu ps-0">
                 <li><a href="#" class="active"><i class="bi bi-speedometer2"></i> <span>Tổng quan</span></a></li>
@@ -279,20 +287,26 @@
             <!-- Dashboard Cards -->
             <div class="dashboard-cards">
                 <div class="card">
-                    <h5>Tổng chuyến bay</h5>
-                    <p class="fs-4 mb-0">{{ $totalFlights }}</p>
+                    <h5>Số vé trung bình mỗi chuyến bay</h5>
+                    <p class="mb-0">{{ $averageBookings }} vé</p>
                 </div>
                 <div class="card">
-                    <h5>Vé đã bán</h5>
-                    <p class="fs-4 mb-0">{{ $totalBookings }}</p>
+                    <h5>Chuyến bay sắp tới</h5>
+                    <p class="mb-0">{{ $upcomingFlights }} chuyến bay</p>
+                </div>
+                <div class="card">
+                    <h5>Chuyến bay có doanh thu cao nhất</h5>
+                    <p class="fs-4 mb-0">{{ $highestRevenueFlight->flight_code ?? 'N/A' }}</p>
+                    <small>{{ number_format($highestRevenueFlight->bookings_sum_total_price ?? 0, 0, ',', '.') }}
+                        VNĐ</small>
+                </div>
+                <div class="card">
+                    <h5>Tỉ lệ đặt vé thành công </h5>
+                    <p class="mb-0">{{ $successfulBookings }}%</p>
                 </div>
                 <div class="card">
                     <h5>Tổng doanh thu</h5>
-                    <p class="fs-4 mb-0">{{ $totalRevenue }}</p>
-                </div>
-                <div class="card">
-                    <h5>Khách hàng mới</h5>
-                    <p class="fs-4 mb-0">12</p>
+                    <p class="mb-0">{{ number_format($totalRevenue, 0, ',', '.') }} VNĐ</p>
                 </div>
             </div>
 
@@ -333,7 +347,7 @@
                                     <td>{{ $flight->departure }} → {{ $flight->destination }}</td>
                                     <td>{{ $flight->departure_time }}</td>
                                     <td>{{ $flight->flight_start }} - {{ $flight->flight_end }}</td>
-                                    <td>{{ $flight->price }}0 VNĐ</td>
+                                    <td>{{ number_format($flight->price, 0, ',', '.') }} VNĐ</td>
                                     <td>{{ $flight->available_seats }}/{{ $flight->seats }}</td>
                                     <td>{{ $flight->status }}</td>
                                     <td>
@@ -354,7 +368,8 @@
                                                 @csrf
                                                 @method('delete')
                                                 <button class="btn btn-sm btn-danger" type="submit"
-                                                    onclick="return confirm('Xác nhận xóa?')">
+                                                    onclick="deleteFlight({{ $flight->id }})"
+                                                    data-id="{{ $flight->id }}">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
@@ -411,7 +426,7 @@
                                             {{ $booking->email }}</div>
                                     </td>
                                     <td>{{ $booking->created_at }}</td>
-                                    <td>{{ $booking->total_price }}</td>
+                                    <td>{{ number_format($booking->total_price, 0, ',', '.') }} VNĐ</td>
                                     <td>{{ $booking->status }}</td>
                                     <td>
                                         <form action="{{ route('cancel-booking', $booking->id) }}" method="POST">
@@ -476,11 +491,10 @@
                                         <td>{{ $user->status }}</td>
                                         <td>
 
-                                            <form action="{{ route('cancel-booking', $booking->id) }}"
-                                                method="POST">
+                                            <form action="{{ route('delete-user', $user->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Xác nhận hủy vé?')">
+                                                    onclick="return confirm('Xác nhận hủy tài khoản?')">
                                                     <i class="bi bi-x-circle"></i> Hủy
                                                 </button>
                                             </form>
@@ -569,7 +583,7 @@
                             <div class="col-md-6">
                                 <label for="departure" class="form-label">Điểm đi</label>
                                 <input type="text" name="departure" class="form-control" id="departure"
-                                    value="{{ old('departure') }}">
+                                    value="{{ old('departure') }}" required>
                                 @error('departure')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -577,7 +591,7 @@
                             <div class="col-md-6">
                                 <label for="destination" class="form-label">Điểm đến</label>
                                 <input type="text" name="destination" class="form-control" id="destination"
-                                    value="{{ old('destination') }}">
+                                    value="{{ old('destination') }}" required>
                                 @error('destination')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -587,7 +601,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="airline_id" class="form-label">Hãng bay</label>
-                                <select class="form-select" name="airline_id" id="airline_id">
+                                <select class="form-select" name="airline_id" id="airline_id" required>
                                     <option value="" selected disabled>Chọn hãng bay</option>
                                     @foreach ($airlines as $airline)
                                         <option value="{{ $airline->id }}"
@@ -603,7 +617,7 @@
                             <div class="col-md-6">
                                 <label for="departure_time" class="form-label">Ngày bay</label>
                                 <input type="date" name="departure_time" class="form-control" id="departure_time"
-                                    value="{{ old('departure_time') }}">
+                                    value="{{ old('departure_time') }}" required>
                                 @error('departure_time')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -614,7 +628,7 @@
                             <div class="col-md-6">
                                 <label for="flight_start" class="form-label">Giờ bay</label>
                                 <input type="time" name="flight_start" class="form-control" id="flight_start"
-                                    value="{{ old('flight_start') }}">
+                                    value="{{ old('flight_start') }}" required>
                                 @error('flight_start')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -622,7 +636,7 @@
                             <div class="col-md-6">
                                 <label for="flight_end" class="form-label">Giờ đến</label>
                                 <input type="time" name="flight_end" class="form-control" id="flight_end"
-                                    value="{{ old('flight_end') }}">
+                                    value="{{ old('flight_end') }}" required>
                                 @error('flight_end')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -633,7 +647,7 @@
                             <div class="col-md-6">
                                 <label for="seats" class="form-label">Số ghế</label>
                                 <input type="number" name="seats" class="form-control" id="seats"
-                                    min="0" value="{{ old('seats') }}">
+                                    min="0" value="{{ old('seats') }}" required>
                                 @error('seats')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -641,7 +655,7 @@
                             <div class="col-md-6">
                                 <label for="price" class="form-label">Giá vé (VND)</label>
                                 <input type="text" name="price" class="form-control" id="price"
-                                    placeholder="Ví dụ: 1200000" value="{{ old('price') }}">
+                                    placeholder="Ví dụ: 1200000" value="{{ old('price') }}" required>
                                 @error('price')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -686,18 +700,20 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="departure" class="form-label">Điểm đi</label>
-                                <input type="text" name="departure" class="form-control" id="departure">
+                                <input type="text" name="departure" class="form-control" id="departure" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="destination" class="form-label">Điểm đến</label>
-                                <input type="text" name="destination" class="form-control" id="destination">
+                                <input type="text" name="destination" class="form-control" id="destination"
+                                    required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="airline_id" class="form-label">Hãng bay</label>
-                                <select class="form-select" name="airline_id" id="airline_id">
+                                <select class="form-select" name="airline_id" id="airline_id" required>
+                                    <option value="">Chọn hãng bay</option>
                                     @foreach ($airlines as $airline)
                                         <option value="{{ $airline->id }}">{{ $airline->name }}</option>
                                     @endforeach
@@ -705,19 +721,21 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="departure_time" class="form-label">Ngày bay</label>
-                                <input type="date" name="departure_time" class="form-control"
-                                    id="departure_time">
+                                <input type="date" name="departure_time" class="form-control" id="departure_time"
+                                    required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="flight_start" class="form-label">Giờ bay</label>
-                                <input type="time" name="flight_start" class="form-control" id="flight_start">
+                                <input type="time" name="flight_start" class="form-control" id="flight_start"
+                                    required>
                             </div>
                             <div class="col-md-6">
                                 <label for="flight_end" class="form-label">Giờ đến</label>
-                                <input type="time" name="flight_end" class="form-control" id="flight_end">
+                                <input type="time" name="flight_end" class="form-control" id="flight_end"
+                                    required>
                             </div>
                         </div>
 
@@ -725,11 +743,11 @@
                             <div class="col-md-6">
                                 <label for="seats" class="form-label">Số ghế</label>
                                 <input type="number" name="seats" class="form-control" id="seats"
-                                    min="0">
+                                    min="0" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="price" class="form-label">Giá vé (VND)</label>
-                                <input type="text" name="price" class="form-control" id="price">
+                                <input type="text" name="price" class="form-control" id="price" required>
                             </div>
                         </div>
 
@@ -750,30 +768,39 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Edit modal functionality
             const editModal = document.getElementById('editFlightModal');
-            editModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const flightId = button.getAttribute('data-id');
+            if (editModal) {
+                editModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget; // Button that triggered the modal
 
-                // Update form action
-                document.getElementById('editFlightForm').action =
-                    '{{ route('edit-flight', ':id') }}'.replace(':id', flightId);
+                    // Extract info from data-* attributes
+                    const flightId = button.getAttribute('data-id');
+                    const flightCode = button.getAttribute('data-flight-code');
+                    const departure = button.getAttribute('data-departure');
+                    const destination = button.getAttribute('data-destination');
+                    const departureTime = button.getAttribute('data-departure-time');
+                    const flightStart = button.getAttribute('data-flight-start');
+                    const flightEnd = button.getAttribute('data-flight-end');
+                    const seats = button.getAttribute('data-seats');
+                    const price = button.getAttribute('data-price');
+                    const airlineId = button.getAttribute('data-airline-id');
 
-                // Fill form fields
-                document.getElementById('flight_id').value = button.getAttribute('data-id') || '';
-                document.getElementById('flight-code').value = button.getAttribute('data-flight-code') ||
-                    '';
-                document.getElementById('departure').value = button.getAttribute('data-departure') || '';
-                document.getElementById('destination').value = button.getAttribute('data-destination') ||
-                    '';
-                document.getElementById('departure_time').value = button.getAttribute(
-                    'data-departure-time') || '';
-                document.getElementById('flight_start').value = button.getAttribute('data-flight-start') ||
-                    '';
-                document.getElementById('flight_end').value = button.getAttribute('data-flight-end') || '';
-                document.getElementById('seats').value = button.getAttribute('data-seats') || '';
-                document.getElementById('price').value = button.getAttribute('data-price') || '';
-                document.getElementById('airline_id').value = button.getAttribute('data-airline-id') || '';
-            });
+                    // Update the modal's content
+                    const modalForm = document.getElementById('editFlightForm');
+                    modalForm.action = '{{ route('edit-flight', ':id') }}'.replace(':id', flightId);
+
+                    // Fill form fields
+                    modalForm.querySelector('#flight_id').value = flightId;
+                    modalForm.querySelector('#flight-code').value = flightCode;
+                    modalForm.querySelector('#departure').value = departure;
+                    modalForm.querySelector('#destination').value = destination;
+                    modalForm.querySelector('#departure_time').value = departureTime;
+                    modalForm.querySelector('#flight_start').value = flightStart;
+                    modalForm.querySelector('#flight_end').value = flightEnd;
+                    modalForm.querySelector('#seats').value = seats;
+                    modalForm.querySelector('#price').value = price;
+                    modalForm.querySelector('#airline_id').value = airlineId;
+                });
+            }
 
             // Form validation
             const inputs = document.querySelectorAll("input, select");
