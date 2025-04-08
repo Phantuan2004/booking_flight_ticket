@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 // Route page client
 Route::get('/', [\App\Http\Controllers\UserController::class, 'index'])->name('index');
-Route::get('/flight-search', [\App\Http\Controllers\UserController::class, 'search_flights'])->name('flight-search');
-Route::get('/datve', [\App\Http\Controllers\UserController::class, 'datve'])->name('datve');
+Route::get('/flight-search-oneway', [\App\Http\Controllers\UserController::class, 'search_flights_oneway'])->name('flight-search-oneway');
+Route::get('/flight-search-roundtrip', [\App\Http\Controllers\UserController::class, 'search_flights_roundtrip'])->name('flight-search-roundtrip');
+Route::get('/datve_khuhoi', [\App\Http\Controllers\UserController::class, 'datve_khuhoi'])->name('datve_khuhoi');
 Route::post('/xacnhan', [\App\Http\Controllers\UserController::class, 'xacnhan'])->name('xacnhan');
 Route::post('/thanhtoan', [\App\Http\Controllers\UserController::class, 'thanhtoan'])->name('thanhtoan');
 Route::post('/thanhcong', [\App\Http\Controllers\UserController::class, 'thanhcong'])->name('thanhcong');

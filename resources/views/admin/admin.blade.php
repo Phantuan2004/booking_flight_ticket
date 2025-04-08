@@ -79,6 +79,14 @@
             align-items: center;
         }
 
+        .user-info span {
+            margin-right: 15px;
+            font-size: 1rem;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
         .user-info img {
             width: 35px;
             height: 35px;
@@ -278,8 +286,8 @@
             <div class="header">
                 <h2 class="m-0">Bảng điều khiển</h2>
                 <div class="user-info">
-                    <img src="/api/placeholder/35/35" alt="Admin">
-                    <span>Admin</span>
+                    <span>Chào mừng tới trang quản trị SkyJet!!</span>
+                    <img src="{{ asset('images/logo/admin-logo.jpg') }}" alt="Admin">
                     <button class="logout-btn">Đăng xuất</button>
                 </div>
             </div>

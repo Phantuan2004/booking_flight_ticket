@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookingConfirm;
 use App\Models\Airline;
 use App\Models\Booking;
 use App\Models\Flight;
@@ -10,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -20,8 +22,8 @@ class UserController extends Controller
         return view('index', compact('flights'));
     }
 
-    // Phưởng thức tìm kiếm chuyến bay và giao diện kết quả tìm kiếm trang đặt vé
-    public function search_flights(Request $request)
+    // Phưởng thức tìm kiếm chuyến bay một chiều
+    public function search_flights_oneway(Request $request)
     {
         $departure = $request->input('departure');
         $destination = $request->input('destination');
@@ -51,7 +53,57 @@ class UserController extends Controller
             ]
         ]);
 
-        return view('datve', compact('flights', 'passengers', 'childrens'));
+        return view('datve_motchieu', compact('flights', 'passengers', 'childrens'));
+    }
+
+    // Phương thức tìm kiếm chuyến bay khứ hồi
+    public function search_flights_roundtrip(Request $request)
+    {
+        $flights = Flight::all();
+        $departure = $request->input('departure');
+        $destination = $request->input('destination');
+        $departure_time = $request->input('departure_time');
+        $return_time = $request->input('return_time');
+        $adults = (int) $request->input('adults', 0);
+        $childrens = (int) $request->input('childrens', 0);
+        $infants = (int) $request->input('infants', 0);
+        $total_passengers = $adults + $childrens + $infants;
+
+        $outboundFlights = Flight::query()
+            ->where('departure', 'like', "%$departure%")
+            ->where('destination', 'like', "%$destination%")
+            ->whereDate('departure_time', $departure_time)
+            ->where('available_seats', '>=', $total_passengers)
+            ->get();
+
+        $returnFlights = Flight::query()
+            ->where('departure', 'like', "%$destination%")
+            ->where('destination', 'like', "%$departure%")
+            ->whereDate('departure_time', $return_time)
+            ->where('available_seats', '>=', $total_passengers)
+            ->get();
+
+        // Định dạng hiển thị giá tiền
+        foreach ($outboundFlights as $flight) {
+            $flight->formatted_price = number_format($flight->price, 0, ',', '.') . ' VNĐ';
+        }
+        foreach ($returnFlights as $flight) {
+            $flight->formatted_price = number_format($flight->price, 0, ',', '.') . ' VNĐ';
+        }
+
+        // Lưu thông tin vào session
+        session([
+            'search_data' => [
+                'departure' => $departure,
+                'destination' => $destination,
+                'departure_time' => $departure_time,
+                'return_time' => $return_time,
+                'adults' => $adults,
+                'childrens' => $childrens,
+                'infants' => $infants
+            ]
+        ]);
+        return view('datve_khuhoi', compact('flights', 'outboundFlights', 'returnFlights', 'adults', 'childrens', 'infants'));
     }
 
     // Hiển thị giao diện trang xác nhận
@@ -97,13 +149,14 @@ class UserController extends Controller
         $departureTime = Carbon::parse($flight->departure_time);
         $flightStart = Carbon::parse($flight->flight_start);
         $flightEnd = Carbon::parse($flight->flight_end);
-        $hour = $flightStart->hour;
-        $minute = $flightStart->minute;
-        $hourArrival = $flightEnd->hour;
-        $minuteArrival = $flightEnd->minute;
-        $day = $departureTime->day;
-        $month = $departureTime->month;
-        $year = $departureTime->year;
+
+        // Lấy giờ và phút dưới dạng chuỗi định dạng sẵn
+        $flightStartTime = $flightStart->format('H:i');  // Ví dụ: 14:30
+        $flightEndTime = $flightEnd->format('H:i');      // Ví dụ: 16:40
+        $departureDate = $departureTime->format('d/m/Y'); // Ví dụ: 05/04/2024
+
+        // Tính thời gian bay
+        $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
 
         return view('xacnhan', compact(
             'flight',
@@ -118,13 +171,13 @@ class UserController extends Controller
             'tax_fee',
             'service_fee',
             'total_price',
-            'hour',
-            'hourArrival',
-            'minute',
-            'minuteArrival',
-            'day',
-            'month',
-            'year'
+            'flightStartTime',
+            'flightEndTime',
+            'departureDate',
+            'duration',
+            'flightStart',
+            'flightEnd',
+            'departureTime',
         ));
     }
 
@@ -176,17 +229,25 @@ class UserController extends Controller
         $service_fee = 20000;
         $total_price = $adult_price + $child_price + $tax_fee + $service_fee;
 
+        // Xử lý giá tiền
+        $adult_price = $flight->price * $passengers;
+        $child_price = $flight->price * $childrens * 0.5;
+        $tax_fee = 50000;
+        $service_fee = 20000;
+        $total_price = $adult_price + $child_price + $tax_fee + $service_fee;
+
         // Xử lý thời gian bay
         $departureTime = Carbon::parse($flight->departure_time);
         $flightStart = Carbon::parse($flight->flight_start);
         $flightEnd = Carbon::parse($flight->flight_end);
-        $hour = $flightStart->hour;
-        $minute = $flightStart->minute;
-        $hourArrival = $flightEnd->hour;
-        $minuteArrival = $flightEnd->minute;
-        $day = $departureTime->day;
-        $month = $departureTime->month;
-        $year = $departureTime->year;
+
+        // Lấy giờ và phút dưới dạng chuỗi định dạng sẵn
+        $flightStartTime = $flightStart->format('H:i');  // Ví dụ: 14:30
+        $flightEndTime = $flightEnd->format('H:i');      // Ví dụ: 16:40
+        $departureDate = $departureTime->format('d/m/Y'); // Ví dụ: 05/04/2024
+
+        // Tính thời gian bay
+        $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
 
         // Truyền dữ liệu sang view
         return view('thanhtoan', compact(
@@ -204,13 +265,13 @@ class UserController extends Controller
             'tax_fee',
             'service_fee',
             'total_price',
-            'hour',
-            'hourArrival',
-            'minute',
-            'minuteArrival',
-            'day',
-            'month',
-            'year'
+            'flightStartTime',
+            'flightEndTime',
+            'departureDate',
+            'duration',
+            'flightStart',
+            'flightEnd',
+            'departureTime',
         ));
     }
 
@@ -268,16 +329,18 @@ class UserController extends Controller
         $email = is_array($email) ? implode(' ', array_filter((array)$email, 'is_string')) : (string)$email;
         $address = is_array($address) ? implode(' ', array_filter((array)$address, 'is_string')) : (string)$address;
 
+        // Xử lý thời gian bay
         $departureTime = Carbon::parse($flight->departure_time);
         $flightStart = Carbon::parse($flight->flight_start);
         $flightEnd = Carbon::parse($flight->flight_end);
-        $hour = $flightStart->hour;
-        $minute = $flightStart->minute;
-        $hourArrival = $flightEnd->hour;
-        $minuteArrival = $flightEnd->minute;
-        $day = $departureTime->day;
-        $month = $departureTime->month;
-        $year = $departureTime->year;
+
+        // Lấy giờ và phút dưới dạng chuỗi định dạng sẵn
+        $flightStartTime = $flightStart->format('H:i');  // Ví dụ: 14:30
+        $flightEndTime = $flightEnd->format('H:i');      // Ví dụ: 16:40
+        $departureDate = $departureTime->format('d/m/Y'); // Ví dụ: 05/04/2024
+
+        // Tính thời gian bay
+        $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
 
         // Xử lý giá vé
         $adult_price = $flight->price * $passengerCount;
@@ -347,6 +410,29 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['error' => 'Số ghế không đủ!']);
         }
 
+        // Gửi email xác nhận đặt vé
+        Mail::to($email)->send(new BookingConfirm([
+            'name' => $full_name,
+            'childrens' => $childrens,
+            'booking_code' => $booking_code,
+            'flight_code' => $flight->flight_code,
+            'departure' => $flight->departure,
+            'destination' => $flight->destination,
+            'flightStartTime' => $flightStartTime,
+            'flightEndTime' => $flightEndTime,
+            'departureDate' => $departureDate,
+            'duration' => $duration,
+            'total_price' => $total_price,
+            'passengerCount' => $passengerCount,
+            'childrenCount' => $childrenCount,
+            'full_name' => $full_name,
+            'phone' => $phone,
+            'email' => $email,
+            'address' => $address,
+            'adult_price' => $adult_price,
+            'child_price' => $child_price,
+        ]));
+
         return view('thanhcong', compact(
             'flight',
             'passengers',
@@ -357,13 +443,13 @@ class UserController extends Controller
             'childrenCount',
             'total_passengers',
             'booking_code',
-            'hour',
-            'hourArrival',
-            'minute',
-            'minuteArrival',
-            'day',
-            'month',
-            'year',
+            'flightStartTime',
+            'flightEndTime',
+            'departureDate',
+            'duration',
+            'flightStart',
+            'flightEnd',
+            'departureTime',
             'full_name',
             'phone',
             'email',

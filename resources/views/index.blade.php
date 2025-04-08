@@ -350,7 +350,7 @@
                 <nav>
                     <ul>
                         <li><a href="{{ route('index') }}">Trang Chủ</a></li>
-                        <li><a href="{{ route('datve') }}">Đặt Vé</a></li>
+                        <li><a href="{{ route('datve_khuhoi') }}">Đặt Vé</a></li>
                         <li><a href="#">Khuyến Mãi</a></li>
                         <li><a href="#">Lịch Bay</a></li>
                         <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
@@ -379,26 +379,26 @@
 
             <!-- Form Vé Khứ Hồi -->
             <div id="roundtrip-form" class="form-container active">
-                <form class="search-form">
+                <form class="search-form" action="{{ route('flight-search-roundtrip') }}" method="GET">
                     <div class="form-group">
                         <label>Điểm đi</label>
-                        <input type="text" placeholder="Chọn thành phố hoặc sân bay">
+                        <input type="text" name="departure" placeholder="Chọn thành phố hoặc sân bay">
                     </div>
                     <div class="form-group">
                         <label>Điểm đến</label>
-                        <input type="text" placeholder="Chọn thành phố hoặc sân bay">
+                        <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay">
                     </div>
                     <div class="form-group">
                         <label>Ngày đi</label>
-                        <input type="date">
+                        <input type="date" name="departure_time">
                     </div>
                     <div class="form-group">
                         <label>Ngày về</label>
-                        <input type="date">
+                        <input type="date" name="return_time">
                     </div>
                     <div class="form-group">
-                        <label>Hành khách</label>
-                        <select>
+                        <label>Người lớn <span style="color:rgba(0, 0, 0, 0.4)">(12 tuổi trở lên)</span></label>
+                        <select name="adults">
                             <option>1 Người lớn</option>
                             <option>2 Người lớn</option>
                             <option>3 Người lớn</option>
@@ -407,8 +407,31 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label>Trẻ em <span style="color:rgba(0, 0, 0, 0.4)">(2 đến dưới 12 tuổi)</span></label>
+                        <select name="childrens">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Em bé <span style="color:rgba(0, 0, 0, 0.4)">(dưới 2 tuổi)</span></label>
+                        <select name="infants">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Hạng ghế</label>
-                        <select>
+                        <select name="seat-class">
+                            <option value="">Chọn</option>
                             <option>Phổ thông</option>
                             <option>Thương gia</option>
                         </select>
@@ -419,7 +442,7 @@
 
             <!-- Form Vé Một Chiều -->
             <div id="oneway-form" class="form-container">
-                <form class="search-form" method="GET" action="{{ route('flight-search') }}">
+                <form class="search-form" method="GET" action="{{ route('flight-search-oneway') }}">
                     <div class="form-group">
                         <label>Điểm đi</label>
                         <input name="departure" type="text" placeholder="Chọn thành phố hoặc sân bay">
@@ -433,7 +456,7 @@
                         <input name="departure_time" type="date">
                     </div>
                     <div class="form-group">
-                        <label>Người lớn</label>
+                        <label>Người lớn <span style="color:rgba(0, 0, 0, 0.4)">(12 tuổi trở lên)</span></label>
                         <select name="passengers">
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -443,8 +466,19 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Trẻ em</label>
+                        <label>Trẻ em <span style="color:rgba(0, 0, 0, 0.4)">(2 đến dưới 12 tuổi)</span></label>
                         <select name="childrens">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Em bé <span style="color:rgba(0, 0, 0, 0.4)">(dưới 2 tuổi)</span></label>
+                        <select name="infants">
                             <option value="0">0</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -456,6 +490,7 @@
                     <div class="form-group">
                         <label>Hạng ghế</label>
                         <select name="class">
+                            <option value="">Chọn</option>
                             <option>Phổ thông</option>
                             <option>Thương gia</option>
                         </select>
@@ -605,34 +640,34 @@
     </script>
 
     <script>
-        // Hiển thị thông báo khi chưa nhập thông tin chuyến bay mà đã submit
-        document.querySelector('#roundtrip-form').addEventListener('submit', function(event) {
-            const contactFormSearch = document.querySelectorAll('.form-container');
-            let allContactFormSearchFilled = true;
-            contactFormSearch.forEach(input => {
-                if (!input.value) {
-                    allContactFormSearchFilled = false;
-                }
-            });
-            if (!allContactFormSearchFilled) {
-                event.preventDefault();
-                alert('Vui lòng điền đầy đủ thông tin chuyến bay trước khi tìm kiếm.');
-            }
-        });
+        // // Hiển thị thông báo khi chưa nhập thông tin chuyến bay mà đã submit
+        // document.querySelector('#roundtrip-form').addEventListener('submit', function(event) {
+        //     const contactFormSearch = document.querySelectorAll('.form-container');
+        //     let allContactFormSearchFilled = true;
+        //     contactFormSearch.forEach(input => {
+        //         if (!input.value) {
+        //             allContactFormSearchFilled = false;
+        //         }
+        //     });
+        //     if (!allContactFormSearchFilled) {
+        //         event.preventDefault();
+        //         alert('Vui lòng điền đầy đủ thông tin chuyến bay trước khi tìm kiếm.');
+        //     }
+        // });
 
-        document.querySelector('#oneway-form').addEventListener('submit', function(event) {
-            const contactFormSearch = document.querySelectorAll('.form-container');
-            let allContactFormSearchFilled = true;
-            contactFormSearch.forEach(input => {
-                if (!input.value) {
-                    allContactFormSearchFilled = false;
-                }
-            });
-            if (!allContactFormSearchFilled) {
-                event.preventDefault();
-                alert('Vui lòng điền đầy đủ thông tin chuyến bay trước khi tìm kiếm.');
-            }
-        });
+        // document.querySelector('#oneway-form').addEventListener('submit', function(event) {
+        //     const contactFormSearch = document.querySelectorAll('.form-container');
+        //     let allContactFormSearchFilled = true;
+        //     contactFormSearch.forEach(input => {
+        //         if (!input.value) {
+        //             allContactFormSearchFilled = false;
+        //         }
+        //     });
+        //     if (!allContactFormSearchFilled) {
+        //         event.preventDefault();
+        //         alert('Vui lòng điền đầy đủ thông tin chuyến bay trước khi tìm kiếm.');
+        //     }
+        // });
     </script>
 </body>
 

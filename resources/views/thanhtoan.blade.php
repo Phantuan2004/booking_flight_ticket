@@ -523,7 +523,7 @@
                 <nav>
                     <ul>
                         <li><a href="{{ route('index') }}">Trang Chủ</a></li>
-                        <li><a href="{{ route('datve') }}">Đặt Vé</a></li>
+                        <li><a href="{{ route('datve_khuhoi') }}">Đặt Vé</a></li>
                         <li><a href="#">Khuyến Mãi</a></li>
                         <li><a href="#">Lịch Bay</a></li>
                         <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
@@ -658,8 +658,8 @@
                     <h2 class="review-title">Xác Nhận Thông Tin Đặt Vé</h2>
                     <div class="flight-info-container">
                         <div class="flight-date">
-                            <div class="date-number">{{ $day }}</div>
-                            <div class="date-month">Tháng {{ $month }}</div>
+                            <div class="date-number">{{ $departureTime->format('d') }}</div>
+                            <div class="date-month">Tháng {{ $departureTime->format('m') }}</div>
                         </div>
                         <div class="flight-details">
                             <div class="flight-route">
@@ -668,9 +668,9 @@
                                 <div class="airport-code">{{ $flight->destination }}</div>
                             </div>
                             <div class="flight-times">
-                                <div class="departure-time">{{ $hour }}:{{ $minute }}</div>
-                                <div class="flight-duration">2h 10m</div>
-                                <div class="arrival-time">{{ $hourArrival }}:{{ $minuteArrival }}</div>
+                                <div class="departure-time">{{ $flightStart->format('H:i') }}</div>
+                                <div class="flight-duration">{{ $duration }}</div>
+                                <div class="arrival-time">{{ $flightEnd->format('H:i') }}</div>
                             </div>
                             <div class="airport-names">
                                 {{ $flight->departure }} → {{ $flight->destination }}
@@ -725,12 +725,12 @@
                 <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
                 <div class="price-row">
                     <div class="price-title">{{ $flight->departure }} - {{ $flight->destination }}</div>
-                    <div class="price-value">{{ $day }}-{{ $month }}-{{ $year }}</div>
+                    <div class="price-value">{{ $departureTime }}</div>
                 </div>
                 <div class="price-row">
                     <div class="price-title">{{ $flight->airline->name }} ({{ $flight->flight_code }})</div>
-                    <div class="price-value">{{ $hour }}:{{ $minute }} -
-                        {{ $hourArrival }}:{{ $minuteArrival }}</div>
+                    <div class="price-value">{{ $flightStartTime }} -
+                        {{ $flightEndTime }}</div>
                 </div>
                 <div class="price-row">
                     <div class="price-title">Người lớn (x{{ $passengers }})</div>
