@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Route page client
@@ -13,6 +14,7 @@ Route::post('/xacnhan', [\App\Http\Controllers\UserController::class, 'xacnhan']
 Route::post('/thanhtoan', [\App\Http\Controllers\UserController::class, 'thanhtoan'])->name('thanhtoan');
 Route::post('/thanhcong', [\App\Http\Controllers\UserController::class, 'thanhcong'])->name('thanhcong');
 Route::get('/lienhe', [\App\Http\Controllers\UserController::class, 'lienhe'])->name('lienhe');
+Route::get('/lichsudatve', [UserController::class, 'lichsudatve'])->name('lichsudatve');
 
 // Route page admin
 Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'admin'])->name('admin');

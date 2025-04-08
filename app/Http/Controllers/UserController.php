@@ -358,6 +358,9 @@ class UserController extends Controller
                 'name' => $full_name,
                 'phone' => $phone,
                 'email' => $email,
+                'adult_count' => $passengerCount,
+                'child_count' => $childrenCount,
+                'infant_count' => 0,
                 'address' => $address,
                 'flight_id' => $flight->id,
                 'total_price' => $total_price,
@@ -373,6 +376,9 @@ class UserController extends Controller
                 'name' => $full_name,
                 'phone' => $phone,
                 'email' => $email,
+                'adult_count' => $passengerCount,
+                'child_count' => $childrenCount,
+                'infant_count' => 0,
                 'address' => $address,
                 'total_price' => $total_price,
                 'created_at' => now(),
@@ -470,32 +476,51 @@ class UserController extends Controller
         return view('lienhe');
     }
 
-    // Hiển thị danh sách chuyến bay
-    public function flights()
+    // Hiển thị trang lịch sử đặt vé
+    public function lichsudatve(Request $request)
     {
-        $flights = Flight::all();
-        return view('index', compact('flights'));
-    }
+        $name = $request->input('name');
+        $phone = $request->input('phone');
+        $email = $request->input('email');
 
-    // Hiển thị chi tiết chuyến bay
-    public function flight_detail(Flight $id)
-    {
-        $show = Flight::query()->find($id);
-        return view('index', compact('show'));
-    }
+        // Nếu không có đầu vào nào, trả về collection rỗng
+        if (!$name && !$phone && !$email) {
+            $histories = collect(); // Collection rỗng
+        } else {
+            $histories = Booking::query()
+                ->when($name, function ($query, $name) {
+                    return $query->where('name', 'like', "%$name%");
+                })
+                ->when($phone, function ($query, $phone) {
+                    return $query->orWhere('phone', 'like', "%$phone%");
+                })
+                ->when($email, function ($query, $email) {
+                    return $query->orWhere('email', 'like', "%$email%");
+                })
+                ->get();
 
-    // Hiển thị kết quả tìm kiếm
-    public function search(Request $request)
-    {
-        $search = $request->search;
-        $flights = Flight::query()->where('name', 'like', "%$search%")->get();
-        return view('index', compact('flights'));
-    }
+            foreach ($histories as $history) {
+                $flight = Flight::find($history->flight_id);
+                if ($flight) {
+                    $departureTime = Carbon::parse($flight->departure_time);
+                    $flightStart = Carbon::parse($flight->flight_start);
+                    $flightEnd = Carbon::parse($flight->flight_end);
 
-    // Hiển thị hãng bay
-    public function airlines()
-    {
-        $airlines = Airline::all();
-        return view('index', compact('airlines'));
+                    $history->departureTime = $departureTime;
+                    $history->flightStartTime = $flightStart->format('H:i');
+                    $history->flightEndTime = $flightEnd->format('H:i');
+                    $history->departureDate = $departureTime->format('d/m/Y');
+                    $history->duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
+                }
+
+                // Định dạng dữ liệu khách hàng
+                $history->adult_count = $history->adult_count ?? 0;
+                $history->child_count = $history->child_count ?? 0;
+                $history->total_price = $history->total_price ?? 0;
+                $history->passenger_count = $history->adult_count + $history->child_count + $history->infant_count ?? 0;
+            }
+        }
+
+        return view('lichsudatve', compact('histories'));
     }
 }

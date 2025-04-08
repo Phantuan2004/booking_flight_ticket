@@ -259,7 +259,8 @@
                                                             </td>
                                                             <td
                                                                 style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                {{ number_format($child_price, 0, ',', '.') }} VNĐ</td>
+                                                                {{ number_format($child_price, 0, ',', '.') }} VNĐ
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td

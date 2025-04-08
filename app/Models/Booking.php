@@ -15,16 +15,21 @@ class Booking extends Model
         'name',
         'phone',
         'email',
+        'adult_count',
+        'child_count',
+        'infant_count',
         'flight_id',
         'status',
         'total_price'
     ];
 
-    public function flight() {
+    public function flight()
+    {
         return $this->belongsTo(Flight::class);
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }
