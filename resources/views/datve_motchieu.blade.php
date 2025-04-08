@@ -509,12 +509,11 @@
                                 <div class="flight-info">
                                     <div class="flight-time">
                                         <div class="time">{{ $flight->departure_time }}</div>
-                                        <div class="duration">{{ $flight->duration }}</div>
-                                        <div class="time">{{ $flight->arrival_time }}</div>
                                     </div>
                                     <div class="flight-route">
                                         {{ $flight->departure }} - {{ $flight->destination }}
                                     </div>
+
                                     <div class="airline-name">{{ $flight->airline->name }}</div>
                                 </div>
                                 <div class="flight-details">
@@ -526,10 +525,10 @@
                                         <input type="hidden" name="destination" value="{{ $flight->destination }}">
                                         <input type="hidden" name="departure_time"
                                             value="{{ $flight->departure_time }}">
-                                        <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
                                         <input type="hidden" name="price" value="{{ $flight->price }}">
-                                        <input type="hidden" name="passengers" value="{{ $passengers }}">
+                                        <input type="hidden" name="adults" value="{{ $adults }}">
                                         <input type="hidden" name="childrens" value="{{ $childrens }}">
+                                        <input type="hidden" name="infants" value="{{ $infants }}">
                                         <button class="select-btn" type="submit">Chọn</button>
                                     </form>
                                 </div>

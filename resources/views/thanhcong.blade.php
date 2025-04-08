@@ -541,17 +541,18 @@
                 <div class="passenger-summary">
                     <div class="passenger-count">
                         Hành khách (
-                        {{ $passengerCount }} người lớn,
-                        {{ $childrenCount }} trẻ em
+                        {{ $adultsCount }} người lớn,
+                        {{ $childrensCount }} trẻ em,
+                        {{ $infantsCount }} em bé
                         )
                     </div>
 
 
-                    @if (!empty($passengersSession))
-                        @foreach ($passengersSession as $index => $passenger)
+                    @if (!empty($adultsSession))
+                        @foreach ($adultsSession as $index => $adult)
                             <div class="passenger-info">
-                                {{ $index }}. {{ $passenger['last_name'] ?? 'Lỗi dữ liệu' }}
-                                {{ $passenger['first_name'] ?? 'Lỗi dữ liệu' }}
+                                {{ $index }}. {{ $adult['last_name'] ?? 'Lỗi dữ liệu' }}
+                                {{ $adult['first_name'] ?? 'Lỗi dữ liệu' }}
                             </div>
                         @endforeach
 
@@ -560,12 +561,21 @@
                     @if (!empty($childrensSession))
                         @foreach ($childrensSession as $index => $child)
                             <div class="passenger-info">
-                                {{ count($passengersSession) + $index }}.
+                                {{ count($adultsSession) + $index }}.
                                 {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
                                 {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
                             </div>
                         @endforeach
+                    @endif
 
+                    @if (!empty($infantsSession))
+                        @foreach ($infantsSession as $index => $infant)
+                            <div class="passenger-info">
+                                {{ count($adultsSession) + count($childrensSession) + $index }}.
+                                {{ $infant['last_name'] ?? 'Lỗi dữ liệu' }}
+                                {{ $infant['first_name'] ?? 'Lỗi dữ liệu' }}
+                            </div>
+                        @endforeach
                     @endif
                 </div>
 
@@ -581,7 +591,7 @@
                 <div class="payment-summary">
                     <div class="payment-title">Chi tiết thanh toán:</div>
                     <div class="payment-details">
-                        <div class="price-title">Người lớn (x{{ is_array($passengers) ? count($passengers) : 0 }})
+                        <div class="price-title">Người lớn (x{{ is_array($adults) ? count($adults) : 0 }})
                         </div>
                         <div class="price-value">
                             {{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
@@ -589,6 +599,10 @@
                     <div class="payment-details">
                         <div class="price-title">Trẻ em (x{{ is_array($childrens) ? count($childrens) : 0 }})</div>
                         <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="payment-details">
+                        <div class="price-title">Em bé (x{{ is_array($infants) ? count($infants) : 0 }})</div>
+                        <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="payment-details">
                         <div>Thuế & Phí</div>

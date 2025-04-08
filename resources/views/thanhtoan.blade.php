@@ -686,13 +686,14 @@
                     <div class="passenger-summary">
                         <div class="passenger-count">
                             Hành khách (
-                            {{ $passengers }} người lớn,
-                            {{ $childrens }} trẻ em
+                            {{ $adults }} người lớn,
+                            {{ $childrens }} trẻ em,
+                            {{ $infants }} em bé
                             )
                         </div>
 
-                        @if (!empty($passengersSession))
-                            @foreach ($passengersSession as $index => $passenger)
+                        @if (!empty($adultsSession))
+                            @foreach ($adultsSession as $index => $passenger)
                                 <div class="passenger-info">
                                     {{ $index }}. {{ $passenger['last_name'] ?? 'Lỗi dữ liệu' }}
                                     {{ $passenger['first_name'] ?? 'Lỗi dữ liệu' }}
@@ -703,9 +704,19 @@
                         @if (!empty($childrensSession))
                             @foreach ($childrensSession as $index => $child)
                                 <div class="passenger-info">
-                                    {{ count($passengersSession) + $index }}.
+                                    {{ count($adultsSession) + $index }}.
                                     {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
                                     {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
+                                </div>
+                            @endforeach
+                        @endif
+
+                        @if (!empty($infantsSession))
+                            @foreach ($infantsSession as $index => $infant)
+                                <div class="passenger-info">
+                                    {{ count($adultsSession) + count($childrensSession) + $index }}.
+                                    {{ $infant['last_name'] ?? 'Lỗi dữ liệu' }}
+                                    {{ $infant['first_name'] ?? 'Lỗi dữ liệu' }}
                                 </div>
                             @endforeach
                         @endif
@@ -733,12 +744,16 @@
                         {{ $flightEndTime }}</div>
                 </div>
                 <div class="price-row">
-                    <div class="price-title">Người lớn (x{{ $passengers }})</div>
+                    <div class="price-title">Người lớn (x{{ $adults }})</div>
                     <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
                 </div>
                 <div class="price-row">
                     <div class="price-title">Trẻ em (x{{ $childrens }})</div>
                     <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Em bé (x{{ $infants }})</div>
+                    <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
                 </div>
                 <div class="price-row">
                     <div class="price-title">Thuế & Phí</div>
@@ -765,12 +780,12 @@
                     <input type="hidden" name="departure" value="{{ $flight->departure }}">
                     <input type="hidden" name="destination" value="{{ $flight->destination }}">
                     <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
-                    <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
                     <input type="hidden" name="price" value="{{ $flight->price }}">
 
                     <!-- Thông tin hành khách -->
-                    <input type="hidden" name="passengers_data" value="{{ json_encode($passengersSession) }}">
+                    <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
                     <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
+                    <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
 
                     <!-- Thông tin liên hệ -->
                     <input type="hidden" name="full_name" value="{{ $full_name }}">
@@ -781,6 +796,7 @@
                     <!-- Thông tin thanh toán -->
                     <input type="hidden" name="adult_price" value="{{ $adult_price }}">
                     <input type="hidden" name="child_price" value="{{ $child_price }}">
+                    <input type="hidden" name="infant_price" value="{{ $infant_price }}">
                     <input type="hidden" name="tax_fee" value="{{ $tax_fee }}">
                     <input type="hidden" name="service_fee" value="{{ $service_fee }}">
                     <input type="hidden" name="total_price" value="{{ $total_price }}">

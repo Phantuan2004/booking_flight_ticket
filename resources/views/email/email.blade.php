@@ -85,8 +85,9 @@
                                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                             <tr>
                                                 <td>
-                                                    <strong style="font-size: 18px; color: #003580;">Mã đặt
-                                                        chỗ:</strong> {{ $booking_code }}
+                                                    <strong style="font-size: 16px; color: #003580;">Mã đặt
+                                                        chỗ:</strong> <span
+                                                        style="font-size: 1.2rem; color:#555">{{ $booking_code }}</span>
                                                 </td>
                                             </tr>
                                         </table>
@@ -163,19 +164,20 @@
                                                 <td
                                                     style="font-size: 14px; color: #003580; font-weight: bold; padding-bottom: 10px;">
                                                     Hành khách (
-                                                    {{ $passengerCount }} người lớn,
-                                                    {{ $childrenCount }} trẻ em
+                                                    {{ $adultsCount }} người lớn,
+                                                    {{ $childrensCount }} trẻ em,
+                                                    {{ $infantsCount }} trẻ sơ sinh
                                                     )
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                    @if (!empty($passengersSession))
-                                                        @foreach ($passengersSession as $index => $passenger)
+                                                    @if (!empty($adultsSession))
+                                                        @foreach ($adultsSession as $index => $adult)
                                                             <div>
                                                                 {{ $index }}.
-                                                                {{ $passenger['last_name'] ?? 'Lỗi dữ liệu' }}
-                                                                {{ $passenger['first_name'] ?? 'Lỗi dữ liệu' }}
+                                                                {{ $adult['last_name'] ?? 'Lỗi dữ liệu' }}
+                                                                {{ $adult['first_name'] ?? 'Lỗi dữ liệu' }}
                                                             </div>
                                                         @endforeach
 
@@ -184,12 +186,21 @@
                                                     @if (!empty($childrensSession))
                                                         @foreach ($childrensSession as $index => $child)
                                                             <div>
-                                                                {{ count($passengersSession) + $index }}.
+                                                                {{ count($adultsSession) + $index }}.
                                                                 {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
                                                                 {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
                                                             </div>
                                                         @endforeach
+                                                    @endif
 
+                                                    @if (!empty($infantsSession))
+                                                        @foreach ($infantsSession as $index => $infant)
+                                                            <div>
+                                                                {{ count($adultsSession) + count($childrensSession) + $index }}.
+                                                                {{ $infant['last_name'] ?? 'Lỗi dữ liệu' }}
+                                                                {{ $infant['first_name'] ?? 'Lỗi dữ liệu' }}
+                                                            </div>
+                                                        @endforeach
                                                     @endif
                                                 </td>
                                             </tr>
@@ -245,7 +256,7 @@
                                                         <tr>
                                                             <td
                                                                 style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                                Người lớn (x{{ $passengerCount }})</td>
+                                                                Người lớn (x{{ $adultsCount }})</td>
                                                             <td
                                                                 style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
                                                                 {{ number_format($adult_price, 0, ',', '.') }} VNĐ
@@ -260,6 +271,17 @@
                                                             <td
                                                                 style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
                                                                 {{ number_format($child_price, 0, ',', '.') }} VNĐ
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td
+                                                                style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                Trẻ sơ sinh
+                                                                (x{{ is_array($infants) ? count($infants) : 0 }})
+                                                            </td>
+                                                            <td
+                                                                style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                {{ number_format($infant_price, 0, ',', '.') }} VNĐ
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -374,7 +396,7 @@
                             <table border="0" cellspacing="0" cellpadding="0">
                                 <tr>
                                     <td align="center" bgcolor="#003580" style="border-radius: 4px;">
-                                        <a href="#" target="_blank"
+                                        <a href="{{ route('lichsudatve') }}" target="_blank"
                                             style="font-size: 16px; font-weight: bold; color: white; text-decoration: none; display: inline-block; padding: 12px 30px;">Kiểm
                                             Tra Chuyến Bay</a>
                                     </td>

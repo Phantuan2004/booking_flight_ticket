@@ -15,6 +15,8 @@ Route::post('/thanhtoan', [\App\Http\Controllers\UserController::class, 'thanhto
 Route::post('/thanhcong', [\App\Http\Controllers\UserController::class, 'thanhcong'])->name('thanhcong');
 Route::get('/lienhe', [\App\Http\Controllers\UserController::class, 'lienhe'])->name('lienhe');
 Route::get('/lichsudatve', [UserController::class, 'lichsudatve'])->name('lichsudatve');
+// Route::get('/search_danhsachdatve', [UserController::class, 'search_danhsachdatve'])->name('search_danhsachdatve');
+Route::delete('/huyve/{id}', [UserController::class, 'huyve'])->name('huyve');
 
 // Route page admin
 Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'admin'])->name('admin');

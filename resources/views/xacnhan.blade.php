@@ -562,10 +562,10 @@
             <input type="hidden" name="departure" value="{{ $flight->departure }}">
             <input type="hidden" name="destination" value="{{ $flight->destination }}">
             <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
-            <input type="hidden" name="arrival_time" value="{{ $flight->arrival_time }}">
             <input type="hidden" name="price" value="{{ $flight->price }}">
-            <input type="hidden" name="passengers" value="{{ json_encode($passengers) }}">
+            <input type="hidden" name="adults" value="{{ json_encode($adults) }}">
             <input type="hidden" name="childrens" value="{{ json_encode($childrens) }}">
+            <input type="hidden" name="infants" value="{{ json_encode($infants) }}">
 
             <div class="confirmation-content">
                 <div class="passenger-details">
@@ -606,7 +606,7 @@
                                 Vui lòng nhập thông tin cho tất cả hành khách
                             </p>
 
-                            @for ($i = 1; $i <= $passengers; $i++)
+                            @for ($i = 1; $i <= $adults; $i++)
                                 <div class="passenger-card">
                                     <div class="passenger-header">
                                         <h3>Hành khách {{ $i }}</h3>
@@ -615,24 +615,23 @@
                                     <div class="form-row">
                                         <div class="form-group">
                                             <label class="required-field">Họ</label>
-                                            <input name="passengers[{{ $i }}][last_name]" type="text"
+                                            <input name="adults[{{ $i }}][last_name]" type="text"
                                                 placeholder="Ví dụ: Nguyễn" />
                                         </div>
                                         <div class="form-group">
                                             <label class="required-field">Tên đệm & tên</label>
-                                            <input name="passengers[{{ $i }}][first_name]" type="text"
+                                            <input name="adults[{{ $i }}][first_name]" type="text"
                                                 placeholder="Ví dụ: Văn A" />
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group">
                                             <label class="required-field">Ngày sinh</label>
-                                            <input name="passengers[{{ $i }}][birth_date]"
-                                                type="date" />
+                                            <input name="adults[{{ $i }}][birth_date]" type="date" />
                                         </div>
                                         <div class="form-group">
                                             <label class="required-field">Giới tính</label>
-                                            <select name="passengers[{{ $i }}][gender]">
+                                            <select name="adults[{{ $i }}][gender]">
                                                 <option value="">Chọn giới tính</option>
                                                 <option value="male">Nam</option>
                                                 <option value="female">Nữ</option>
@@ -669,6 +668,41 @@
                                         <div class="form-group">
                                             <label class="required-field">Giới tính</label>
                                             <select name="childrens[{{ $i }}][gender]">
+                                                <option value="">Chọn giới tính</option>
+                                                <option value="male">Nam</option>
+                                                <option value="female">Nữ</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endfor
+
+                            @for ($i = 1; $i <= $infants; $i++)
+                                <div class="passenger-card">
+                                    <div class="passenger-header">
+                                        <h3>Em bé {{ $i }}</h3>
+                                        <div class="passenger-type">Em bé </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="required-field">Họ</label>
+                                            <input name="infants[{{ $i }}][last_name]" type="text"
+                                                placeholder="Ví dụ: Nguyễn" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Tên đệm & tên</label>
+                                            <input name="infants[{{ $i }}][first_name]" type="text"
+                                                placeholder="Ví dụ: Văn A" />
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="required-field">Ngày sinh</label>
+                                            <input name="infants[{{ $i }}][birth_date]" type="date" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Giới tính</label>
+                                            <select name="infants[{{ $i }}][gender]">
                                                 <option value="">Chọn giới tính</option>
                                                 <option value="male">Nam</option>
                                                 <option value="female">Nữ</option>
@@ -758,12 +792,16 @@
                             {{ $flightEndTime }}</div>
                     </div>
                     <div class="price-row">
-                        <div class="price-title">Người lớn (x{{ $passengers }})</div>
+                        <div class="price-title">Người lớn (x{{ $adults }})</div>
                         <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Trẻ em (x{{ $childrens }})</div>
                         <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Trẻ em (x{{ $infants }})</div>
+                        <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Thuế & Phí</div>

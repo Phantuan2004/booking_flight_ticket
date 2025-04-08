@@ -458,7 +458,7 @@
                     </div>
                     <div class="form-group">
                         <label>Người lớn <span style="color:rgba(0, 0, 0, 0.4)">(12 tuổi trở lên)</span></label>
-                        <select name="passengers">
+                        <select name="adults">
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
