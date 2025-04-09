@@ -96,7 +96,8 @@ class AdminController extends Controller
             'available_seats' => ($request->seat_economy ?? 0) + ($request->seat_business ?? 0),
         ]);
 
-        return redirect()->route('admin')->with('message', 'Thêm chuyến bay thành công!!');
+        flash()->success('Thêm chuyến bay thành công');
+        return redirect()->route('admin');
     }
 
 
