@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Flight extends Model
 {
@@ -20,8 +21,10 @@ class Flight extends Model
         'departure_time',
         'flight_start',
         'flight_end',
-        'price',
         'seats',
+        'seat_class',
+        'price_economy',
+        'price_business',
         'available_seats',
         'status'
     ];
@@ -35,4 +38,11 @@ class Flight extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public static function getSeatClassOption() {
+        $type = DB::select('SHOW COLUMNS FROM flights WHERE Field = "seat_class"');
+        preg_match('enum\((.*)\)/', $type, $matches);
+        $enumValue = str_getcsv($matches[1], ',', '"');
+        return $enumValue;
+}
 }

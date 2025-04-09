@@ -525,11 +525,19 @@
                                         <input type="hidden" name="destination" value="{{ $flight->destination }}">
                                         <input type="hidden" name="departure_time"
                                             value="{{ $flight->departure_time }}">
-                                        <input type="hidden" name="price" value="{{ $flight->price }}">
+                                        <input type="hidden" name="price"
+                                            value="
+                                        @if ($flight->seat_class === 'phổ thông') {{ $flight->price_economy }}
+                                         @else {{ $flight->price_business }} @endif
+                                         ">
                                         <input type="hidden" name="adults" value="{{ $adults }}">
                                         <input type="hidden" name="childrens" value="{{ $childrens }}">
                                         <input type="hidden" name="infants" value="{{ $infants }}">
-                                        <button class="select-btn" type="submit">Chọn</button>
+                                        @if ($flight->seat_class === 'phổ thông')
+                                            <button class="select-btn" type="submit">Chọn vé phổ thông</button>
+                                        @elseif ($flight->seat_class === 'thương gia')
+                                            <button class="select-btn" type="submit">Chọn vé thương gia</button>
+                                        @endif
                                     </form>
                                 </div>
                             </div>

@@ -555,7 +555,6 @@
     </div>
 
     <div class="container">
-        <!-- Mở form ở đây, bao quanh toàn bộ nội dung -->
         <form action="{{ route('thanhtoan') }}" method="POST">
             @csrf
             <input type="hidden" name="flight_id" value="{{ $flight->id }}">

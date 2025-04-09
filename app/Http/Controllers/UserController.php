@@ -25,19 +25,20 @@ class UserController extends Controller
     // Phưởng thức tìm kiếm chuyến bay một chiều
     public function search_flights_oneway(Request $request)
     {
+        //        dd($request->all());
         $departure = $request->input('departure');
         $destination = $request->input('destination');
         $departure_time = $request->input('departure_time');
         $adults = (int) $request->input('adults', 0);
         $childrens = (int) $request->input('childrens', 0);
         $infants = (int) $request->input('infants', 0);
+
         //* Tính số ghế dựa vào số em bé
         // Mỗi 1 em bé sẽ ngồi cùng người lớn, nên không tính số ghế cho em bé
-        if ($infants <= $adults) {
-            $passengers = $adults + $childrens;
-        } elseif ($infants > $adults) {
+        if ($infants > $adults) {
             return redirect()->back()->withErrors(['error' => 'Số em bé không thể lớn hơn số người lớn!']);
         }
+        $passengers = $adults + $childrens;
 
         $flights = Flight::query()
             ->where('departure', 'like', "%$departure%")
@@ -48,8 +49,13 @@ class UserController extends Controller
 
         // Định dạng hiển thị giá tiền
         foreach ($flights as $flight) {
-            $flight->formatted_price = number_format($flight->price, 0, ',', '.') . ' VNĐ';
+            if ($flight->seat_class == 'phổ thông') {
+                $flight->formatted_price = number_format($flight->price_economy, 0, ',', '.') . ' VNĐ';
+            } else {
+                $flight->formatted_price = number_format($flight->price_business, 0, ',', '.') . ' VNĐ';
+            }
         }
+
         // Lưu thông tin vào session
         session([
             'search_data' => [
@@ -151,9 +157,9 @@ class UserController extends Controller
         ]);
 
         // Xử lý giá tiền
-        $adult_price = $flight->price * $adults;
-        $child_price = $flight->price * $childrens * 0.3;
-        $infant_price = $flight->price * $infants * 0;
+        $adult_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $adults;
+        $child_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $childrens * 0.3;
+        $infant_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $infants * 0;
         $tax_fee = 50000;
         $service_fee = 20000;
         $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;
@@ -249,9 +255,9 @@ class UserController extends Controller
         $address = trim($request->input('address', session('address', '')));
 
         // Xử lý giá vé
-        $adult_price = $flight->price * $adults;
-        $child_price = $childrens > 0 ? ($flight->price * $childrens * 0.5) : 0;
-        $infant_price = $infants > 0 ? ($flight->price * $infants * 0) : 0;
+        $adult_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $adults;
+        $child_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $childrens * 0.3;
+        $infant_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $infants * 0;
         $tax_fee = 50000;
         $service_fee = 20000;
         $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;
@@ -386,10 +392,11 @@ class UserController extends Controller
         // Tính thời gian bay
         $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
 
-        // Xử lý giá vé
-        $adult_price = $flight->price * $adultsCount;
-        $child_price = $childrensCount > 0 ? ($flight->price * $childrensCount * 0.5) : 0;
-        $infant_price = $infantsCount > 0 ? ($flight->price * $infantsCount * 0) : 0;
+        /// Xử lý giá vé
+        $base_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business;
+        $adult_price = $base_price * $adultsCount;
+        $child_price = $base_price * $childrensCount * 0.3;
+        $infant_price = 0;
         $tax_fee = 50000;
         $service_fee = 20000;
         $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;

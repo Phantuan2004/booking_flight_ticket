@@ -341,8 +341,9 @@
                                 <th>Từ/Đến</th>
                                 <th>Ngày bay</th>
                                 <th>Giờ bay/đến</th>
-                                <th>Giá vé</th>
+                                <th>Hạng vé</th>
                                 <th>Ghế trống</th>
+                                <th>Giá vé</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -355,8 +356,15 @@
                                     <td>{{ $flight->departure }} → {{ $flight->destination }}</td>
                                     <td>{{ $flight->departure_time }}</td>
                                     <td>{{ $flight->flight_start }} - {{ $flight->flight_end }}</td>
-                                    <td>{{ number_format($flight->price, 0, ',', '.') }} VNĐ</td>
-                                    <td>{{ $flight->available_seats }}/{{ $flight->seats }}</td>
+                                    <td>{{ $flight->seat_class }}</td>
+                                    <td>{{ $flight->available_seats }}</td>
+                                    <td>
+                                        @if ($flight->seat_class == 'phổ thông')
+                                            {{ number_format($flight->price_economy, 0, ',', '.') }} đ
+                                        @elseif ($flight->seat_class == 'thương gia')
+                                            {{ number_format($flight->price_business, 0, ',', '.') }} đ
+                                        @endif
+                                    </td>
                                     <td>{{ $flight->status }}</td>
                                     <td>
                                         <div class="d-flex">
@@ -368,7 +376,10 @@
                                                 data-departure-time="{{ \Carbon\Carbon::parse($flight->departure_time)->format('Y-m-d') }}"
                                                 data-flight-start="{{ \Carbon\Carbon::parse($flight->flight_start)->format('H:i') }}"
                                                 data-flight-end="{{ \Carbon\Carbon::parse($flight->flight_end)->format('H:i') }}"
-                                                data-seats="{{ $flight->seats }}" data-price="{{ $flight->price }}"
+                                                data-seat_economy="{{ $flight->seat_economy }}"
+                                                data-seat_business="{{ $flight->seat_business }}"
+                                                data-price-economy="{{ $flight->price_economy }}"
+                                                data-price-business="{{ $flight->price_business }}"
                                                 data-airline-id="{{ $flight->airline_id }}">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
@@ -651,20 +662,54 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
+                        <div class="mb-3">
+                            <label class="form-label">Hạng vé</label>
+                            <select class="form-select" name="seat_class" id="seat_class" required>
+                                <option value="" selected disabled>Chọn hạng vé</option>
+                                <option value="phổ thông" {{ old('seat_class') == 'phổ thông' ? 'selected' : '' }}>Phổ
+                                    thông</option>
+                                <option value="thương gia" {{ old('seat_class') == 'thương gia' ? 'selected' : '' }}>
+                                    Thương gia</option>
+                            </select>
+                        </div>
+
+                        {{--  Thông tin vé phổ thông --}}
+                        <div id="economy" class="row mb-3" style="display: none">
                             <div class="col-md-6">
                                 <label for="seats" class="form-label">Số ghế</label>
-                                <input type="number" name="seats" class="form-control" id="seats"
-                                    min="0" value="{{ old('seats') }}" required>
-                                @error('seats')
+                                <input type="number" name="seat_economy" class="form-control" id="seat_economy"
+                                    min="0" value="{{ old('seat_economy') }}" required>
+                                @error('seat_economy')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+
                             <div class="col-md-6">
-                                <label for="price" class="form-label">Giá vé (VND)</label>
-                                <input type="text" name="price" class="form-control" id="price"
-                                    placeholder="Ví dụ: 1200000" value="{{ old('price') }}" required>
-                                @error('price')
+                                <label for="price" class="form-label">Giá vé phổ thông (VND)</label>
+                                <input type="text" name="price_economy" class="form-control" id="price_economy"
+                                    placeholder="Ví dụ: 1200000" value="{{ old('price_economy') }}" required>
+                                @error('price_economy')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Thông tin vé thương gia --}}
+                        <div id="business" class="row mb-3" style="display: none">
+                            <div class="col-md-6">
+                                <label for="seats" class="form-label">Số ghế</label>
+                                <input type="number" name="seat_business" class="form-control" id="seat_business"
+                                    min="0" value="{{ old('seat_business') }}" required>
+                                @error('seat_business')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="price" class="form-label">Giá vé thương gia (VND)</label>
+                                <input type="text" name="price_business" class="form-control" id="price_business"
+                                    placeholder="Ví dụ: 2400000" value="{{ old('price_business') }}" required>
+                                @error('price_business')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -789,6 +834,8 @@
                     const flightStart = button.getAttribute('data-flight-start');
                     const flightEnd = button.getAttribute('data-flight-end');
                     const seats = button.getAttribute('data-seats');
+                    const seat_economy = button.getAttribute('data-seat-economy');
+                    const seat_business = button.getAttribute('data-seat-business');
                     const price = button.getAttribute('data-price');
                     const airlineId = button.getAttribute('data-airline-id');
 
@@ -805,6 +852,8 @@
                     modalForm.querySelector('#flight_start').value = flightStart;
                     modalForm.querySelector('#flight_end').value = flightEnd;
                     modalForm.querySelector('#seats').value = seats;
+                    modalForm.querySelector('#seat_economy').value = seat_economy;
+                    modalForm.querySelector('#seat_business').value = seat_business;
                     modalForm.querySelector('#price').value = price;
                     modalForm.querySelector('#airline_id').value = airlineId;
                 });
@@ -832,6 +881,8 @@
                             input.nextElementSibling.textContent = "";
                         }
                     }
+
+                    // Số ghế phổ thông và thương gia không được lớn hơn tổng số ghế, và tổng hai loại ghế phải bằng tổng số ghế
                 });
             });
         });
@@ -856,6 +907,52 @@
             event.currentTarget.classList.add("active");
         }
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let seatClassSelect = document.getElementById("seat_class");
+            let economyDiv = document.getElementById("economy");
+            let businessDiv = document.getElementById("business");
+            let economyInputs = economyDiv.querySelectorAll("input");
+            let businessInputs = businessDiv.querySelectorAll("input");
+
+            function toggleSeatClass() {
+                let selectedClass = seatClassSelect.value;
+
+                if (selectedClass === "phổ thông") {
+                    economyDiv.style.display = "block";
+                    businessDiv.style.display = "none";
+                    enableInputs(economyInputs);
+                    disableInputs(businessInputs);
+                } else if (selectedClass === "thương gia") {
+                    economyDiv.style.display = "none";
+                    businessDiv.style.display = "block";
+                    enableInputs(businessInputs);
+                    disableInputs(economyInputs);
+                } else {
+                    economyDiv.style.display = "none";
+                    businessDiv.style.display = "none";
+                    disableInputs(economyInputs);
+                    disableInputs(businessInputs);
+                }
+            }
+
+            function disableInputs(inputs) {
+                inputs.forEach(input => input.setAttribute("disabled", "disabled"));
+            }
+
+            function enableInputs(inputs) {
+                inputs.forEach(input => input.removeAttribute("disabled"));
+            }
+
+            // Gọi khi tải trang để giữ trạng thái đúng
+            toggleSeatClass();
+
+            // Bắt sự kiện khi chọn hạng vé
+            seatClassSelect.addEventListener("change", toggleSeatClass);
+        });
+    </script>
+
 </body>
 
 </html>

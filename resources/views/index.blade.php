@@ -488,14 +488,6 @@
                             <option value="5">5</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Hạng ghế</label>
-                        <select name="class">
-                            <option value="">Chọn</option>
-                            <option>Phổ thông</option>
-                            <option>Thương gia</option>
-                        </select>
-                    </div>
                     <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
                 </form>
             </div>

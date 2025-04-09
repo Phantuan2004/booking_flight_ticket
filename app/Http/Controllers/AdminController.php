@@ -16,7 +16,7 @@ class AdminController extends Controller
     {
         // Hiển thị danh sách chuyến bay và tổng số
         $flights = Flight::with('airline')->paginate(5, ["*"], 'page_flights');
-        // Hiển thị hãng bay 
+        // Hiển thị hãng bay
         $airlines = Airline::all();
         // Tổng chuyến bay sắp tới
         $upcomingFlights = Flight::where('departure_time', '>', now())->count();
@@ -52,6 +52,10 @@ class AdminController extends Controller
     // Thêm mới chuyến bay
     public function store(Request $request)
     {
+        // Tìm chuyến bay dựa vào ID (có thể null nếu là chuyến bay mới)
+        $flight = Flight::find($request->flight_id);
+
+        // Kiểm tra và validate dữ liệu
         $validator = Validator::make($request->all(), [
             'airline_id' => ['required'],
             'departure' => ['required'],
@@ -59,15 +63,22 @@ class AdminController extends Controller
             'departure_time' => ['required'],
             'flight_start' => ['required'],
             'flight_end' => ['required'],
-            'seats' => ['required'],
-            'price' => ['required'],
+            'seat_class' => ['required', 'in:phổ thông,thương gia'],
+            'seat_economy' => [$request->seat_class == 'phổ thông' ? 'required' : 'nullable', 'integer', 'min:0'],
+            'seat_business' => [$request->seat_class == 'thương gia' ? 'required' : 'nullable', 'integer', 'min:0'],
+            'price_economy' => [$request->seat_class == 'phổ thông' ? 'required' : 'nullable', 'numeric', 'min:0'],
+            'price_business' => [$request->seat_class == 'thương gia' ? 'required' : 'nullable', 'numeric', 'min:0'],
         ]);
 
+        // Nếu validate thất bại, trả về lỗi
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        // Sinh mã chuyến bay ngẫu nhiên
         $flight_code = 'VN_' . rand(10000, 99999);
+
+        // Tạo mới chuyến bay
         Flight::create([
             'airline_id' => $request->airline_id,
             'flight_code' => $flight_code,
@@ -76,13 +87,18 @@ class AdminController extends Controller
             'departure_time' => $request->departure_time,
             'flight_start' => $request->flight_start,
             'flight_end' => $request->flight_end,
-            'seats' => $request->seats,
-            'price' => $request->price,
-            'available_seats' => $request->seats
+            'seat_class' => $request->seat_class,
+            'seat_economy' => $request->seat_class == 'phổ thông' ? $request->seat_economy : null,
+            'seat_business' => $request->seat_class == 'thương gia' ? $request->seat_business : null,
+            'price_economy' => $request->seat_class == 'phổ thông' ? $request->price_economy : null,
+            'price_business' => $request->seat_class == 'thương gia' ? $request->price_business : null,
+            'seats' => ($request->seat_economy ?? 0) + ($request->seat_business ?? 0),
+            'available_seats' => ($request->seat_economy ?? 0) + ($request->seat_business ?? 0),
         ]);
 
         return redirect()->route('admin')->with('message', 'Thêm chuyến bay thành công!!');
     }
+
 
     // Sửa chuyến bay
     public function update(Request $request, $id)
