@@ -35,9 +35,14 @@
             align-items: center;
         }
 
+        .logo-a {
+            text-decoration: none;
+        }
+
         .logo {
             font-size: 28px;
             font-weight: bold;
+            color: #ffffff
         }
 
         .logo span {
@@ -346,7 +351,9 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="logo">Sky<span>Jet</span></div>
+                <a class="logo-a" href="{{ route('index') }}">
+                    <div class="logo">Sky<span>Jet</span></div>
+                </a>
                 <nav>
                     <ul>
                         <li><a href="{{ route('index') }}">Trang Chủ</a></li>
