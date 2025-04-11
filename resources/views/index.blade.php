@@ -398,7 +398,7 @@
                     </div>
                     <div class="form-group">
                         <label>Ngày đi</label>
-                        <input type="date" name="departure_time">
+                        <input type="date" value="{{ now() }}" name="departure_time">
                     </div>
                     <div class="form-group">
                         <label>Ngày về</label>
@@ -461,7 +461,7 @@
                     </div>
                     <div class="form-group">
                         <label>Ngày đi</label>
-                        <input name="departure_time" type="date">
+                        <input name='departure_time' type='date' min='{{ date('Y-m-d') }}'>
                     </div>
                     <div class="form-group">
                         <label>Người lớn <span style="color:rgba(0, 0, 0, 0.4)">(12 tuổi trở lên)</span></label>

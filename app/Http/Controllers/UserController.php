@@ -25,7 +25,6 @@ class UserController extends Controller
     // Phưởng thức tìm kiếm chuyến bay một chiều
     public function search_flights_oneway(Request $request)
     {
-        //        dd($request->all());
         $departure = $request->input('departure');
         $destination = $request->input('destination');
         $departure_time = $request->input('departure_time');
@@ -68,6 +67,23 @@ class UserController extends Controller
                 'passengers' => $passengers
             ]
         ]);
+
+        $query = Flight::query()
+            ->where('departure', 'like', "%$departure%")
+            ->where('destination', 'like', "%$destination%")
+            ->whereDate('departure_time', $departure_time)
+            ->where('available_seats', '>=', $passengers);
+
+        if ($request->input('sort') == 'asc') {
+            $flights = $query->orderBy('price_economy', 'asc')
+                ->orderBy('price_business', 'asc')
+                ->get();
+        } else {
+            $flights = $query->orderBy('price_economy', 'desc')
+                ->orderBy('price_business', 'desc')
+                ->get();
+        }
+
 
         return view('datve_motchieu', compact('flights', 'adults', 'childrens', 'infants', 'passengers'));
     }

@@ -395,6 +395,61 @@
                 margin-top: 15px;
             }
         }
+
+        /* CSS cho nút hiển thị chi tiết */
+        .toggle-details-btn {
+            background-color: transparent;
+            color: #003580;
+            border: 1px solid #003580;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .toggle-details-btn:hover {
+            background-color: #f0f8ff;
+        }
+
+        /* CSS cho phần hiển thị chi tiết */
+        .flight-details-container {
+            width: 100%;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .flight-details-content {
+            padding: 15px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .details-table th {
+            text-align: left;
+            padding: 8px 0;
+            border-bottom: 2px solid #ddd;
+            color: #003580;
+            font-size: 16px;
+        }
+
+        .details-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .details-table td:first-child {
+            font-weight: 500;
+            color: #666;
+            width: 40%;
+        }
     </style>
 </head>
 
@@ -470,10 +525,11 @@
                         <div class="filter-group">
                             <label>Giá</label>
                             <select>
-                                <option>Tất cả giá</option>
-                                <option>Dưới 1.000.000</option>
-                                <option>1.000.000 - 2.000.000</option>
-                                <option>Trên 2.000.000</option>
+                                <option disabled selected>Tất cả</option>
+                                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Tăng dần
+                                </option>
+                                <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Giảm dần
+                                </option>
                             </select>
                         </div>
                         <div class="filter-group">
@@ -513,8 +569,12 @@
                                     <div class="flight-route">
                                         {{ $flight->departure }} - {{ $flight->destination }}
                                     </div>
-
                                     <div class="airline-name">{{ $flight->airline->name }}</div>
+
+                                    <!-- Thêm nút hiển thị chi tiết -->
+                                    <button class="toggle-details-btn" onclick="toggleDetails({{ $flight->id }})">
+                                        Hiển thị chi tiết
+                                    </button>
                                 </div>
                                 <div class="flight-details">
                                     <div class="price">{{ $flight->formatted_price }}</div>
@@ -526,10 +586,7 @@
                                         <input type="hidden" name="departure_time"
                                             value="{{ $flight->departure_time }}">
                                         <input type="hidden" name="price"
-                                            value="
-                                        @if ($flight->seat_class === 'phổ thông') {{ $flight->price_economy }}
-                                         @else {{ $flight->price_business }} @endif
-                                         ">
+                                            value="@if ($flight->seat_class === 'phổ thông') {{ $flight->price_economy }} @else {{ $flight->price_business }} @endif">
                                         <input type="hidden" name="adults" value="{{ $adults }}">
                                         <input type="hidden" name="childrens" value="{{ $childrens }}">
                                         <input type="hidden" name="infants" value="{{ $infants }}">
@@ -539,6 +596,47 @@
                                             <button class="select-btn" type="submit">Chọn vé thương gia</button>
                                         @endif
                                     </form>
+                                </div>
+                            </div>
+
+                            <!-- Thêm phần chi tiết ẩn ngay sau mỗi flight-card -->
+                            <div id="details-{{ $flight->id }}" class="flight-details-container"
+                                style="display: none;">
+                                <div class="flight-details-content">
+                                    <table class="details-table">
+                                        <tr>
+                                            <th colspan="2">Chi tiết chuyến bay</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Mã chuyến bay:</td>
+                                            <td>{{ $flight->flight_code ?? 'VN' . rand(1000, 9999) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Thời gian bay:</td>
+                                            <td>{{ $flight->flight_duration ?? rand(1, 3) . ' giờ ' . rand(0, 59) . ' phút' }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hãng bay: </td>
+                                            <td>{{ $flight->airline->name ?? 'Vietnam Airlines' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Loại máy bay:</td>
+                                            <td>{{ $flight->aircraft_type ?? 'Airbus A' . rand(300, 380) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hạng vé:</td>
+                                            <td>{{ ucfirst($flight->seat_class) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hành lý xách tay:</td>
+                                            <td>{{ $flight->seat_class === 'thương gia' ? '12kg' : '7kg' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hành lý ký gửi:</td>
+                                            <td>{{ $flight->seat_class === 'thương gia' ? '40kg' : '20kg' }}</td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                         @endforeach
@@ -632,6 +730,29 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        function toggleDetails(flightId) {
+            const detailsSection = document.getElementById('details-' + flightId);
+            const buttons = document.querySelectorAll('.toggle-details-btn');
+
+            // Tìm button đã được click
+            let clickedButton;
+            buttons.forEach(button => {
+                if (button.getAttribute('onclick').includes(flightId)) {
+                    clickedButton = button;
+                }
+            });
+
+            if (detailsSection.style.display === 'none') {
+                detailsSection.style.display = 'block';
+                clickedButton.textContent = 'Ẩn chi tiết';
+            } else {
+                detailsSection.style.display = 'none';
+                clickedButton.textContent = 'Hiển thị chi tiết';
+            }
+        }
+    </script>
 </body>
 
 </html>

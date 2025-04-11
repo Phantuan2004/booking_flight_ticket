@@ -16,6 +16,10 @@ class AdminController extends Controller
     {
         // Hiển thị danh sách chuyến bay và tổng số
         $flights = Flight::with('airline')->paginate(5, ["*"], 'page_flights');
+        Flight::where('departure_time', '<', now())
+            ->where('status', '!=', 'hủy bỏ') // Không cập nhật chuyến bay bị hủy
+            ->update(['status' => 'hoàn thành']);
+
         // Hiển thị hãng bay
         $airlines = Airline::all();
         // Tổng chuyến bay sắp tới
