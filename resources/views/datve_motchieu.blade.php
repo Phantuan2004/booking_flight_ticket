@@ -511,47 +511,62 @@
             <div class="flight-selection">
                 <div class="filter-panel">
                     <h2 class="filter-title">Lọc Kết Quả</h2>
-                    <div class="filter-form">
-                        <div class="filter-group">
-                            <label>Hãng Hàng Không</label>
-                            <select>
-                                <option>Tất cả hãng</option>
-                                <option>Vietnam Airlines</option>
-                                <option>Vietjet Air</option>
-                                <option>Bamboo Airways</option>
-                                <option>Pacific Airlines</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Giá</label>
-                            <select>
-                                <option disabled selected>Tất cả</option>
-                                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Tăng dần
-                                </option>
-                                <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Giảm dần
-                                </option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Thời Gian Bay</label>
-                            <select>
-                                <option>Tất cả</option>
-                                <option>Sáng (00:00 - 12:00)</option>
-                                <option>Chiều (12:00 - 18:00)</option>
-                                <option>Tối (18:00 - 24:00)</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label>Sắp Xếp</label>
-                            <select>
-                                <option>Giá thấp nhất</option>
-                                <option>Thời gian bay ngắn nhất</option>
-                                <option>Khởi hành sớm nhất</option>
-                                <option>Khởi hành muộn nhất</option>
-                            </select>
-                        </div>
+
+                    <div class="filter-group">
+                        <form action="{{ route('flight-search-oneway') }}" method="GET">
+                            <!-- Keep all other search parameters -->
+                            <input type="hidden" name="departure" value="{{ request('departure') }}">
+                            <input type="hidden" name="destination" value="{{ request('destination') }}">
+                            <input type="hidden" name="departure_time" value="{{ request('departure_time') }}">
+                            <input type="hidden" name="adults" value="{{ request('adults') }}">
+                            <input type="hidden" name="childrens" value="{{ request('childrens') }}">
+                            <input type="hidden" name="infants" value="{{ request('infants') }}">
+
+                            <div class="filter-form">
+                                <div class="filter-group">
+                                    <label>Hãng Hàng Không</label>
+                                    <select>
+                                        <option>Tất cả hãng</option>
+                                        <option>Vietnam Airlines</option>
+                                        <option>Vietjet Air</option>
+                                        <option>Bamboo Airways</option>
+                                        <option>Pacific Airlines</option>
+                                    </select>
+                                </div>
+                                <!-- Other filter fields -->
+                                <div class="filter-group">
+                                    <label>Giá</label>
+                                    <select name="sort">
+                                        <option value="">Tất cả</option>
+                                        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Tăng
+                                            dần</option>
+                                        <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>
+                                            Giảm dần</option>
+                                    </select>
+                                </div>
+                                <!-- Other filter fields -->
+                                <div class="filter-group">
+                                    <label>Thời Gian Bay</label>
+                                    <select>
+                                        <option>Tất cả</option>
+                                        <option>Sáng (00:00 - 12:00)</option>
+                                        <option>Chiều (12:00 - 18:00)</option>
+                                        <option>Tối (18:00 - 24:00)</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Sắp Xếp</label>
+                                    <select>
+                                        <option>Giá thấp nhất</option>
+                                        <option>Thời gian bay ngắn nhất</option>
+                                        <option>Khởi hành sớm nhất</option>
+                                        <option>Khởi hành muộn nhất</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="filter-btn">Áp Dụng</button>
+                        </form>
                     </div>
-                    <button class="filter-btn">Áp Dụng</button>
                 </div>
 
                 <div class="flight-list">
@@ -577,7 +592,13 @@
                                     </button>
                                 </div>
                                 <div class="flight-details">
-                                    <div class="price">{{ $flight->formatted_price }}</div>
+                                    <div class="price">
+                                        @if ($flight->seat_class == 'phổ thông')
+                                            {{ number_format($flight->price_economy, 0, ',', '.') }} VNĐ
+                                        @else
+                                            {{ number_format($flight->price_business, 0, ',', '.') }} VNĐ
+                                        @endif
+                                    </div>
                                     <form action="{{ route('xacnhan') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="flight_id" value="{{ $flight->id }}">
