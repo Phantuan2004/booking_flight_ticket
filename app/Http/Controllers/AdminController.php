@@ -9,13 +9,17 @@ use App\Models\Guest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    public function admin()
+    public function admin(Request $request)
     {
+        // Hiển thị danh sách hãng bay
+        $airlines = Airline::all();
+
         // Hiển thị danh sách chuyến bay và tổng số
-        $flights = Flight::with('airline')->paginate(5, ["*"], 'page_flights');
+        $flights = Flight::with('airline')->orderBy('id', 'desc')->paginate(5, ["*"], 'page_flights');
         Flight::where('departure_time', '<', now())
             ->where('status', '!=', 'hủy bỏ') // Không cập nhật chuyến bay bị hủy
             ->update(['status' => 'hoàn thành']);
@@ -50,7 +54,122 @@ class AdminController extends Controller
         $totalUsers = User::where('role', 'user')->count();
         $totalGuests = Guest::count();
         $totalCustomers = $totalUsers + $totalGuests;
+
         return view('admin/admin', compact('flights', 'airlines', 'bookings', 'averageBookings', 'statusAll', 'successfulBookings', 'upcomingFlights', 'highestRevenueFlight', 'totalBookings', 'totalRevenue', 'users', 'guestUsers', 'totalCustomers', 'totalUsers', 'totalGuests'));
+    }
+    public function addAirline(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'logo' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $logoFile = $request->file('logo');
+        $logoAirline = $request->name . '_' . time() . '.' . $logoFile->getClientOriginalExtension();
+        $logoFile->storeAs('airline_logos', $logoAirline, 'public');
+        $airline_code = 'AIR_' . rand(100, 999);
+
+        Airline::create([
+            'airline_code' => $airline_code,
+            'name' => $request->name,
+            'logo' => $logoAirline,
+        ]);
+
+        flash()->success('Thêm hãng bay thành công');
+
+        return redirect()->route('admin');
+    }
+
+    public function editAirline(Request $request, $id)
+    {
+        $airline = Airline::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $data = [
+            'name' => $request->name,
+        ];
+
+        if ($request->hasFile('logo')) {
+            // Xóa logo cũ nếu tồn tại
+            if ($airline->logo && Storage::exists('public/airline_logos/' . $airline->logo)) {
+                Storage::delete('public/airline_logos/' . $airline->logo);
+            }
+
+            $logoFile = $request->file('logo');
+            $logoAirline = $request->name . '_' . time() . '.' . $logoFile->getClientOriginalExtension();
+            $logoFile->storeAs('airline_logos', $logoAirline, 'public');
+            $data['logo'] = $logoAirline;
+        }
+
+        try {
+            $airline->update($data);
+            return redirect()->route('admin')->with('success', 'Cập nhật hãng bay thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật hãng bay');
+        }
+    }
+
+    public function deleteAirline(Request $request, $id)
+    {
+        $airline = Airline::findOrFail($id);
+        $airline->delete();
+
+        flash()->success('Xóa hãng bay thành công');
+        return redirect()->route('admin');
+    }
+
+    public function search_flight_admin(Request $request)
+    {
+        // Tìm kiếm chuyến bay
+        $query = Flight::query()
+            ->where('departure', 'like', '%' . $request->departure . '%')
+            ->where('destination', 'like', '%' . $request->destination . '%')
+            ->where('departure_time', 'like', '%' . $request->departure_time . '%')
+            ->where('airline_id', 'like', '%' . $request->airline_id . '%');
+
+        $searchFlight = $query->with('airline')->paginate(5, ["*"], 'page_flights');
+        if ($searchFlight->isEmpty()) {
+            $request->session()->flash('error', 'Không tìm thấy chuyến bay phù hợp');
+        } else {
+            $request->session()->flash('success', 'Tìm kiếm thành công');
+        }
+
+        $airlines = Airline::all();
+
+        return view('admin/admin', [
+            'searchFlight' => $searchFlight,
+            'flights' => Flight::with('airline')->paginate(5, ["*"], 'page_flights'),
+            'airlines' => $airlines,
+            'bookings' => Booking::with('flight')->paginate(5, ["*"], 'page_bookings'),
+            'statusAll' => Booking::select('status')->get(),
+            'totalBookings' => Booking::count(),
+            'successfulBookings' => Booking::count() > 0 ? round((Booking::count() / Flight::count()) * 100, 2) : 0,
+            'averageBookings' => Booking::count() > 0 ? round(Booking::count() / Flight::count(), 2) : 0,
+            'highestRevenueFlight' => Flight::with('bookings')
+                ->whereMonth('departure_time', now()->month)
+                ->withSum('bookings', 'total_price')
+                ->orderByDesc('bookings_sum_total_price')
+                ->first(),
+            'totalRevenue' => Booking::sum('total_price'),
+            'users' => User::where('role', 'user')->paginate(5, ["*"], 'page_users'),
+            'guestUsers' => Guest::query()->paginate(5, ["*"], 'page_guests'),
+            'totalUsers' => User::where('role', 'user')->count(),
+            'totalGuests' => Guest::count(),
+            'totalCustomers' => User::where('role', 'user')->count() + Guest::count(),
+            'upcomingFlights' => Flight::where('departure_time', '>', now())->count(),
+        ]);
     }
 
     // Thêm mới chuyến bay
@@ -196,6 +315,7 @@ class AdminController extends Controller
 
         return view('admin/admin', compact('flights'));
     }
+
 
     //* Các chức năng hủy, xóa dữ liệu
     // Hủy vé

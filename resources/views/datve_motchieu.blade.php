@@ -454,6 +454,9 @@
 </head>
 
 <body>
+    {{-- Scroll to top --}}
+    @include('components.scroll-to-top')
+
     <header>
         <div class="container">
             <div class="header-content">
@@ -514,7 +517,7 @@
 
                     <div class="filter-group">
                         <form action="{{ route('flight-search-oneway') }}" method="GET">
-                            <!-- Keep all other search parameters -->
+                            <!-- Giữ tất cả các tham số tìm kiếm khác -->
                             <input type="hidden" name="departure" value="{{ request('departure') }}">
                             <input type="hidden" name="destination" value="{{ request('destination') }}">
                             <input type="hidden" name="departure_time" value="{{ request('departure_time') }}">
@@ -576,7 +579,9 @@
                     @else
                         @foreach ($flights as $flight)
                             <div class="flight-card">
-                                <div class="airline-logo">{{ $flight->airline->logo }}</div>
+                                <div class="airline-logo"><img
+                                        src="{{ asset('storage/airline_logos/' . $flight->airline->logo) }}"
+                                        alt="Airline Logo" width="70px" height="70px"></div>
                                 <div class="flight-info">
                                     <div class="flight-time">
                                         <div class="time">{{ $flight->departure_time }}</div>
@@ -633,8 +638,33 @@
                                             <td>{{ $flight->flight_code ?? 'VN' . rand(1000, 9999) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Thời gian bay:</td>
-                                            <td>{{ $flight->flight_duration ?? rand(1, 3) . ' giờ ' . rand(0, 59) . ' phút' }}
+                                            <td>Ngày bay:</td>
+                                            <td>
+                                                @if ($flight->departure_time instanceof \DateTime)
+                                                    {{ $flight->departure_time->format('d/m/Y') }}
+                                                @else
+                                                    {{ \Carbon\Carbon::parse($flight->departure_time)->format('d/m/Y') }}
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Giờ bay:</td>
+                                            <td>
+                                                @if ($flight->flight_start instanceof \DateTime)
+                                                    {{ $flight->flight_start->format('H:i') }}
+                                                @else
+                                                    {{ \Carbon\Carbon::parse($flight->flight_start)->format('H:i') }}
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Giờ đến: (dự kiến)</td>
+                                            <td>
+                                                @if ($flight->flight_end instanceof \DateTime)
+                                                    {{ $flight->flight_end->format('H:i') }}
+                                                @else
+                                                    {{ \Carbon\Carbon::parse($flight->flight_end)->format('H:i') }}
+                                                @endif
                                             </td>
                                         </tr>
                                         <tr>

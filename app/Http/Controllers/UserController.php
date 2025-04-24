@@ -59,7 +59,7 @@ class UserController extends Controller
             ->whereDate('departure_time', $departure_time)
             ->where('available_seats', '>=', $passengers);
 
-        // Apply sorting based on request parameter
+        // Áp dụng sắp xếp dựa trên tham số yêu cầu
         $sort = $request->input('sort');
         if ($sort == 'asc') {
             $query->orderBy('price_economy', 'asc')
@@ -81,11 +81,24 @@ class UserController extends Controller
             }
         }
 
+        // Thông báo nếu chưa nhập đủ các trường
+        if (empty($departure) || empty($destination) || empty($departure_time)) {
+            flash()->error('Vui lòng nhập đầy đủ các trường');
+            return redirect()->route('index')->withInput();
+        }
+
+        // Hiện thông báo nếu không có chuyến bay nào
+        if ($flights->isEmpty()) {
+            flash()->error('Không tìm thấy chuyến bay phù hợp');
+            return redirect()->route('index')->withInput();
+        }
+
         return view('datve_motchieu', compact('flights', 'adults', 'childrens', 'infants', 'passengers'));
     }
     // Phương thức tìm kiếm chuyến bay khứ hồi
     public function search_flights_roundtrip(Request $request)
     {
+        // dd($request->all());
         $flights = Flight::all();
         $departure = $request->input('departure');
         $destination = $request->input('destination');
@@ -110,12 +123,59 @@ class UserController extends Controller
             ->where('available_seats', '>=', $total_passengers)
             ->get();
 
-        // Định dạng hiển thị giá tiền
+        // Thông báo nếu chưa nhập đủ các trường
+        if (empty($departure) || empty($destination) || empty($departure_time) || empty($return_time)) {
+            flash()->error('Vui lòng nhập đầy đủ các trường');
+            return redirect()->route('index')->withInput();
+        }
+
+        // Hiện thông báo nếu không có chuyến bay nào
+        if ($outboundFlights->isEmpty() || $returnFlights->isEmpty()) {
+            flash()->error('Không tìm thấy chuyến bay phù hợp');
+            return redirect()->route('index')->withInput();
+        }
+
+        // Định dạng hiển thị giá tiền cho chuyến đi
         foreach ($outboundFlights as $flight) {
+            if ($flight->seat_class == 'phổ thông') {
+                $flight->price = $flight->price_economy;
+            } else {
+                $flight->price = $flight->price_business;
+            }
             $flight->formatted_price = number_format($flight->price, 0, ',', '.') . ' VNĐ';
         }
+
+        // Định dạng hiển thị giá tiền cho chuyến về
         foreach ($returnFlights as $flight) {
+            if ($flight->seat_class == 'phổ thông') {
+                $flight->price = $flight->price_economy;
+            } else {
+                $flight->price = $flight->price_business;
+            }
             $flight->formatted_price = number_format($flight->price, 0, ',', '.') . ' VNĐ';
+        }
+
+        // Hiển thị thời gian chuyến bay
+        foreach ($outboundFlights as $flight) {
+            $flight->flight_start = Carbon::parse($flight->flight_start)->format('H:i');
+            $flight->flight_end = Carbon::parse($flight->flight_end)->format('H:i');
+        }
+
+        foreach ($returnFlights as $flight) {
+            $flight->flight_start = Carbon::parse($flight->flight_start)->format('H:i');
+            $flight->flight_end = Carbon::parse($flight->flight_end)->format('H:i');
+        }
+
+        // Lọc chuyến bay
+        $airlines = Airline::all();
+        // Áp dụng sắp xếp dựa giá 
+        $sort = $request->input('sort');
+        if ($sort == 'asc') {
+            $outboundFlights->orderBy('price_economy', 'asc')
+                ->orderBy('price_business', 'asc');
+        } elseif ($sort == 'desc') {
+            $outboundFlights->orderBy('price_economy', 'desc')
+                ->orderBy('price_business', 'desc');
         }
 
         // Lưu thông tin vào session
@@ -130,7 +190,8 @@ class UserController extends Controller
                 'infants' => $infants
             ]
         ]);
-        return view('datve_khuhoi', compact('flights', 'outboundFlights', 'returnFlights', 'adults', 'childrens', 'infants'));
+
+        return view('datve_khuhoi', compact('flights', 'airlines', 'sort', 'departure', 'destination', 'departure_time', 'return_time', 'outboundFlights', 'returnFlights', 'adults', 'childrens', 'infants'));
     }
 
     // Hiển thị giao diện trang xác nhận
@@ -616,45 +677,6 @@ class UserController extends Controller
 
         return view('lichsudatve', compact('histories', 'booking_code', 'name', 'phone', 'email'));
     }
-
-    // public function search_danhsachdatve(Request $request)
-    // {
-    //     // Tìm kiếm theo mã đặt vé
-    //     $booking_code = $request->input('booking_code');
-    //     if (!$booking_code) {
-    //         $histories = collect();
-    //     } else {
-    //         $histories = Booking::query()
-    //             ->when('booking_code', function ($query, $booking_code) {
-    //                 return $query->where('booking_code', 'like', "%$booking_code%");
-    //             })
-    //             ->with('flight.airline')
-    //             ->get();
-
-    //         foreach ($histories as $history) {
-    //             $flight = Flight::find($history->flight_id);
-    //             if ($flight) {
-    //                 $departureTime = Carbon::parse($flight->departure_time);
-    //                 $flightStart = Carbon::parse($flight->flight_start);
-    //                 $flightEnd = Carbon::parse($flight->flight_end);
-
-    //                 $history->departureTime = $departureTime;
-    //                 $history->flightStartTime = $flightStart->format('H:i');
-    //                 $history->flightEndTime = $flightEnd->format('H:i');
-    //                 $history->departureDate = $departureTime->format('d/m/Y');
-    //                 $history->duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
-    //             }
-
-    //             // Định dạng dữ liệu khách hàng
-    //             $history->adult_count = $history->adult_count ?? 0;
-    //             $history->child_count = $history->child_count ?? 0;
-    //             $history->infant_count = $history->infant_count ?? 0;
-    //             $history->total_price = $history->total_price ?? 0;
-    //             $history->passenger_count = $history->adult_count + $history->child_count + $history->infant_count ?? 0;
-    //         }
-    //     }
-    //     return view('lichsudatve', compact('histories', 'booking_code'));
-    // }
 
     // Chức năng hủy vé
     public function huyve(Request $request, Booking $id)

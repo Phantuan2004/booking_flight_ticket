@@ -13,6 +13,25 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        .alert {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
         body {
             background-color: #f5f5f5;
         }
@@ -69,7 +88,7 @@
         }
 
         .hero {
-            background-image: url('/api/placeholder/1200/400');
+            background-image: url({{ asset('images/banners/banner-web-ve-bay.jpg') }});
             background-size: cover;
             background-position: center;
             height: 400px;
@@ -90,7 +109,7 @@
 
         .hero-content {
             z-index: 1;
-            color: white;
+            color: rgb(84, 84, 84);
             padding: 20px;
         }
 
@@ -348,6 +367,9 @@
 </head>
 
 <body>
+    {{-- Scroll to top --}}
+    @include('components.scroll-to-top')
+
     <header>
         <div class="container">
             <div class="header-content">
@@ -379,6 +401,12 @@
 
     <div class="container">
         <div class="search-box">
+            @if (session('flash_message'))
+                <div class="alert alert-{{ session('flash_message.type') }}"
+                    style="margin-bottom: 20px; padding: 15px; border-radius: 4px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
+                    {{ session('flash_message.message') }}
+                </div>
+            @endif
             <div class="search-tabs">
                 <div class="tab active" onclick="showForm('roundtrip')">Vé Khứ Hồi</div>
                 <div class="tab" onclick="showForm('oneway')">Vé Một Chiều</div>
@@ -390,58 +418,64 @@
                 <form class="search-form" action="{{ route('flight-search-roundtrip') }}" method="GET">
                     <div class="form-group">
                         <label>Điểm đi</label>
-                        <input type="text" name="departure" placeholder="Chọn thành phố hoặc sân bay">
+                        <input type="text" name="departure" placeholder="Chọn thành phố hoặc sân bay"
+                            value="{{ old('departure') }}">
                     </div>
                     <div class="form-group">
                         <label>Điểm đến</label>
-                        <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay">
+                        <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay"
+                            value="{{ old('destination') }}">
                     </div>
                     <div class="form-group">
                         <label>Ngày đi</label>
-                        <input type="date" value="{{ now() }}" name="departure_time">
+                        <input type="date" min="{{ date('Y-m-d') }}" name="departure_time"
+                            value="{{ old('departure_time') }}">
                     </div>
                     <div class="form-group">
                         <label>Ngày về</label>
-                        <input type="date" name="return_time">
+                        <input type="date" min="{{ date('Y-m-d') }}" name="return_time"
+                            value="{{ old('return_time') }}">
                     </div>
                     <div class="form-group">
                         <label>Người lớn <span style="color:rgba(0, 0, 0, 0.4)">(12 tuổi trở lên)</span></label>
                         <select name="adults">
-                            <option>1 Người lớn</option>
-                            <option>2 Người lớn</option>
-                            <option>3 Người lớn</option>
-                            <option>4 Người lớn</option>
-                            <option>5+ Người lớn</option>
+                            <option value="1" {{ old('adults') == '1' ? 'selected' : '' }}>1</option>
+                            <option value="2" {{ old('adults') == '2' ? 'selected' : '' }}>2</option>
+                            <option value="3" {{ old('adults') == '3' ? 'selected' : '' }}>3</option>
+                            <option value="4" {{ old('adults') == '4' ? 'selected' : '' }}>4</option>
+                            <option value="5" {{ old('adults') == '5' ? 'selected' : '' }}>5</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Trẻ em <span style="color:rgba(0, 0, 0, 0.4)">(2 đến dưới 12 tuổi)</span></label>
                         <select name="childrens">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option value="0" {{ old('childrens') == '0' ? 'selected' : '' }}>0</option>
+                            <option value="1" {{ old('childrens') == '1' ? 'selected' : '' }}>1</option>
+                            <option value="2" {{ old('childrens') == '2' ? 'selected' : '' }}>2</option>
+                            <option value="3" {{ old('childrens') == '3' ? 'selected' : '' }}>3</option>
+                            <option value="4" {{ old('childrens') == '4' ? 'selected' : '' }}>4</option>
+                            <option value="5" {{ old('childrens') == '5' ? 'selected' : '' }}>5</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Em bé <span style="color:rgba(0, 0, 0, 0.4)">(dưới 2 tuổi)</span></label>
                         <select name="infants">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option value="0" {{ old('infants') == '0' ? 'selected' : '' }}>0</option>
+                            <option value="1" {{ old('infants') == '1' ? 'selected' : '' }}>1</option>
+                            <option value="2" {{ old('infants') == '2' ? 'selected' : '' }}>2</option>
+                            <option value="3" {{ old('infants') == '3' ? 'selected' : '' }}>3</option>
+                            <option value="4" {{ old('infants') == '4' ? 'selected' : '' }}>4</option>
+                            <option value="5" {{ old('infants') == '5' ? 'selected' : '' }}>5</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Hạng ghế</label>
                         <select name="seat-class">
-                            <option value="">Chọn</option>
-                            <option>Phổ thông</option>
-                            <option>Thương gia</option>
+                            <option value="" {{ old('seat-class') == '' ? 'selected' : '' }}>Chọn</option>
+                            <option value="Phổ thông" {{ old('seat-class') == 'Phổ thông' ? 'selected' : '' }}>Phổ
+                                thông</option>
+                            <option value="Thương gia" {{ old('seat-class') == 'Thương gia' ? 'selected' : '' }}>Thương
+                                gia</option>
                         </select>
                     </div>
                     <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
@@ -453,46 +487,60 @@
                 <form class="search-form" method="GET" action="{{ route('flight-search-oneway') }}">
                     <div class="form-group">
                         <label>Điểm đi</label>
-                        <input name="departure" type="text" placeholder="Chọn thành phố hoặc sân bay">
+                        <input name="departure" type="text" placeholder="Chọn thành phố hoặc sân bay"
+                            value="{{ old('departure') }}">
                     </div>
                     <div class="form-group">
                         <label>Điểm đến</label>
-                        <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay">
+                        <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay"
+                            value="{{ old('destination') }}">
                     </div>
                     <div class="form-group">
                         <label>Ngày đi</label>
-                        <input name='departure_time' type='date' min='{{ date('Y-m-d') }}'>
+                        <input name='departure_time' type='date' min='{{ date('Y-m-d') }}'
+                            value="{{ old('departure_time') }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Hạng ghế</label>
+                        <select name="seat-class">
+                            <option value="" {{ old('seat-class') == '' ? 'selected' : '' }}>Chọn</option>
+                            <option value="Phổ thông" {{ old('seat-class') == 'Phổ thông' ? 'selected' : '' }}>Phổ
+                                thông</option>
+                            <option value="Thương gia" {{ old('seat-class') == 'Thương gia' ? 'selected' : '' }}>
+                                Thương
+                                gia</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Người lớn <span style="color:rgba(0, 0, 0, 0.4)">(12 tuổi trở lên)</span></label>
                         <select name="adults">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option value="1" {{ old('adults') == '1' ? 'selected' : '' }}>1</option>
+                            <option value="2" {{ old('adults') == '2' ? 'selected' : '' }}>2</option>
+                            <option value="3" {{ old('adults') == '3' ? 'selected' : '' }}>3</option>
+                            <option value="4" {{ old('adults') == '4' ? 'selected' : '' }}>4</option>
+                            <option value="5" {{ old('adults') == '5' ? 'selected' : '' }}>5</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Trẻ em <span style="color:rgba(0, 0, 0, 0.4)">(2 đến dưới 12 tuổi)</span></label>
                         <select name="childrens">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option value="0" {{ old('childrens') == '0' ? 'selected' : '' }}>0</option>
+                            <option value="1" {{ old('childrens') == '1' ? 'selected' : '' }}>1</option>
+                            <option value="2" {{ old('childrens') == '2' ? 'selected' : '' }}>2</option>
+                            <option value="3" {{ old('childrens') == '3' ? 'selected' : '' }}>3</option>
+                            <option value="4" {{ old('childrens') == '4' ? 'selected' : '' }}>4</option>
+                            <option value="5" {{ old('childrens') == '5' ? 'selected' : '' }}>5</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Em bé <span style="color:rgba(0, 0, 0, 0.4)">(dưới 2 tuổi)</span></label>
                         <select name="infants">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                            <option value="0" {{ old('infants') == '0' ? 'selected' : '' }}>0</option>
+                            <option value="1" {{ old('infants') == '1' ? 'selected' : '' }}>1</option>
+                            <option value="2" {{ old('infants') == '2' ? 'selected' : '' }}>2</option>
+                            <option value="3" {{ old('infants') == '3' ? 'selected' : '' }}>3</option>
+                            <option value="4" {{ old('infants') == '4' ? 'selected' : '' }}>4</option>
+                            <option value="5" {{ old('infants') == '5' ? 'selected' : '' }}>5</option>
                         </select>
                     </div>
                     <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
@@ -609,7 +657,7 @@
                     <ul>
                         <li><a href="#">Hotline: 1900 1234</a></li>
                         <li><a href="#">Email: support@skyjet.vn</a></li>
-                        <li><a href="#">Địa Chỉ: 123 Nguyễn Huệ, Q.1, TP.HCM</a></li>
+                        <li><a href="#">Địa Chỉ: 123 Đống Đa, Hà Nội</a></li>
                     </ul>
                 </div>
             </div>
@@ -637,37 +685,6 @@
             // Tìm tab đang được click và thêm class active
             event.target.classList.add('active');
         }
-    </script>
-
-    <script>
-        // // Hiển thị thông báo khi chưa nhập thông tin chuyến bay mà đã submit
-        // document.querySelector('#roundtrip-form').addEventListener('submit', function(event) {
-        //     const contactFormSearch = document.querySelectorAll('.form-container');
-        //     let allContactFormSearchFilled = true;
-        //     contactFormSearch.forEach(input => {
-        //         if (!input.value) {
-        //             allContactFormSearchFilled = false;
-        //         }
-        //     });
-        //     if (!allContactFormSearchFilled) {
-        //         event.preventDefault();
-        //         alert('Vui lòng điền đầy đủ thông tin chuyến bay trước khi tìm kiếm.');
-        //     }
-        // });
-
-        // document.querySelector('#oneway-form').addEventListener('submit', function(event) {
-        //     const contactFormSearch = document.querySelectorAll('.form-container');
-        //     let allContactFormSearchFilled = true;
-        //     contactFormSearch.forEach(input => {
-        //         if (!input.value) {
-        //             allContactFormSearchFilled = false;
-        //         }
-        //     });
-        //     if (!allContactFormSearchFilled) {
-        //         event.preventDefault();
-        //         alert('Vui lòng điền đầy đủ thông tin chuyến bay trước khi tìm kiếm.');
-        //     }
-        // });
     </script>
 </body>
 

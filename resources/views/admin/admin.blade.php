@@ -8,6 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -262,6 +263,9 @@
 </head>
 
 <body>
+    {{-- Scroll to top --}}
+    @include('components.scroll-to-top')
+
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -272,6 +276,7 @@
             </div>
             <ul class="sidebar-menu ps-0">
                 <li><a href="#" class="active"><i class="bi bi-speedometer2"></i> <span>Tổng quan</span></a></li>
+                <li><a href="#airlines"><i class="bi bi-airplane-engines"></i> <span>Hãng bay</span></a></li>
                 <li><a href="#flights"><i class="bi bi-airplane"></i> <span>Chuyến bay</span></a></li>
                 <li><a href="#management-tickets"><i class="bi bi-ticket-perforated"></i> <span>Vé bay</span></a></li>
                 <li><a href="#customers"><i class="bi bi-people"></i> <span>Khách hàng</span></a></li>
@@ -318,6 +323,68 @@
                 </div>
             </div>
 
+            <!-- Airlines Management -->
+            <div class="data-table">
+                <div id="airlines" class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="m-0">Danh sách hãng bay </h3>
+                    <button class="add-btn" type="button" data-bs-toggle="modal" data-bs-target="#addAirlineModal">
+                        <i class="bi bi-plus"></i> Thêm hãng bay
+                    </button>
+                </div>
+
+                <div class="search-box mb-3">
+                    <form class="search-flight" action="{{ route('search-airline-admin') }}" method="get">
+                        <input type="text" name="{{ $airline_code ?? '' }}" placeholder="Mã hoặc tên hãng bay">
+                        <button type="submit"><i class="bi bi-search"></i></button>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã hãng bay</th>
+                                <th>Hãng bay</th>
+                                <th>Logo</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $airlineToDisplay = $searchAirline ?? $airlines;
+                            @endphp
+
+                            @foreach ($airlineToDisplay as $airline)
+                                <tr>
+                                    <td>{{ $airline->airline_code }}</td>
+                                    <td>{{ $airline->name }}</td>
+                                    <td><img src="{{ asset('storage/airline_logos/' . $airline->logo) }}"
+                                            alt="{{ $airline->name }}" style="width: 100px; height: 60px;"></td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <button class="btn btn-sm btn-primary me-1 edit-airline-btn"
+                                                data-bs-toggle="modal" data-bs-target="#editAirlineModal"
+                                                data-id="{{ $airline->id }}" data-name="{{ $airline->name }}"
+                                                data-logo="{{ $airline->logo }}">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <form action="{{ route('delete-airline', $airline->id) }}" method="post">
+                                                @csrf
+                                                @method('delete')
+                                                <button class="btn btn-sm btn-danger" type="submit"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa hãng bay này?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Flight Management -->
             <div class="data-table">
                 <div id="flights" class="d-flex justify-content-between align-items-center mb-3">
@@ -328,8 +395,18 @@
                 </div>
 
                 <div class="search-box mb-3">
-                    <input type="text" placeholder="Tìm kiếm chuyến bay...">
-                    <button><i class="bi bi-search"></i></button>
+                    <form class="search-flight" action="{{ route('search-flight-admin') }}" method="get">
+                        <input type="text" name="departure" placeholder="Điểm xuất phát">
+                        <input type="text" name="destination" placeholder="Điểm đến">
+                        <input type="date" name="departure_time" placeholder="Ngày bay">
+                        <select name="airline_id" style="width:200px; height: 38px">
+                            <option value="">Chọn hãng bay</option>
+                            @foreach ($airlines as $airline)
+                                <option value="{{ $airline->id }}">{{ $airline->name }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit"><i class="bi bi-search"></i></button>
+                    </form>
                 </div>
 
                 <div class="table-responsive">
@@ -349,7 +426,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($flights as $flight)
+                            @php
+                                $flightToDisplay = $searchFlight ?? $flights;
+                            @endphp
+
+                            @foreach ($flightToDisplay as $flight)
                                 <tr>
                                     <td>{{ $flight->airline->name }}</td>
                                     <td>{{ $flight->flight_code }}</td>
@@ -358,7 +439,7 @@
                                     <td>{{ $flight->flight_start }} - {{ $flight->flight_end }}</td>
                                     <td>{{ $flight->seat_class }}</td>
                                     <td>{{ $flight->available_seats }}</td>
-                                    <td>
+                                    <td class="text-end">
                                         @if ($flight->seat_class == 'phổ thông')
                                             {{ number_format($flight->price_economy, 0, ',', '.') }} đ
                                         @elseif ($flight->seat_class == 'thương gia')
@@ -400,7 +481,7 @@
                     </table>
                 </div>
                 <div class="pagination justify-content-center">
-                    {{ $flights->appends(['page_flights' => request('page_flights')])->links('pagination::bootstrap-4') }}
+                    {{ $flights->links('pagination::bootstrap-4') }}
                 </div>
             </div>
 
@@ -445,7 +526,8 @@
                                             {{ $booking->email }}</div>
                                     </td>
                                     <td>{{ $booking->created_at }}</td>
-                                    <td>{{ number_format($booking->total_price, 0, ',', '.') }} VNĐ</td>
+                                    <td class="text-end">{{ number_format($booking->total_price, 0, ',', '.') }} VNĐ
+                                    </td>
                                     <td>{{ $booking->status }}</td>
                                     <td>
                                         <form action="{{ route('cancel-booking', $booking->id) }}" method="POST">
@@ -462,7 +544,7 @@
                     </table>
                 </div>
                 <div class="pagination justify-content-center">
-                    {{ $bookings->appends(['page_bookings' => request('page_bookings')])->links('pagination::bootstrap-4') }}
+                    {{ $bookings->links('pagination::bootstrap-4') }}
                 </div>
             </div>
 
@@ -524,7 +606,7 @@
                         </table>
                     </div>
                     <div class="pagination justify-content-center">
-                        {{ $users->appends(['page_users' => request('page_users')])->links('pagination::bootstrap-4') }}
+                        {{ $users->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
 
@@ -572,14 +654,95 @@
                         </table>
                     </div>
                     <div class="pagination justify-content-center">
-                        {{ $guestUsers->appends(['page_guestUsers' => request('page_guestUsers')])->links('pagination::bootstrap-4') }}
+                        {{ $guestUsers->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Add Airline Modal -->
+    <div class="modal fade" id="addAirlineModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm hãng bay mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAirlineForm" action="{{ route('add-airline') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Tên hãng bay</label>
+                            <input type="text" name="name" class="form-control" id="name"
+                                placeholder="VD: Vietnam Airlines" required>
+                            @error('name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
 
+                        <div class="mb-3">
+                            <label for="logo" class="form-label">Logo</label>
+                            <input type="file" name="logo" class="form-control" id="logo" required>
+                            @error('logo')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Airline Modal -->
+    <div class="modal fade" id="editAirlineModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cập nhật hãng bay</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editAirlineForm" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="mb-3">
+                            <label class="form-label">Tên hãng bay</label>
+                            <input type="text" name="name" id="editAirlineName" class="form-control" required>
+                            @error('name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="logo" class="form-label">Logo</label>
+                            <div class="mb-2">
+                                <img id="editAirlineLogoPreview" src="" alt="Current Logo"
+                                    style="max-width: 100px; max-height: 60px;">
+                            </div>
+                            <input type="file" name="logo" class="form-control">
+                            <small class="text-muted">Để trống nếu không muốn thay đổi logo</small>
+                            @error('logo')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <!-- Add Flight Modal -->
@@ -636,7 +799,7 @@
                             <div class="col-md-6">
                                 <label for="departure_time" class="form-label">Ngày bay</label>
                                 <input type="date" name="departure_time" class="form-control" id="departure_time"
-                                    value="{{ old('departure_time') }}" required>
+                                    value="{{ old('departure_time') }}" min="{{ date('Y-m-d') }}" required>
                                 @error('departure_time')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -647,7 +810,7 @@
                             <div class="col-md-6">
                                 <label for="flight_start" class="form-label">Giờ bay</label>
                                 <input type="time" name="flight_start" class="form-control" id="flight_start"
-                                    value="{{ old('flight_start') }}" required>
+                                    value="{{ old('flight_start') }}" min="00:00" max="23:59" required>
                                 @error('flight_start')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -666,7 +829,8 @@
                             <label class="form-label">Hạng vé</label>
                             <select class="form-select" name="seat_class" id="seat_class" required>
                                 <option value="" selected disabled>Chọn hạng vé</option>
-                                <option value="phổ thông" {{ old('seat_class') == 'phổ thông' ? 'selected' : '' }}>Phổ
+                                <option value="phổ thông" {{ old('seat_class') == 'phổ thông' ? 'selected' : '' }}>
+                                    Phổ
                                     thông</option>
                                 <option value="thương gia" {{ old('seat_class') == 'thương gia' ? 'selected' : '' }}>
                                     Thương gia</option>
@@ -920,13 +1084,13 @@
                 let selectedClass = seatClassSelect.value;
 
                 if (selectedClass === "phổ thông") {
-                    economyDiv.style.display = "block";
+                    economyDiv.style.display = "flex";
                     businessDiv.style.display = "none";
                     enableInputs(economyInputs);
                     disableInputs(businessInputs);
                 } else if (selectedClass === "thương gia") {
                     economyDiv.style.display = "none";
-                    businessDiv.style.display = "block";
+                    businessDiv.style.display = "flex";
                     enableInputs(businessInputs);
                     disableInputs(economyInputs);
                 } else {
@@ -953,6 +1117,36 @@
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.edit-airline-btn');
+            const form = document.getElementById('editAirlineForm');
+            const nameInput = document.getElementById('editAirlineName');
+            const logoPreview = document.getElementById('editAirlineLogoPreview');
+
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+                    const logo = this.dataset.logo;
+
+                    // Set form action
+                    form.action = `/admin/update-airline/${id}`;
+
+                    // Set input value
+                    nameInput.value = name;
+
+                    // Set logo preview
+                    if (logo) {
+                        logoPreview.src = `{{ asset('storage/airline_logos') }}/${logo}`;
+                        logoPreview.style.display = 'block';
+                    } else {
+                        logoPreview.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

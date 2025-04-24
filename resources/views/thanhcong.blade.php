@@ -438,6 +438,9 @@
 </head>
 
 <body>
+    {{-- Scroll to top --}}
+    @include('components.scroll-to-top')
+
     <header>
         <div class="container">
             <div class="header-content">
