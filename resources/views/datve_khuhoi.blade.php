@@ -340,14 +340,25 @@
             margin-bottom: 15px;
         }
 
-        .search-radio label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
+        .search-radio {
+            position: relative;
         }
 
-        .search-radio input {
-            margin-right: 5px;
+        .search-radio button {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
         }
 
         .search-btn {
@@ -358,9 +369,9 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
-            width: 100%;
+            width: 300px;
             font-size: 15px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .search-btn:hover {
@@ -398,6 +409,32 @@
             text-align: center;
         }
 
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: #ff4444;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         .next-step-container {
             text-align: center;
             margin: 30px 0;
@@ -413,6 +450,9 @@
             font-size: 16px;
             cursor: not-allowed;
             transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            margin: 20px auto 0;
         }
 
         .next-step-btn:not(:disabled):hover {
@@ -666,7 +706,7 @@
 
     <div class="page-title">
         <div class="container">
-            <h1>Đặt Vé Khứ Hồi</h1>
+            <h1>Kết quả tìm kiếm</h1>
         </div>
     </div>
 
@@ -739,218 +779,274 @@
                     </form>
                 </div>
 
-                <form action="" method="post">
-                    <div class="flight-selection-container">
-                        <!-- Chuyến Đi -->
-                        <div class="container-1">
-                            <div class="flight-selection-header">
-                                <div>
-                                    <div class="flight-selection-title">
-                                        Chuyến Đi
-                                    </div>
-                                    <div class="flight-selection-subtitle">
-                                        {{ $departure }} → {{ $destination }}, {{ $departure_time }}
-                                    </div>
+
+                <div class="flight-selection-container">
+                    <!-- Chuyến Đi -->
+                    <div class="container-1">
+                        <div class="flight-selection-header">
+                            <div>
+                                <div class="flight-selection-title">
+                                    Chuyến Đi
                                 </div>
-                            </div>
-
-                            <div class="flight-list">
-                                @foreach ($outboundFlights as $trip)
-                                    <div class="flight-card">
-                                        <div class="airline-logo">
-                                            <img src="{{ asset('storage/airline_logos/' . $trip->airline->logo) }}"
-                                                alt="Airline Logo" />
-                                        </div>
-                                        <div class="flight-code">{{ $trip->flight_code }}</div>
-                                        <div class="flight-time">{{ $trip->flight_start }}</div>
-                                        <div><button type="button"
-                                                onclick="toggleDetails({{ $trip->id }}, 'outbound')"
-                                                class="info-button" aria-label="Toggle flight details">
-                                                <i class="fa-solid fa-square-plus"
-                                                    style="color: #74C0FC; font-size: 18px;"></i>
-                                            </button></div>
-                                        <div class="price">{{ number_format($trip->price, 0, ',', ',') }}đ
-                                        </div>
-                                        <button type="button"
-                                            onclick="selectFlight({{ $trip->id }}, 'outbound', this)"
-                                            class="select-btn">Chọn</button>
-                                    </div>
-
-                                    <!-- Thêm phần chi tiết ẩn ngay sau mỗi flight-card -->
-                                    <div id="details-{{ $trip->id }}" class="flight-details-container"
-                                        style="display: none;">
-                                        <div class="flight-details-content">
-                                            <table class="details-table">
-                                                <tr>
-                                                    <th colspan="2">Chi tiết chuyến bay</th>
-                                                </tr>
-                                                <tr>
-                                                    <td>Mã chuyến bay:</td>
-                                                    <td>{{ $trip->flight_code ?? 'VN' . rand(1000, 9999) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Ngày bay:</td>
-                                                    <td>
-                                                        @if ($trip->departure_time instanceof \DateTime)
-                                                            {{ $trip->departure_time->format('d/m/Y') }}
-                                                        @else
-                                                            {{ \Carbon\Carbon::parse($trip->departure_time)->format('d/m/Y') }}
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Giờ bay:</td>
-                                                    <td>
-                                                        @if ($trip->flight_start instanceof \DateTime)
-                                                            {{ $trip->flight_start->format('H:i') }}
-                                                        @else
-                                                            {{ \Carbon\Carbon::parse($trip->flight_start)->format('H:i') }}
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Giờ đến: (dự kiến)</td>
-                                                    <td>
-                                                        @if ($trip->flight_end instanceof \DateTime)
-                                                            {{ $trip->flight_end->format('H:i') }}
-                                                        @else
-                                                            {{ \Carbon\Carbon::parse($trip->flight_end)->format('H:i') }}
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hãng bay: </td>
-                                                    <td>{{ $trip->airline->name ?? 'Vietnam Airlines' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Loại máy bay:</td>
-                                                    <td>{{ $trip->aircraft_type ?? 'Airbus A' . rand(300, 380) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hạng vé:</td>
-                                                    <td>{{ ucfirst($trip->seat_class) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hành lý xách tay:</td>
-                                                    <td>{{ $trip->seat_class === 'thương gia' ? '12kg' : '7kg' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hành lý ký gửi:</td>
-                                                    <td>{{ $trip->seat_class === 'thương gia' ? '40kg' : '20kg' }}</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                @endforeach
+                                <div class="flight-selection-subtitle">
+                                    {{ $departure }} → {{ $destination }}, {{ $departure_time }}
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Chuyến Về -->
-                        <div class="container-2">
-                            <div class="flight-selection-header">
-                                <div>
-                                    <div class="flight-selection-title">
-                                        Chuyến Về
+                        <div class="flight-list">
+                            @foreach ($outboundFlights as $trip)
+                                <div class="flight-card">
+                                    <div class="airline-logo">
+                                        <img src="{{ asset('storage/airline_logos/' . $trip->airline->logo) }}"
+                                            alt="Airline Logo" />
                                     </div>
-                                    <div class="flight-selection-subtitle">
-                                        {{ $destination }} → {{ $departure }}, {{ $return_time }}
+                                    <div class="flight-code">{{ $trip->flight_code }}</div>
+                                    <div class="flight-time">{{ $trip->flight_trip }}</div>
+                                    <div><button type="button"
+                                            onclick="toggleDetails({{ $trip->id }}, 'outbound')"
+                                            class="info-button" aria-label="Toggle flight details">
+                                            <i class="fa-solid fa-square-plus"
+                                                style="color: #74C0FC; font-size: 18px;"></i>
+                                        </button></div>
+                                    <div class="price">{{ number_format($trip->price, 0, ',', ',') }}đ
+                                    </div>
+                                    <button type="button"
+                                        onclick="selectFlight(
+                                        {{ $trip->id }},
+                                        'outbound',
+                                        this,
+                                        '{{ $trip->flight_code }}',
+                                        '{{ $trip->airline->name }}',
+                                        '{{ $trip->departure }}',
+                                        '{{ $trip->destination }}',
+                                        '{{ $trip->departure_time }}',
+                                        {{ $trip->price }}
+                                    )"
+                                        class="select-btn">Chọn</button>
+                                </div>
+
+                                <!-- Thêm phần chi tiết ẩn ngay sau mỗi flight-card -->
+                                <div id="details-{{ $trip->id }}" class="flight-details-container"
+                                    style="display: none;">
+                                    <div class="flight-details-content">
+                                        <table class="details-table">
+                                            <tr>
+                                                <th colspan="2">Chi tiết chuyến bay</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Mã chuyến bay:</td>
+                                                <td>{{ $trip->flight_code ?? 'VN' . rand(1000, 9999) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ngày bay:</td>
+                                                <td>
+                                                    @if ($trip->departure_time instanceof \DateTime)
+                                                        {{ $trip->departure_time->format('d/m/Y') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($trip->departure_time)->format('d/m/Y') }}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Giờ bay:</td>
+                                                <td>
+                                                    @if ($trip->flight_trip instanceof \DateTime)
+                                                        {{ $trip->flight_trip->format('H:i') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($trip->flight_trip)->format('H:i') }}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Giờ đến: (dự kiến)</td>
+                                                <td>
+                                                    @if ($trip->flight_end instanceof \DateTime)
+                                                        {{ $trip->flight_end->format('H:i') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($trip->flight_end)->format('H:i') }}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Hãng bay: </td>
+                                                <td>{{ $trip->airline->name ?? 'Vietnam Airlines' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Loại máy bay:</td>
+                                                <td>{{ $trip->aircraft_type ?? 'Airbus A' . rand(300, 380) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Hạng vé:</td>
+                                                <td>{{ ucfirst($trip->seat_class) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Hành lý xách tay:</td>
+                                                <td>{{ $trip->seat_class === 'thương gia' ? '12kg' : '7kg' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Hành lý ký gửi:</td>
+                                                <td>{{ $trip->seat_class === 'thương gia' ? '40kg' : '20kg' }}
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="flight-list">
-                                @foreach ($returnFlights as $return)
-                                    <div class="flight-card">
-                                        <div class="airline-logo">
-                                            <img src="{{ asset('storage/airline_logos/' . $return->airline->logo) }}"
-                                                alt="Airline Logo" />
-                                        </div>
-                                        <div class="flight-code">{{ $return->flight_code }}</div>
-                                        <div class="flight-time">{{ $return->flight_start }}</div>
-                                        <div><button type="button"
-                                                onclick="toggleDetails({{ $return->id }}, 'return')"
-                                                class="info-button" aria-label="Toggle flight details">
-                                                <i class="fa-solid fa-square-plus"
-                                                    style="color: #74C0FC; font-size: 18px;"></i>
-                                            </button></div>
-                                        <div class="price">{{ number_format($return->price, 0, ',', ',') }}đ</div>
-                                        <button type="button"
-                                            onclick="selectFlight({{ $return->id }}, 'return', this)"
-                                            class="select-btn">Chọn</button>
-                                    </div>
-
-                                    <!-- Thêm phần chi tiết ẩn ngay sau mỗi flight-card -->
-                                    <div id="details-{{ $return->id }}" class="flight-details-container"
-                                        style="display: none;">
-                                        <div class="flight-details-content">
-                                            <table class="details-table">
-                                                <tr>
-                                                    <th colspan="2">Chi tiết chuyến bay</th>
-                                                </tr>
-                                                <tr>
-                                                    <td>Mã chuyến bay:</td>
-                                                    <td>{{ $return->flight_code ?? 'VN' . rand(1000, 9999) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Ngày bay:</td>
-                                                    <td>
-                                                        @if ($return->departure_time instanceof \DateTime)
-                                                            {{ $return->departure_time->format('d/m/Y') }}
-                                                        @else
-                                                            {{ \Carbon\Carbon::parse($return->departure_time)->format('d/m/Y') }}
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Giờ bay:</td>
-                                                    <td>
-                                                        @if ($return->flight_start instanceof \DateTime)
-                                                            {{ $return->flight_start->format('H:i') }}
-                                                        @else
-                                                            {{ \Carbon\Carbon::parse($return->flight_start)->format('H:i') }}
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Giờ đến: (dự kiến)</td>
-                                                    <td>
-                                                        @if ($return->flight_end instanceof \DateTime)
-                                                            {{ $return->flight_end->format('H:i') }}
-                                                        @else
-                                                            {{ \Carbon\Carbon::parse($return->flight_end)->format('H:i') }}
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hãng bay: </td>
-                                                    <td>{{ $return->airline->name ?? 'Vietnam Airlines' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Loại máy bay:</td>
-                                                    <td>{{ $return->aircraft_type ?? 'Airbus A' . rand(300, 380) }}
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hạng vé:</td>
-                                                    <td>{{ ucfirst($return->seat_class) }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hành lý xách tay:</td>
-                                                    <td>{{ $return->seat_class === 'thương gia' ? '12kg' : '7kg' }}
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hành lý ký gửi:</td>
-                                                    <td>{{ $return->seat_class === 'thương gia' ? '40kg' : '20kg' }}
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
+                            @endforeach
                         </div>
                     </div>
+
+                    <!-- Chuyến Về -->
+                    <div class="container-2">
+                        <div class="flight-selection-header">
+                            <div>
+                                <div class="flight-selection-title">
+                                    Chuyến Về
+                                </div>
+                                <div class="flight-selection-subtitle">
+                                    {{ $destination }} → {{ $departure }}, {{ $return_time }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flight-list">
+                            @foreach ($returnFlights as $return)
+                                <div class="flight-card">
+                                    <div class="airline-logo">
+                                        <img src="{{ asset('storage/airline_logos/' . $return->airline->logo) }}"
+                                            alt="Airline Logo" />
+                                    </div>
+                                    <div class="flight-code">{{ $return->flight_code }}</div>
+                                    <div class="flight-time">{{ $return->flight_start }}</div>
+                                    <div><button type="button" onclick="toggleDetails({{ $return->id }}, 'return')"
+                                            class="info-button" aria-label="Toggle flight details">
+                                            <i class="fa-solid fa-square-plus"
+                                                style="color: #74C0FC; font-size: 18px;"></i>
+                                        </button></div>
+                                    <div class="price">{{ number_format($return->price, 0, ',', ',') }}đ</div>
+                                    <button type="button"
+                                        onclick="selectFlight(
+        {{ $return->id }},
+        'return',
+        this,
+        '{{ $return->flight_code }}',
+        '{{ $return->airline->name }}',
+        '{{ $return->departure }}',
+        '{{ $return->destination }}',
+        '{{ $return->departure_time }}',
+        {{ $return->price }}
+    )"
+                                        class="select-btn">Chọn</button>
+                                </div>
+
+                                <!-- Thêm phần chi tiết ẩn ngay sau mỗi flight-card -->
+                                <div id="details-{{ $return->id }}" class="flight-details-container"
+                                    style="display: none;">
+                                    <div class="flight-details-content">
+                                        <table class="details-table">
+                                            <tr>
+                                                <th colspan="2">Chi tiết chuyến bay</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Mã chuyến bay:</td>
+                                                <td>{{ $return->flight_code ?? 'VN' . rand(1000, 9999) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ngày bay:</td>
+                                                <td>
+                                                    @if ($return->departure_time instanceof \DateTime)
+                                                        {{ $return->departure_time->format('d/m/Y') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($return->departure_time)->format('d/m/Y') }}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Giờ bay:</td>
+                                                <td>
+                                                    @if ($return->flight_start instanceof \DateTime)
+                                                        {{ $return->flight_start->format('H:i') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($return->flight_start)->format('H:i') }}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Giờ đến: (dự kiến)</td>
+                                                <td>
+                                                    @if ($return->flight_end instanceof \DateTime)
+                                                        {{ $return->flight_end->format('H:i') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($return->flight_end)->format('H:i') }}
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Hãng bay: </td>
+                                                <td>{{ $return->airline->name ?? 'Vietnam Airlines' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Loại máy bay:</td>
+                                                <td>{{ $return->aircraft_type ?? 'Airbus A' . rand(300, 380) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Hạng vé:</td>
+                                                <td>{{ ucfirst($return->seat_class) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Hành lý xách tay:</td>
+                                                <td>{{ $return->seat_class === 'thương gia' ? '12kg' : '7kg' }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Hành lý ký gửi:</td>
+                                                <td>{{ $return->seat_class === 'thương gia' ? '40kg' : '20kg' }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <form action="{{ route('xacnhan') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="outbound_flight_id" id="outbound_flight_id"
+                        value="{{ $trip->id }}">
+                    <input type="hidden" name="outbound_flight_code" id="outbound_flight_code"
+                        value="{{ $trip->flight_code }}">
+                    <input type="hidden" name="outbound_airline" id="outbound_airline"
+                        value="{{ $trip->airline->name }}">
+                    <input type="hidden" name="outbound_departure" id="outbound_departure"
+                        value="{{ $trip->departure }}">
+                    <input type="hidden" name="outbound_destination" id="outbound_destination"
+                        value="{{ $trip->destination }}">
+                    <input type="hidden" name="outbound_departure_time" id="outbound_departure_time"
+                        value="{{ $trip->departure_time }}">
+                    <input type="hidden" name="outbound_price" id="outbound_price" value="{{ $trip->price }}">
+                    <input type="hidden" name="return_flight_id" id="return_flight_id"
+                        value="{{ $return->id }}">
+                    <input type="hidden" name="return_flight_code" id="return_flight_code"
+                        value="{{ $return->flight_code }}">
+                    <input type="hidden" name="return_airline" id="return_airline"
+                        value="{{ $return->airline->name }}">
+                    <input type="hidden" name="return_departure" id="return_departure"
+                        value="{{ $return->departure }}">
+                    <input type="hidden" name="return_destination" id="return_destination"
+                        value="{{ $return->destination }}">
+                    <input type="hidden" name="return_departure_time" id="return_departure_time"
+                        value="{{ $return->departure_time }}">
+                    <input type="hidden" name="return_price" id="return_price" value="{{ $return->price }}">
+                    <input type="hidden" name="adults" value="{{ $adults }}">
+                    <input type="hidden" name="childrens" value="{{ $childrens }}">
+                    <input type="hidden" name="infants" value="{{ $infants }}">
+
+                    <button type="submit" class="next-step-btn" id="submitBtn" disabled>
+                        TIẾP TỤC VỚI CHUYẾN BAY ĐÃ CHỌN
+                    </button>
                 </form>
             </div>
 
@@ -959,91 +1055,134 @@
 
                 <div class="search-radios">
                     <div class="search-radio">
-                        <label>
-                            <input type="radio" name="tripType" checked />
+                        <button onclick="showForm('oneway')" name="tripType">
                             Một chiều
-                        </label>
+                        </button>
                     </div>
                     <div class="search-radio">
-                        <label>
-                            <input type="radio" name="tripType" /> Khứ hồi
-                        </label>
+                        <button onclick="showForm('roundtrip')" name="tripType">
+                            Khứ hồi
+                        </button>
                     </div>
                 </div>
 
-                <div class="search-group">
-                    <label>Điểm đi</label>
-                    <select>
-                        <option>Hà Nội (HAN)</option>
-                        <option>TP Hồ Chí Minh (SGN)</option>
-                        <option>Đà Nẵng (DAD)</option>
-                        <option>Nha Trang (CXR)</option>
-                        <option>Phú Quốc (PQC)</option>
-                    </select>
-                </div>
-
-                <div class="search-group">
-                    <label>Điểm đến</label>
-                    <select>
-                        <option>TP Hồ Chí Minh (SGN)</option>
-                        <option>Hà Nội (HAN)</option>
-                        <option>Đà Nẵng (DAD)</option>
-                        <option>Nha Trang (CXR)</option>
-                        <option>Phú Quốc (PQC)</option>
-                    </select>
-                </div>
-
-                <div class="search-group">
-                    <label>Ngày đi</label>
-                    <input type="date" value="2025-04-07" />
-                </div>
-
-                <div class="search-group">
-                    <label>Ngày về</label>
-                    <input type="date" disabled />
-                </div>
-
-                <div class="search-group">
-                    <label>Hành khách</label>
-                    <div class="passenger-row">
-                        <span>Người lớn</span>
-                        <div class="passenger-count">
-                            <div class="count-btn">-</div>
-                            <div class="count-value">2</div>
-                            <div class="count-btn">+</div>
+                <div id="oneway-form" class="form-container active">
+                    <form action="{{ route('flight-search-oneway') }}" method="GET">
+                        <div class="search-group">
+                            <label>Điểm đi</label>
+                            <input type="text" name="departure" placeholder="Chọn thành phố hoặc sân bay"
+                                value="{{ old('departure') }}">
+                            </input>
                         </div>
-                    </div>
-                    <div class="passenger-row">
-                        <span>Trẻ em (2-12 tuổi)</span>
-                        <div class="passenger-count">
-                            <div class="count-btn">-</div>
-                            <div class="count-value">1</div>
-                            <div class="count-btn">+</div>
+
+                        <div class="search-group">
+                            <label>Điểm đến</label>
+                            <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay"
+                                value="{{ old('destination') }}">
+                            </input>
                         </div>
-                    </div>
-                    <div class="passenger-row">
-                        <span>Em bé (< 2 tuổi)</span>
+
+                        <div class="search-group">
+                            <label>Ngày đi</label>
+                            <input type="date" name="departure_time" min="{{ date('Y-m-d') }}"
+                                value="{{ old('departure_time') }}" />
+                        </div>
+
+                        <div class="search-group">
+                            <label>Hành khách</label>
+                            <div class="passenger-row">
+                                <span>Người lớn</span>
                                 <div class="passenger-count">
-                                    <div class="count-btn">-</div>
-                                    <div class="count-value">0</div>
-                                    <div class="count-btn">+</div>
+                                    <div class="count-btn" onclick="decrementPassenger('adult')">-</div>
+                                    <div class="count-value" id="adult-count">2</div>
+                                    <div class="count-btn" onclick="incrementPassenger('adult')">+</div>
                                 </div>
-                    </div>
+                            </div>
+                            <div class="passenger-row">
+                                <span>Trẻ em (2-12 tuổi)</span>
+                                <div class="passenger-count">
+                                    <div class="count-btn" onclick="decrementPassenger('child')">-</div>
+                                    <div class="count-value" id="child-count">1</div>
+                                    <div class="count-btn" onclick="incrementPassenger('child')">+</div>
+                                </div>
+                            </div>
+                            <div class="passenger-row">
+                                <span>Em bé (< 2 tuổi)</span>
+                                        <div class="passenger-count">
+                                            <div class="count-btn" onclick="decrementPassenger('infant')">-</div>
+                                            <div class="count-value" id="infant-count">0</div>
+                                            <div class="count-btn" onclick="incrementPassenger('infant')">+</div>
+                                        </div>
+                            </div>
+                        </div>
+                        <button class="search-btn">TÌM KIẾM</button>
+                    </form>
                 </div>
 
-                <button class="search-btn">TÌM KIẾM</button>
-            </div>
-        </div>
+                <div id="roundtrip-form" class="form-container">
+                    <form action="{{ route('flight-search-roundtrip') }}" method="GET">
+                        <div class="search-group">
+                            <label>Điểm đi</label>
+                            <input type="text" name="departure" placeholder="Chọn thành phố hoặc sân bay"
+                                value="{{ old('departure') }}">
+                            </input>
+                        </div>
 
-        <div class="next-step-container">
-            <form id="bookingForm" action="{{ route('xacnhan') }}" method="POST">
-                @csrf
-                <input type="hidden" id="outbound_flight_id" name="outbound_flight_id" value="">
-                <input type="hidden" id="return_flight_id" name="return_flight_id" value="">
-                <button type="submit" class="next-step-btn" id="submitBtn" disabled>
-                    TIẾP TỤC VỚI CHUYẾN BAY ĐÃ CHỌN
-                </button>
-            </form>
+                        <div class="search-group">
+                            <label>Điểm đến</label>
+                            <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay"
+                                value="{{ old('destination') }}">
+                            </input>
+                        </div>
+
+                        <div class="search-group">
+                            <label>Ngày đi</label>
+                            <input type="date" name="departure_time" min="{{ date('Y-m-d') }}"
+                                value="{{ old('departure_time') }}" />
+                        </div>
+
+                        <div class="search-group">
+                            <label>Ngày về</label>
+                            <input type="date" name="return_time" min="{{ date('Y-m-d') }}"
+                                value="{{ old('return_time') }}" />
+                        </div>
+
+                        <div class="search-group">
+                            <label>Hành khách</label>
+                            <div class="passenger-row">
+                                <span>Người lớn</span>
+                                <div class="passenger-count">
+                                    <div class="count-btn" onclick="decrementPassenger('adult', 'roundtrip')">-</div>
+                                    <div class="count-value" id="adult-count-roundtrip">1</div>
+                                    <div class="count-btn" onclick="incrementPassenger('adult', 'roundtrip')">+</div>
+                                </div>
+                            </div>
+                            <div class="passenger-row">
+                                <span>Trẻ em (2-12 tuổi)</span>
+                                <div class="passenger-count">
+                                    <div class="count-btn" onclick="decrementPassenger('child', 'roundtrip')">-</div>
+                                    <div class="count-value" id="child-count-roundtrip">0</div>
+                                    <div class="count-btn" onclick="incrementPassenger('child', 'roundtrip')">+</div>
+                                </div>
+                            </div>
+                            <div class="passenger-row">
+                                <span>Em bé (< 2 tuổi)</span>
+                                        <div class="passenger-count">
+                                            <div class="count-btn"
+                                                onclick="decrementPassenger('infant', 'roundtrip')">-</div>
+                                            <div class="count-value" id="infant-count-roundtrip">0</div>
+                                            <div class="count-btn"
+                                                onclick="incrementPassenger('infant', 'roundtrip')">+</div>
+                                        </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="adults" id="adults-input-roundtrip" value="1">
+                        <input type="hidden" name="childrens" id="childrens-input-roundtrip" value="0">
+                        <input type="hidden" name="infants" id="infants-input-roundtrip" value="0">
+                        <button class="search-btn">TÌM KIẾM</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1059,7 +1198,7 @@
         let selectedOutbound = null;
         let selectedReturn = null;
 
-        function selectFlight(flightId, type, button) {
+        function selectFlight(flightId, type, button, flightCode, airline, departure, destination, departureTime, price) {
             // Bỏ chọn các button cùng loại
             const container = type === 'outbound' ? 'container-1' : 'container-2';
             const otherButtons = document.querySelectorAll(`.${container} .select-btn`);
@@ -1077,9 +1216,21 @@
                 if (type === 'outbound') {
                     selectedOutbound = null;
                     document.getElementById('outbound_flight_id').value = '';
+                    document.getElementById('outbound_flight_code').value = '';
+                    document.getElementById('outbound_airline').value = '';
+                    document.getElementById('outbound_departure').value = '';
+                    document.getElementById('outbound_destination').value = '';
+                    document.getElementById('outbound_departure_time').value = '';
+                    document.getElementById('outbound_price').value = '';
                 } else {
                     selectedReturn = null;
                     document.getElementById('return_flight_id').value = '';
+                    document.getElementById('return_flight_code').value = '';
+                    document.getElementById('return_airline').value = '';
+                    document.getElementById('return_departure').value = '';
+                    document.getElementById('return_destination').value = '';
+                    document.getElementById('return_departure_time').value = '';
+                    document.getElementById('return_price').value = '';
                 }
             } else {
                 button.textContent = 'Đã chọn';
@@ -1087,9 +1238,21 @@
                 if (type === 'outbound') {
                     selectedOutbound = flightId;
                     document.getElementById('outbound_flight_id').value = flightId;
+                    document.getElementById('outbound_flight_code').value = flightCode;
+                    document.getElementById('outbound_airline').value = airline;
+                    document.getElementById('outbound_departure').value = departure;
+                    document.getElementById('outbound_destination').value = destination;
+                    document.getElementById('outbound_departure_time').value = departureTime;
+                    document.getElementById('outbound_price').value = price;
                 } else {
                     selectedReturn = flightId;
                     document.getElementById('return_flight_id').value = flightId;
+                    document.getElementById('return_flight_code').value = flightCode;
+                    document.getElementById('return_airline').value = airline;
+                    document.getElementById('return_departure').value = departure;
+                    document.getElementById('return_destination').value = destination;
+                    document.getElementById('return_departure_time').value = departureTime;
+                    document.getElementById('return_price').value = price;
                 }
             }
 
@@ -1136,6 +1299,109 @@
             } else {
                 detailsSection.style.display = 'none';
                 icon.className = 'fa-solid fa-square-plus';
+            }
+        }
+    </script>
+
+    <script>
+        // Giới hạn số lượng hành khách
+        const MAX_ADULTS = 9;
+        const MAX_CHILDREN = 9;
+        const MAX_INFANTS = 9;
+        const MIN_PASSENGERS = 0;
+        const MAX_TOTAL_PASSENGERS = 9;
+
+        // Hàm hiển thị thông báo
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+                notification.remove();
+            }, 3000);
+        }
+
+        // Hàm kiểm tra tổng số hành khách
+        function checkTotalPassengers(formType) {
+            const suffix = formType === 'roundtrip' ? '-roundtrip' : '-oneway';
+            const adultCount = parseInt(document.getElementById(`adults-input${suffix}`).value);
+            const childCount = parseInt(document.getElementById(`childrens-input${suffix}`).value);
+            const infantCount = parseInt(document.getElementById(`infants-input${suffix}`).value);
+            const total = adultCount + childCount + infantCount;
+
+            if (total > MAX_TOTAL_PASSENGERS) {
+                showNotification('Tổng số hành khách không được vượt quá 9 người!');
+                return false;
+            }
+            return true;
+        }
+
+        // Hàm tăng số lượng hành khách
+        function incrementPassenger(type, formType) {
+            const suffix = formType === 'roundtrip' ? '-roundtrip' : '-oneway';
+            const countElement = document.getElementById(`${type}-count${suffix}`);
+            const inputElement = document.getElementById(`${type}s-input${suffix}`);
+            let count = parseInt(countElement.textContent);
+            const maxLimit = type === 'adult' ? MAX_ADULTS : (type === 'child' ? MAX_CHILDREN : MAX_INFANTS);
+
+            if (count < maxLimit) {
+                if (type === 'infant') {
+                    const adultCount = parseInt(document.getElementById(`adults-input${suffix}`).value);
+                    if (count < adultCount) {
+                        count++;
+                    } else {
+                        showNotification('Số em bé không được vượt quá số người lớn!');
+                        return;
+                    }
+                } else {
+                    count++;
+                }
+
+                // Kiểm tra tổng số hành khách trước khi cập nhật
+                const newTotal = count +
+                    parseInt(document.getElementById(`childrens-input${suffix}`).value) +
+                    parseInt(document.getElementById(`infants-input${suffix}`).value);
+
+                if (newTotal > MAX_TOTAL_PASSENGERS) {
+                    showNotification('Tổng số hành khách không được vượt quá 9 người!');
+                    return;
+                }
+
+                countElement.textContent = count;
+                inputElement.value = count;
+            } else {
+                showNotification(
+                    `Số lượng ${type === 'adult' ? 'người lớn' : (type === 'child' ? 'trẻ em' : 'em bé')} không được vượt quá ${maxLimit}!`
+                );
+            }
+        }
+
+        // Hàm giảm số lượng hành khách
+        function decrementPassenger(type, formType) {
+            const suffix = formType === 'roundtrip' ? '-roundtrip' : '-oneway';
+            const countElement = document.getElementById(`${type}-count${suffix}`);
+            const inputElement = document.getElementById(`${type}s-input${suffix}`);
+            let count = parseInt(countElement.textContent);
+
+            if (count > MIN_PASSENGERS) {
+                if (type === 'adult') {
+                    const infantCount = parseInt(document.getElementById(`infants-input${suffix}`).value);
+                    if (count > infantCount) {
+                        count--;
+                    } else {
+                        showNotification('Số người lớn không được ít hơn số em bé!');
+                        return;
+                    }
+                } else {
+                    count--;
+                }
+
+                countElement.textContent = count;
+                inputElement.value = count;
             }
         }
     </script>

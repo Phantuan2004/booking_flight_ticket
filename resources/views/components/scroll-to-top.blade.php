@@ -16,9 +16,10 @@
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        /* Hoạt ảnh animation chạy mãi mãi bằng cách sử dụng infinite*/
+        filter: invert(24%) sepia(98%) saturate(1552%) hue-rotate(190deg) brightness(96%) contrast(101%);
         animation: up-down 1.8s infinite;
         outline: none;
+        z-index: 1000;
     }
 
     @keyframes up-down {

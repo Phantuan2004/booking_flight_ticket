@@ -30,6 +30,7 @@
             height: 100vh;
             padding-top: 20px;
             height: 100%;
+            z-index: 1000;
         }
 
         .sidebar .logo {
@@ -40,6 +41,7 @@
         .sidebar-menu {
             list-style: none;
             padding: 0;
+            z-index: 1000;
         }
 
         .sidebar-menu a {
@@ -63,6 +65,8 @@
         .main-content {
             margin-left: 220px;
             padding: 15px;
+            width: calc(100% - 220px);
+            position: relative;
         }
 
         .header {
@@ -105,34 +109,100 @@
             cursor: pointer;
         }
 
+        /* Dashboard Cards Styles */
         .dashboard-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
-        .card {
-            background-color: white;
-            border-radius: 6px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
+        .dashboard-cards .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card p {
-            font-size: 1.19rem;
+        .dashboard-cards .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .dashboard-cards .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+        }
+
+        .dashboard-cards .card h5 {
+            color: #2c3e50;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dashboard-cards .card h5 i {
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+
+        .dashboard-cards .card p {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
             margin: 0;
-            color: var(--secondary-color);
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
         }
 
+        .dashboard-cards .card small {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .dashboard-cards .card .trend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.2rem;
+        }
+
+        .dashboard-cards .card .trend.up {
+            color: #2ecc71;
+        }
+
+        .dashboard-cards .card .trend.down {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Restore original styles for other elements */
         .data-table {
-            width: 1270px;
+            width: 100%;
             background-color: white;
             border-radius: 6px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             padding: 15px;
             margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .data-table h3 {
@@ -240,22 +310,154 @@
             overflow-x: auto;
         }
 
+        .pagination {
+            position: relative;
+            z-index: 1;
+        }
+
         @media (max-width: 768px) {
-            .sidebar {
-                width: 60px;
+            .data-table {
+                overflow-x: auto;
             }
 
-            .sidebar-menu span {
-                display: none;
+            .table-responsive {
+                min-width: 100%;
             }
+        }
 
-            .sidebar .logo h1 {
-                font-size: 1rem;
-            }
+        .flight-info-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
 
-            .main-content {
-                margin-left: 60px;
-            }
+        .flight-date {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .date-number {
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1;
+            margin-top: 20px;
+        }
+
+        .date-month {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .date-day {
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .flight-details {
+            flex: 1;
+        }
+
+        .flight-route {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .airport-code {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .flight-arrow {
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+
+        .flight-times {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .airline-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .airline-logo img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .user-info-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .user-title {
+            flex: 1;
+        }
+
+        .user-title h5 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .detail-item i {
+            color: #3498db;
+            font-size: 1.2rem;
+            margin-top: 3px;
+        }
+
+        .detail-item small {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .detail-item p {
+            margin: 0;
+            color: #2c3e50;
+            font-weight: 500;
         }
     </style>
     @viteReactRefresh
@@ -300,26 +502,41 @@
             <!-- Dashboard Cards -->
             <div class="dashboard-cards">
                 <div class="card">
-                    <h5>Số vé trung bình mỗi chuyến bay</h5>
-                    <p class="mb-0">{{ $averageBookings }} vé</p>
+                    <h5><i class="bi bi-ticket-perforated"></i> Số vé trung bình mỗi chuyến bay</h5>
+                    <p>{{ $averageBookings }}<small>vé</small></p>
+                    <div class="trend up">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
                 </div>
                 <div class="card">
-                    <h5>Chuyến bay sắp tới</h5>
-                    <p class="mb-0">{{ $upcomingFlights }} chuyến bay</p>
+                    <h5><i class="bi bi-airplane"></i> Chuyến bay sắp tới</h5>
+                    <p>{{ $upcomingFlights }}<small>chuyến bay</small></p>
+                    <div class="trend up">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
                 </div>
                 <div class="card">
-                    <h5>Chuyến bay có doanh thu cao nhất</h5>
-                    <p class="fs-4 mb-0">{{ $highestRevenueFlight->flight_code ?? 'N/A' }}</p>
+                    <h5><i class="bi bi-graph-up"></i> Chuyến bay có doanh thu cao nhất</h5>
+                    <p>{{ $highestRevenueFlight->flight_code ?? 'N/A' }}</p>
                     <small>{{ number_format($highestRevenueFlight->bookings_sum_total_price ?? 0, 0, ',', '.') }}
                         VNĐ</small>
+                    <div class="trend up">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
                 </div>
                 <div class="card">
-                    <h5>Tỉ lệ đặt vé thành công </h5>
-                    <p class="mb-0">{{ $successfulBookings }}%</p>
+                    <h5><i class="bi bi-check-circle"></i> Tỉ lệ đặt vé thành công</h5>
+                    <p>{{ $successfulBookings }}<small>%</small></p>
+                    <div class="trend up">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
                 </div>
                 <div class="card">
-                    <h5>Tổng doanh thu</h5>
-                    <p class="mb-0">{{ number_format($totalRevenue, 0, ',', '.') }} VNĐ</p>
+                    <h5><i class="bi bi-currency-dollar"></i> Tổng doanh thu</h5>
+                    <p>{{ number_format($totalRevenue, 0, ',', '.') }}<small>VNĐ</small></p>
+                    <div class="trend up">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
                 </div>
             </div>
 
@@ -413,14 +630,10 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Hãng bay</th>
                                 <th>Mã chuyến</th>
+                                <th>Hãng bay</th>
                                 <th>Từ/Đến</th>
                                 <th>Ngày bay</th>
-                                <th>Giờ bay/đến</th>
-                                <th>Hạng vé</th>
-                                <th>Ghế trống</th>
-                                <th>Giá vé</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -432,23 +645,41 @@
 
                             @foreach ($flightToDisplay as $flight)
                                 <tr>
-                                    <td>{{ $flight->airline->name }}</td>
                                     <td>{{ $flight->flight_code }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ asset('storage/airline_logos/' . $flight->airline->logo) }}"
+                                                alt="{{ $flight->airline->name }}"
+                                                style="width: 30px; height: 30px; margin-right: 10px;">
+                                            {{ $flight->airline->name }}
+                                        </div>
+                                    </td>
                                     <td>{{ $flight->departure }} → {{ $flight->destination }}</td>
                                     <td>{{ $flight->departure_time }}</td>
-                                    <td>{{ $flight->flight_start }} - {{ $flight->flight_end }}</td>
-                                    <td>{{ $flight->seat_class }}</td>
-                                    <td>{{ $flight->available_seats }}</td>
-                                    <td class="text-end">
-                                        @if ($flight->seat_class == 'phổ thông')
-                                            {{ number_format($flight->price_economy, 0, ',', '.') }} đ
-                                        @elseif ($flight->seat_class == 'thương gia')
-                                            {{ number_format($flight->price_business, 0, ',', '.') }} đ
-                                        @endif
+                                    <td>
+                                        <span
+                                            class="badge {{ $flight->status == 'active' ? 'bg-success' : 'bg-danger' }}">
+                                            {{ $flight->status }}
+                                        </span>
                                     </td>
-                                    <td>{{ $flight->status }}</td>
                                     <td>
                                         <div class="d-flex">
+                                            <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal"
+                                                data-bs-target="#flightDetailModal"
+                                                data-flight-code="{{ $flight->flight_code }}"
+                                                data-departure="{{ $flight->departure }}"
+                                                data-destination="{{ $flight->destination }}"
+                                                data-departure-time="{{ $flight->departure_time }}"
+                                                data-flight-start="{{ $flight->flight_start }}"
+                                                data-flight-end="{{ $flight->flight_end }}"
+                                                data-seat-economy="{{ $flight->seat_economy }}"
+                                                data-seat-business="{{ $flight->seat_business }}"
+                                                data-price-economy="{{ $flight->price_economy }}"
+                                                data-price-business="{{ $flight->price_business }}"
+                                                data-airline-name="{{ $flight->airline->name }}"
+                                                data-airline-logo="{{ $flight->airline->logo }}">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
                                             <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal"
                                                 data-bs-target="#editFlightModal" data-id="{{ $flight->id }}"
                                                 data-flight-code="{{ $flight->flight_code }}"
@@ -492,7 +723,7 @@
                 </div>
 
                 <div class="search-box mb-3">
-                    <input type="text" placeholder="Tìm kiếm khách hàng...">
+                    <input type="text" placeholder="Tìm kiếm vé...">
                     <button><i class="bi bi-search"></i></button>
                 </div>
 
@@ -503,9 +734,7 @@
                                 <th>Mã vé</th>
                                 <th>Chuyến bay</th>
                                 <th>Khách hàng</th>
-                                <th>Liên hệ</th>
                                 <th>Ngày đặt</th>
-                                <th>Giá vé</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -515,28 +744,40 @@
                                 <tr>
                                     <td>{{ $booking->booking_code }}</td>
                                     <td>{{ $booking->flight->flight_code }}</td>
-                                    <td>{{ $booking->name }} <span
-                                            class="badge bg-secondary">{{ $booking->user ? 'Account' : 'Guest' }}</span>
-                                    </td>
-                                    <td>
-                                        <div style="font-weight: 600; color: rgb(124, 124, 124);">
-                                            Phone: {{ $booking->phone }}</div>
-
-                                        <div style="font-weight: 600; color: rgb(124, 124, 124);">Email:
-                                            {{ $booking->email }}</div>
-                                    </td>
+                                    <td>{{ $booking->name }}</td>
                                     <td>{{ $booking->created_at }}</td>
-                                    <td class="text-end">{{ number_format($booking->total_price, 0, ',', '.') }} VNĐ
-                                    </td>
-                                    <td>{{ $booking->status }}</td>
                                     <td>
-                                        <form action="{{ route('cancel-booking', $booking->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Xác nhận hủy vé?')">
-                                                <i class="bi bi-x-circle"></i> Hủy
+                                        <span
+                                            class="badge {{ $booking->status == 'confirmed' ? 'bg-success' : 'bg-danger' }}">
+                                            {{ $booking->status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal"
+                                                data-bs-target="#bookingDetailModal"
+                                                data-booking-code="{{ $booking->booking_code }}"
+                                                data-flight-code="{{ $booking->flight->flight_code }}"
+                                                data-flight-departure="{{ $booking->flight->departure }}"
+                                                data-flight-destination="{{ $booking->flight->destination }}"
+                                                data-flight-time="{{ $booking->flight->departure_time }}"
+                                                data-customer-name="{{ $booking->name }}"
+                                                data-customer-email="{{ $booking->email }}"
+                                                data-customer-phone="{{ $booking->phone }}"
+                                                data-booking-date="{{ $booking->created_at }}"
+                                                data-booking-status="{{ $booking->status }}"
+                                                data-booking-price="{{ $booking->total_price }}">
+                                                <i class="bi bi-eye"></i>
                                             </button>
-                                        </form>
+                                            <form action="{{ route('cancel-booking', $booking->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Xác nhận hủy vé?')">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -557,7 +798,7 @@
 
                 <!-- Tab nội dung 1: Thông tin khách hàng -->
                 <div id="customers" class="tab-content active">
-                    <h3>Quản lý tài khoản </h3>
+                    <h3>Quản lý tài khoản</h3>
                     <div class="search-box mb-3">
                         <input type="text" placeholder="Tìm kiếm khách hàng...">
                         <button><i class="bi bi-search"></i></button>
@@ -566,10 +807,9 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Mã khách hàng </th>
-                                    <th>Tên </th>
-                                    <th>Liên hệ </th>
-                                    <th>Địa chỉ</th>
+                                    <th>Mã khách hàng</th>
+                                    <th>Tên</th>
+                                    <th>Email</th>
                                     <th>Ngày đăng ký</th>
                                     <th>Trạng thái</th>
                                     <th>Thao tác</th>
@@ -580,25 +820,34 @@
                                     <tr>
                                         <td>{{ $user->user_code }}</td>
                                         <td>{{ $user->name }}</td>
-                                        <td>
-                                            <div style="font-weight: 600; color: rgb(124, 124, 124);">
-                                                Phone: {{ $user->phone }}</div>
-
-                                            <div style="font-weight: 600; color: rgb(124, 124, 124);">Email:
-                                                {{ $user->email }}</div>
-                                        </td>
-                                        <td>{{ $user->address }}</td>
+                                        <td>{{ $user->email }}</td>
                                         <td>{{ $user->created_at }}</td>
-                                        <td>{{ $user->status }}</td>
                                         <td>
-
-                                            <form action="{{ route('delete-user', $user->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Xác nhận hủy tài khoản?')">
-                                                    <i class="bi bi-x-circle"></i> Hủy
+                                            <span
+                                                class="badge {{ $user->status == 'active' ? 'bg-success' : 'bg-danger' }}">
+                                                {{ $user->status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal"
+                                                    data-bs-target="#userDetailModal"
+                                                    data-user-code="{{ $user->user_code }}"
+                                                    data-name="{{ $user->name }}" data-email="{{ $user->email }}"
+                                                    data-phone="{{ $user->phone }}"
+                                                    data-address="{{ $user->address }}"
+                                                    data-created-at="{{ $user->created_at }}"
+                                                    data-status="{{ $user->status }}">
+                                                    <i class="bi bi-eye"></i>
                                                 </button>
-                                            </form>
+                                                <form action="{{ route('delete-user', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Xác nhận hủy tài khoản?')">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -612,7 +861,7 @@
 
                 <!-- Tab nội dung 2: Quản lý khách vãng lai -->
                 <div id="guests" class="tab-content">
-                    <h3>Quản lý thông tin khách vãng lai </h3>
+                    <h3>Quản lý thông tin khách vãng lai</h3>
                     <div class="search-box mb-3">
                         <input type="text" placeholder="Tìm kiếm khách hàng...">
                         <button><i class="bi bi-search"></i></button>
@@ -621,9 +870,8 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Tên </th>
-                                    <th>Liên hệ </th>
-                                    <th>Địa chỉ</th>
+                                    <th>Tên</th>
+                                    <th>Email</th>
                                     <th>Số lần đặt vé</th>
                                     <th>Ngày đặt gần đây</th>
                                     <th>Thao tác</th>
@@ -632,21 +880,30 @@
                             <tbody>
                                 @foreach ($guestUsers as $guest)
                                     <tr>
-                                        <td>{{ $guest->name }} <span
-                                                class="badge bg-secondary">{{ $guest->user ? 'Account' : 'Guest' }}</span>
-                                        </td>
-                                        <td>{{ $guest->phone }}<br>{{ $guest->email }}</td>
-                                        <td>{{ $guest->address }}</td>
+                                        <td>{{ $guest->name }}</td>
+                                        <td>{{ $guest->email }}</td>
                                         <td>{{ $guest->booking_count }}</td>
                                         <td>{{ $guest->created_at }}</td>
                                         <td>
-                                            <form action="{{ route('cancel-booking', $guest->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Xác nhận hủy vé?')">
-                                                    <i class="bi bi-x-circle"></i> Hủy
+                                            <div class="d-flex">
+                                                <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal"
+                                                    data-bs-target="#guestDetailModal"
+                                                    data-name="{{ $guest->name }}" data-email="{{ $guest->email }}"
+                                                    data-phone="{{ $guest->phone }}"
+                                                    data-address="{{ $guest->address }}"
+                                                    data-booking-count="{{ $guest->booking_count }}"
+                                                    data-created-at="{{ $guest->created_at }}">
+                                                    <i class="bi bi-eye"></i>
                                                 </button>
-                                            </form>
+                                                <form action="{{ route('cancel-booking', $guest->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Xác nhận hủy vé?')">
+                                                        <i class="bi bi-x-circle"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -978,6 +1235,280 @@
         </div>
     </div>
 
+    <!-- Flight Detail Modal -->
+    <div class="modal fade" id="flightDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi Tiết Chuyến Bay</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="flight-info-container">
+                        <div class="flight-date">
+                            <div class="date-number" id="detailDateNumber"></div>
+                            <div class="date-month" id="detailDateMonth"></div>
+                            <div class="date-day" id="detailDateDay"></div>
+                        </div>
+                        <div class="flight-details">
+                            <div class="flight-route">
+                                <div class="airport-code" id="detailDeparture"></div>
+                                <div class="flight-arrow">
+                                    <i class="bi bi-arrow-right"></i>
+                                </div>
+                                <div class="airport-code" id="detailDestination"></div>
+                            </div>
+                            <div class="flight-times">
+                                <div class="departure-time" id="detailFlightStart"></div>
+                                <div class="flight-duration">-</div>
+                                <div class="arrival-time" id="detailFlightEnd"></div>
+                            </div>
+                            <div class="airport-names">
+                                Chuyến bay: <span id="detailFlightCode"></span>
+                            </div>
+                            <div class="airline-info">
+                                <div class="airline-logo">
+                                    <img id="detailAirlineLogo" src="" alt="Airline Logo" />
+                                </div>
+                                <div class="flight-number" id="detailAirlineName"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h6>Thông Tin Vé</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Hạng Phổ Thông</h6>
+                                        <p class="card-text">Số ghế: <span id="detailSeatEconomy"></span></p>
+                                        <p class="card-text">Giá vé: <span id="detailPriceEconomy"></span> VNĐ</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Hạng Thương Gia</h6>
+                                        <p class="card-text">Số ghế: <span id="detailSeatBusiness"></span></p>
+                                        <p class="card-text">Giá vé: <span id="detailPriceBusiness"></span> VNĐ</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal fade" id="userDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi Tiết Tài Khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="user-info-container">
+                        <div class="user-header">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle" style="font-size: 3rem; color: #2c3e50;"></i>
+                            </div>
+                            <div class="user-title">
+                                <h5 id="detailUserName"></h5>
+                                <span class="badge" id="detailUserStatus"></span>
+                            </div>
+                        </div>
+                        <div class="user-details">
+                            <div class="detail-item">
+                                <i class="bi bi-person"></i>
+                                <div>
+                                    <small class="text-muted">Mã khách hàng</small>
+                                    <p id="detailUserCode"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-envelope"></i>
+                                <div>
+                                    <small class="text-muted">Email</small>
+                                    <p id="detailUserEmail"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-telephone"></i>
+                                <div>
+                                    <small class="text-muted">Số điện thoại</small>
+                                    <p id="detailUserPhone"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <div>
+                                    <small class="text-muted">Địa chỉ</small>
+                                    <p id="detailUserAddress"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-calendar"></i>
+                                <div>
+                                    <small class="text-muted">Ngày đăng ký</small>
+                                    <p id="detailUserCreatedAt"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guest Detail Modal -->
+    <div class="modal fade" id="guestDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi Tiết Khách Vãng Lai</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="user-info-container">
+                        <div class="user-header">
+                            <div class="user-avatar">
+                                <i class="bi bi-person-circle" style="font-size: 3rem; color: #2c3e50;"></i>
+                            </div>
+                            <div class="user-title">
+                                <h5 id="detailGuestName"></h5>
+                                <span class="badge bg-secondary">Khách vãng lai</span>
+                            </div>
+                        </div>
+                        <div class="user-details">
+                            <div class="detail-item">
+                                <i class="bi bi-envelope"></i>
+                                <div>
+                                    <small class="text-muted">Email</small>
+                                    <p id="detailGuestEmail"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-telephone"></i>
+                                <div>
+                                    <small class="text-muted">Số điện thoại</small>
+                                    <p id="detailGuestPhone"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <div>
+                                    <small class="text-muted">Địa chỉ</small>
+                                    <p id="detailGuestAddress"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-ticket-perforated"></i>
+                                <div>
+                                    <small class="text-muted">Số lần đặt vé</small>
+                                    <p id="detailGuestBookingCount"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-calendar"></i>
+                                <div>
+                                    <small class="text-muted">Ngày đặt gần đây</small>
+                                    <p id="detailGuestCreatedAt"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Detail Modal -->
+    <div class="modal fade" id="bookingDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi Tiết Vé</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="user-info-container">
+                        <div class="user-header">
+                            <div class="user-avatar">
+                                <i class="bi bi-ticket-perforated" style="font-size: 3rem; color: #2c3e50;"></i>
+                            </div>
+                            <div class="user-title">
+                                <h5 id="detailBookingCode"></h5>
+                                <span class="badge" id="detailBookingStatus"></span>
+                            </div>
+                        </div>
+                        <div class="user-details">
+                            <div class="detail-item">
+                                <i class="bi bi-airplane"></i>
+                                <div>
+                                    <small class="text-muted">Chuyến bay</small>
+                                    <p id="detailFlightCode"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <div>
+                                    <small class="text-muted">Hành trình</small>
+                                    <p id="detailFlightRoute"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-calendar"></i>
+                                <div>
+                                    <small class="text-muted">Ngày bay</small>
+                                    <p id="detailFlightTime"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-person"></i>
+                                <div>
+                                    <small class="text-muted">Khách hàng</small>
+                                    <p id="detailCustomerName"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-envelope"></i>
+                                <div>
+                                    <small class="text-muted">Email</small>
+                                    <p id="detailCustomerEmail"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-telephone"></i>
+                                <div>
+                                    <small class="text-muted">Số điện thoại</small>
+                                    <p id="detailCustomerPhone"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-calendar-check"></i>
+                                <div>
+                                    <small class="text-muted">Ngày đặt</small>
+                                    <p id="detailBookingDate"></p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="bi bi-currency-dollar"></i>
+                                <div>
+                                    <small class="text-muted">Tổng tiền</small>
+                                    <p id="detailBookingPrice"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
@@ -1145,6 +1676,195 @@
                     }
                 });
             });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flightDetailModal = document.getElementById('flightDetailModal');
+            if (flightDetailModal) {
+                flightDetailModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const flightCode = button.getAttribute('data-flight-code');
+                    const departure = button.getAttribute('data-departure');
+                    const destination = button.getAttribute('data-destination');
+                    const departureTime = button.getAttribute('data-departure-time');
+                    const flightStart = button.getAttribute('data-flight-start');
+                    const flightEnd = button.getAttribute('data-flight-end');
+                    const seatEconomy = button.getAttribute('data-seat-economy');
+                    const seatBusiness = button.getAttribute('data-seat-business');
+                    const priceEconomy = button.getAttribute('data-price-economy');
+                    const priceBusiness = button.getAttribute('data-price-business');
+                    const airlineName = button.getAttribute('data-airline-name');
+                    const airlineLogo = button.getAttribute('data-airline-logo');
+
+                    // Format date
+                    const date = new Date(departureTime);
+                    const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu',
+                        'Thứ Bảy'
+                    ];
+
+                    document.getElementById('detailDateNumber').textContent = date.getDate();
+                    document.getElementById('detailDateMonth').textContent = `Tháng ${date.getMonth() + 1}`;
+                    document.getElementById('detailDateDay').textContent = days[date.getDay()];
+
+                    // Set other details
+                    document.getElementById('detailDeparture').textContent = departure;
+                    document.getElementById('detailDestination').textContent = destination;
+                    document.getElementById('detailFlightStart').textContent = flightStart;
+                    document.getElementById('detailFlightEnd').textContent = flightEnd;
+                    document.getElementById('detailFlightCode').textContent = flightCode;
+                    document.getElementById('detailAirlineName').textContent = airlineName;
+                    document.getElementById('detailAirlineLogo').src =
+                        `{{ asset('storage/airline_logos') }}/${airlineLogo}`;
+
+                    // Set seat and price information
+                    document.getElementById('detailSeatEconomy').textContent = seatEconomy;
+                    document.getElementById('detailSeatBusiness').textContent = seatBusiness;
+                    document.getElementById('detailPriceEconomy').textContent = new Intl.NumberFormat(
+                        'vi-VN').format(priceEconomy);
+                    document.getElementById('detailPriceBusiness').textContent = new Intl.NumberFormat(
+                        'vi-VN').format(priceBusiness);
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userDetailModal = document.getElementById('userDetailModal');
+            if (userDetailModal) {
+                userDetailModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const userCode = button.getAttribute('data-user-code');
+                    const name = button.getAttribute('data-name');
+                    const email = button.getAttribute('data-email');
+                    const phone = button.getAttribute('data-phone');
+                    const address = button.getAttribute('data-address');
+                    const createdAt = button.getAttribute('data-created-at');
+                    const status = button.getAttribute('data-status');
+
+                    // Format date
+                    const date = new Date(createdAt);
+                    const formattedDate = date.toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Set user details
+                    document.getElementById('detailUserName').textContent = name;
+                    document.getElementById('detailUserCode').textContent = userCode;
+                    document.getElementById('detailUserEmail').textContent = email;
+                    document.getElementById('detailUserPhone').textContent = phone;
+                    document.getElementById('detailUserAddress').textContent = address;
+                    document.getElementById('detailUserCreatedAt').textContent = formattedDate;
+
+                    // Set status badge
+                    const statusBadge = document.getElementById('detailUserStatus');
+                    statusBadge.textContent = status;
+                    statusBadge.className = `badge ${status === 'active' ? 'bg-success' : 'bg-danger'}`;
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const guestDetailModal = document.getElementById('guestDetailModal');
+            if (guestDetailModal) {
+                guestDetailModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const name = button.getAttribute('data-name');
+                    const email = button.getAttribute('data-email');
+                    const phone = button.getAttribute('data-phone');
+                    const address = button.getAttribute('data-address');
+                    const bookingCount = button.getAttribute('data-booking-count');
+                    const createdAt = button.getAttribute('data-created-at');
+
+                    // Format date
+                    const date = new Date(createdAt);
+                    const formattedDate = date.toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Set guest details
+                    document.getElementById('detailGuestName').textContent = name;
+                    document.getElementById('detailGuestEmail').textContent = email;
+                    document.getElementById('detailGuestPhone').textContent = phone;
+                    document.getElementById('detailGuestAddress').textContent = address;
+                    document.getElementById('detailGuestBookingCount').textContent = bookingCount;
+                    document.getElementById('detailGuestCreatedAt').textContent = formattedDate;
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bookingDetailModal = document.getElementById('bookingDetailModal');
+            if (bookingDetailModal) {
+                bookingDetailModal.addEventListener('show.bs.modal', function(event) {
+                    const button = event.relatedTarget;
+                    const bookingCode = button.getAttribute('data-booking-code');
+                    const flightCode = button.getAttribute('data-flight-code');
+                    const flightDeparture = button.getAttribute('data-flight-departure');
+                    const flightDestination = button.getAttribute('data-flight-destination');
+                    const flightTime = button.getAttribute('data-flight-time');
+                    const customerName = button.getAttribute('data-customer-name');
+                    const customerEmail = button.getAttribute('data-customer-email');
+                    const customerPhone = button.getAttribute('data-customer-phone');
+                    const bookingDate = button.getAttribute('data-booking-date');
+                    const bookingStatus = button.getAttribute('data-booking-status');
+                    const bookingPrice = button.getAttribute('data-booking-price');
+
+                    // Format dates
+                    const flightDate = new Date(flightTime);
+                    const bookingDateObj = new Date(bookingDate);
+
+                    const formattedFlightDate = flightDate.toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    const formattedBookingDate = bookingDateObj.toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Set booking details
+                    document.getElementById('detailBookingCode').textContent = `Mã vé: ${bookingCode}`;
+                    document.getElementById('detailFlightCode').textContent = flightCode;
+                    document.getElementById('detailFlightRoute').textContent =
+                        `${flightDeparture} → ${flightDestination}`;
+                    document.getElementById('detailFlightTime').textContent = formattedFlightDate;
+                    document.getElementById('detailCustomerName').textContent = customerName;
+                    document.getElementById('detailCustomerEmail').textContent = customerEmail;
+                    document.getElementById('detailCustomerPhone').textContent = customerPhone;
+                    document.getElementById('detailBookingDate').textContent = formattedBookingDate;
+                    document.getElementById('detailBookingPrice').textContent = new Intl.NumberFormat(
+                        'vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }).format(bookingPrice);
+
+                    // Set status badge
+                    const statusBadge = document.getElementById('detailBookingStatus');
+                    statusBadge.textContent = bookingStatus;
+                    statusBadge.className =
+                        `badge ${bookingStatus === 'confirmed' ? 'bg-success' : 'bg-danger'}`;
+                });
+            }
         });
     </script>
 </body>

@@ -274,7 +274,8 @@
         }
 
         .search-form {
-            flex: 1;
+            width: 100%;
+            flex: 1.2;
             background-color: white;
             border-radius: 8px;
             padding: 15px;
@@ -285,27 +286,36 @@
         }
 
         .search-title {
-            font-size: 18px;
-            margin-bottom: 15px;
+            font-size: 20px;
+            margin-bottom: 20px;
             color: #003580;
+            font-weight: 600;
         }
 
         .search-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .search-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: 500;
+            color: #333;
         }
 
         .search-group input,
         .search-group select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-group input:focus,
+        .search-group select:focus {
+            border-color: #003580;
+            outline: none;
         }
 
         .search-radios {
@@ -314,26 +324,42 @@
             margin-bottom: 15px;
         }
 
-        .search-radio label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
+        .search-radio {
+            position: relative;
         }
 
-        .search-radio input {
-            margin-right: 5px;
+        .search-radio button {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
         }
 
         .search-btn {
-            background-color: #f0ad4e;
+            background-color: #ff5722;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             width: 100%;
-            margin-top: 10px;
+            font-size: 15px;
+            margin-top: 15px;
+        }
+
+        .search-btn:hover {
+            background-color: #f4511e;
         }
 
         .passenger-row {
@@ -700,76 +726,138 @@
 
                 <div class="search-radios">
                     <div class="search-radio">
-                        <label>
-                            <input type="radio" name="tripType" checked /> Một chiều
-                        </label>
+                        <button onclick="showForm('oneway')" name="tripType">
+                            Một chiều
+                        </button>
                     </div>
                     <div class="search-radio">
-                        <label> <input type="radio" name="tripType" /> Khứ hồi </label>
+                        <button onclick="showForm('roundtrip')" name="tripType">
+                            Khứ hồi
+                        </button>
                     </div>
                 </div>
 
-                <div class="search-group">
-                    <label>Điểm đi</label>
-                    <select>
-                        <option>Hà Nội (HAN)</option>
-                        <option>TP Hồ Chí Minh (SGN)</option>
-                        <option>Đà Nẵng (DAD)</option>
-                        <option>Nha Trang (CXR)</option>
-                        <option>Phú Quốc (PQC)</option>
-                    </select>
-                </div>
-
-                <div class="search-group">
-                    <label>Điểm đến</label>
-                    <select>
-                        <option>TP Hồ Chí Minh (SGN)</option>
-                        <option>Hà Nội (HAN)</option>
-                        <option>Đà Nẵng (DAD)</option>
-                        <option>Nha Trang (CXR)</option>
-                        <option>Phú Quốc (PQC)</option>
-                    </select>
-                </div>
-
-                <div class="search-group">
-                    <label>Ngày đi</label>
-                    <input type="date" value="2025-04-07" />
-                </div>
-
-                <div class="search-group">
-                    <label>Ngày về</label>
-                    <input type="date" disabled />
-                </div>
-
-                <div class="search-group">
-                    <label>Hành khách</label>
-                    <div class="passenger-row">
-                        <span>Người lớn</span>
-                        <div class="passenger-count">
-                            <div class="count-btn">-</div>
-                            <div class="count-value">2</div>
-                            <div class="count-btn">+</div>
+                <div id="oneway-form" class="form-container active">
+                    <form action="{{ route('flight-search-oneway') }}" method="GET">
+                        <div class="search-group">
+                            <label>Điểm đi</label>
+                            <input type="text" name="departure" placeholder="Chọn thành phố hoặc sân bay"
+                                value="{{ old('departure') }}">
+                            </input>
                         </div>
-                    </div>
-                    <div class="passenger-row">
-                        <span>Trẻ em (2-12 tuổi)</span>
-                        <div class="passenger-count">
-                            <div class="count-btn">-</div>
-                            <div class="count-value">1</div>
-                            <div class="count-btn">+</div>
+
+                        <div class="search-group">
+                            <label>Điểm đến</label>
+                            <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay"
+                                value="{{ old('destination') }}">
+                            </input>
                         </div>
-                    </div>
-                    <div class="passenger-row">
-                        <span>Em bé (< 2 tuổi)</span>
+
+                        <div class="search-group">
+                            <label>Ngày đi</label>
+                            <input type="date" name="departure_time" min="{{ date('Y-m-d') }}"
+                                value="{{ old('departure_time') }}" />
+                        </div>
+
+                        <div class="search-group">
+                            <label>Hành khách</label>
+                            <div class="passenger-row">
+                                <span>Người lớn</span>
                                 <div class="passenger-count">
-                                    <div class="count-btn">-</div>
-                                    <div class="count-value">0</div>
-                                    <div class="count-btn">+</div>
+                                    <div class="count-btn" onclick="decrementPassenger('adult', 'oneway')">-</div>
+                                    <div class="count-value" id="adult-count-oneway">1</div>
+                                    <div class="count-btn" onclick="incrementPassenger('adult', 'oneway')">+</div>
                                 </div>
-                    </div>
+                            </div>
+                            <div class="passenger-row">
+                                <span>Trẻ em (2-12 tuổi)</span>
+                                <div class="passenger-count">
+                                    <div class="count-btn" onclick="decrementPassenger('child', 'oneway')">-</div>
+                                    <div class="count-value" id="child-count-oneway">0</div>
+                                    <div class="count-btn" onclick="incrementPassenger('child', 'oneway')">+</div>
+                                </div>
+                            </div>
+                            <div class="passenger-row">
+                                <span>Em bé (< 2 tuổi)</span>
+                                        <div class="passenger-count">
+                                            <div class="count-btn" onclick="decrementPassenger('infant', 'oneway')">-
+                                            </div>
+                                            <div class="count-value" id="infant-count-oneway">0</div>
+                                            <div class="count-btn" onclick="incrementPassenger('infant', 'oneway')">+
+                                            </div>
+                                        </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="adults" id="adults-input-oneway" value="1">
+                        <input type="hidden" name="childrens" id="childrens-input-oneway" value="0">
+                        <input type="hidden" name="infants" id="infants-input-oneway" value="0">
+                        <button class="search-btn">TÌM KIẾM</button>
+                    </form>
                 </div>
 
-                <button class="search-btn">TÌM KIẾM</button>
+                <div id="roundtrip-form" class="form-container">
+                    <form action="{{ route('flight-search-roundtrip') }}" method="GET">
+                        <div class="search-group">
+                            <label>Điểm đi</label>
+                            <input type="text" name="departure" placeholder="Chọn thành phố hoặc sân bay"
+                                value="{{ old('departure') }}">
+                            </input>
+                        </div>
+
+                        <div class="search-group">
+                            <label>Điểm đến</label>
+                            <input type="text" name="destination" placeholder="Chọn thành phố hoặc sân bay"
+                                value="{{ old('destination') }}">
+                            </input>
+                        </div>
+
+                        <div class="search-group">
+                            <label>Ngày đi</label>
+                            <input type="date" name="departure_time" min="{{ date('Y-m-d') }}"
+                                value="{{ old('departure_time') }}" />
+                        </div>
+
+                        <div class="search-group">
+                            <label>Ngày về</label>
+                            <input type="date" name="return_time" min="{{ date('Y-m-d') }}"
+                                value="{{ old('return_time') }}" />
+                        </div>
+
+                        <div class="search-group">
+                            <label>Hành khách</label>
+                            <div class="passenger-row">
+                                <span>Người lớn</span>
+                                <div class="passenger-count">
+                                    <div class="count-btn" onclick="decrementPassenger('adult', 'roundtrip')">-</div>
+                                    <div class="count-value" id="adult-count-roundtrip">1</div>
+                                    <div class="count-btn" onclick="incrementPassenger('adult', 'roundtrip')">+</div>
+                                </div>
+                            </div>
+                            <div class="passenger-row">
+                                <span>Trẻ em (2-12 tuổi)</span>
+                                <div class="passenger-count">
+                                    <div class="count-btn" onclick="decrementPassenger('child', 'roundtrip')">-</div>
+                                    <div class="count-value" id="child-count-roundtrip">0</div>
+                                    <div class="count-btn" onclick="incrementPassenger('child', 'roundtrip')">+</div>
+                                </div>
+                            </div>
+                            <div class="passenger-row">
+                                <span>Em bé (< 2 tuổi)</span>
+                                        <div class="passenger-count">
+                                            <div class="count-btn"
+                                                onclick="decrementPassenger('infant', 'roundtrip')">-</div>
+                                            <div class="count-value" id="infant-count-roundtrip">0</div>
+                                            <div class="count-btn"
+                                                onclick="incrementPassenger('infant', 'roundtrip')">+</div>
+                                        </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="adults" id="adults-input-roundtrip" value="1">
+                        <input type="hidden" name="childrens" id="childrens-input-roundtrip" value="0">
+                        <input type="hidden" name="infants" id="infants-input-roundtrip" value="0">
+                        <button class="search-btn">TÌM KIẾM</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -803,6 +891,158 @@
                 clickedButton.textContent = 'Hiển thị chi tiết';
             }
         }
+    </script>
+
+    <script>
+        // Giới hạn số lượng hành khách
+        const MAX_ADULTS = 9;
+        const MAX_CHILDREN = 9;
+        const MAX_INFANTS = 9;
+        const MIN_PASSENGERS = 0;
+        const MAX_TOTAL_PASSENGERS = 9;
+
+        // Hàm hiển thị thông báo
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+                notification.remove();
+            }, 3000);
+        }
+
+        // Hàm kiểm tra tổng số hành khách
+        function checkTotalPassengers(formType) {
+            const suffix = formType === 'roundtrip' ? '-roundtrip' : '-oneway';
+            const adultCount = parseInt(document.getElementById(`adults-input${suffix}`).value);
+            const childCount = parseInt(document.getElementById(`childrens-input${suffix}`).value);
+            const infantCount = parseInt(document.getElementById(`infants-input${suffix}`).value);
+            const total = adultCount + childCount + infantCount;
+
+            if (total > MAX_TOTAL_PASSENGERS) {
+                showNotification('Tổng số hành khách không được vượt quá 9 người!');
+                return false;
+            }
+            return true;
+        }
+
+        // Hàm tăng số lượng hành khách
+        function incrementPassenger(type, formType) {
+            const suffix = formType === 'roundtrip' ? '-roundtrip' : '-oneway';
+            const countElement = document.getElementById(`${type}-count${suffix}`);
+            const inputElement = document.getElementById(`${type}s-input${suffix}`);
+            let count = parseInt(countElement.textContent);
+            const maxLimit = type === 'adult' ? MAX_ADULTS : (type === 'child' ? MAX_CHILDREN : MAX_INFANTS);
+
+            if (count < maxLimit) {
+                if (type === 'infant') {
+                    const adultCount = parseInt(document.getElementById(`adults-input${suffix}`).value);
+                    if (count < adultCount) {
+                        count++;
+                    } else {
+                        showNotification('Số em bé không được vượt quá số người lớn!');
+                        return;
+                    }
+                } else {
+                    count++;
+                }
+
+                // Kiểm tra tổng số hành khách trước khi cập nhật
+                const newTotal = count +
+                    parseInt(document.getElementById(`childrens-input${suffix}`).value) +
+                    parseInt(document.getElementById(`infants-input${suffix}`).value);
+
+                if (newTotal > MAX_TOTAL_PASSENGERS) {
+                    showNotification('Tổng số hành khách không được vượt quá 9 người!');
+                    return;
+                }
+
+                countElement.textContent = count;
+                inputElement.value = count;
+            } else {
+                showNotification(
+                    `Số lượng ${type === 'adult' ? 'người lớn' : (type === 'child' ? 'trẻ em' : 'em bé')} không được vượt quá ${maxLimit}!`
+                );
+            }
+        }
+
+        // Hàm giảm số lượng hành khách
+        function decrementPassenger(type, formType) {
+            const suffix = formType === 'roundtrip' ? '-roundtrip' : '-oneway';
+            const countElement = document.getElementById(`${type}-count${suffix}`);
+            const inputElement = document.getElementById(`${type}s-input${suffix}`);
+            let count = parseInt(countElement.textContent);
+
+            if (count > MIN_PASSENGERS) {
+                if (type === 'adult') {
+                    const infantCount = parseInt(document.getElementById(`infants-input${suffix}`).value);
+                    if (count > infantCount) {
+                        count--;
+                    } else {
+                        showNotification('Số người lớn không được ít hơn số em bé!');
+                        return;
+                    }
+                } else {
+                    count--;
+                }
+
+                countElement.textContent = count;
+                inputElement.value = count;
+            }
+        }
+    </script>
+
+    <script>
+        function showForm(formType) {
+            // Ẩn tất cả các form
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.remove('active');
+            });
+
+            // Hiển thị form được chọn
+            const selectedForm = document.getElementById(formType + '-form');
+            if (selectedForm) {
+                selectedForm.classList.add('active');
+            }
+
+            // Cập nhật trạng thái radio buttons
+            document.querySelectorAll('.search-radio input[type="radio"]').forEach(radio => {
+                radio.checked = radio.value === formType;
+            });
+        }
+
+        // Khởi tạo form mặc định khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            showForm('oneway');
+        });
+
+        // khi click vào button sẽ đổi màu button và giữ nguyên
+        document.querySelectorAll('.search-radio button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Xóa màu của tất cả các button
+                document.querySelectorAll('.search-radio button').forEach(btn => {
+                    btn.style.backgroundColor = '#e0e0e0';
+                    btn.style.color = 'black';
+                });
+
+                // Đổi màu button được click
+                this.style.backgroundColor = '#003580';
+                this.style.color = 'white';
+            });
+        });
+
+        // Khởi tạo màu cho button mặc định
+        document.addEventListener('DOMContentLoaded', function() {
+            const defaultButton = document.querySelector('.search-radio button');
+            if (defaultButton) {
+                defaultButton.style.backgroundColor = '#003580';
+                defaultButton.style.color = 'white';
+            }
+        });
     </script>
 </body>
 

@@ -468,7 +468,7 @@
                             <option value="5" {{ old('infants') == '5' ? 'selected' : '' }}>5</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label>Hạng ghế</label>
                         <select name="seat-class">
                             <option value="" {{ old('seat-class') == '' ? 'selected' : '' }}>Chọn</option>
@@ -477,7 +477,7 @@
                             <option value="Thương gia" {{ old('seat-class') == 'Thương gia' ? 'selected' : '' }}>Thương
                                 gia</option>
                         </select>
-                    </div>
+                    </div> --}}
                     <button type="submit" class="search-btn">TÌM CHUYẾN BAY</button>
                 </form>
             </div>
@@ -500,7 +500,7 @@
                         <input name='departure_time' type='date' min='{{ date('Y-m-d') }}'
                             value="{{ old('departure_time') }}">
                     </div>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label>Hạng ghế</label>
                         <select name="seat-class">
                             <option value="" {{ old('seat-class') == '' ? 'selected' : '' }}>Chọn</option>
@@ -510,7 +510,7 @@
                                 Thương
                                 gia</option>
                         </select>
-                    </div>
+                    </div> --}}
                     <div class="form-group">
                         <label>Người lớn <span style="color:rgba(0, 0, 0, 0.4)">(12 tuổi trở lên)</span></label>
                         <select name="adults">
