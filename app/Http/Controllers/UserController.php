@@ -445,9 +445,10 @@ class UserController extends Controller
                 $infantsSession = session('infants', []);
             }
 
-            $adults = count($adultsSession);
-            $childrens = count($childrensSession);
-            $infants = count($infantsSession);
+            // Đảm bảo các biến là mảng trước khi đếm
+            $adults = is_array($adultsSession) ? count($adultsSession) : 0;
+            $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
+            $infants = is_array($infantsSession) ? count($infantsSession) : 0;
 
             // Xử lý thông tin khách hàng
             $full_name = trim($request->input('full_name', session('full_name', '')));
@@ -527,32 +528,39 @@ class UserController extends Controller
 
             // Lấy thông tin hành khách
             $adultsSession = $request->input('adults');
+            // Kiểm tra nếu là chuỗi JSON, giải mã nó
             if (is_string($adultsSession)) {
                 $adultsSession = json_decode($adultsSession, true) ?? [];
             }
+            // Nếu không phải là mảng, lấy từ session
             if (!is_array($adultsSession)) {
                 $adultsSession = session('adults', []);
             }
 
             $childrensSession = $request->input('childrens');
+            // Kiểm tra nếu là chuỗi JSON, giải mã nó
             if (is_string($childrensSession)) {
                 $childrensSession = json_decode($childrensSession, true) ?? [];
             }
+            // Nếu không phải là mảng, lấy từ session
             if (!is_array($childrensSession)) {
                 $childrensSession = session('childrens', []);
             }
 
             $infantsSession = $request->input('infants');
+            // Kiểm tra nếu là chuỗi JSON, giải mã nó
             if (is_string($infantsSession)) {
                 $infantsSession = json_decode($infantsSession, true) ?? [];
             }
+            // Nếu không phải là mảng, lấy từ session
             if (!is_array($infantsSession)) {
                 $infantsSession = session('infants', []);
             }
 
-            $adults = count($adultsSession);
-            $childrens = count($childrensSession);
-            $infants = count($infantsSession);
+            // Đảm bảo các biến là mảng trước khi đếm
+            $adults = is_array($adultsSession) ? count($adultsSession) : 0;
+            $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
+            $infants = is_array($infantsSession) ? count($infantsSession) : 0;
 
             // Xử lý thông tin khách hàng
             $full_name = trim($request->input('full_name', session('full_name', '')));
@@ -700,9 +708,10 @@ class UserController extends Controller
                 $infantsSession = session('infants_data', []);
             }
 
-            $adultsCount = count($adultsSession);
-            $childrensCount = count($childrensSession);
-            $infantsCount = count($infantsSession);
+            // Đảm bảo các biến là mảng trước khi đếm
+            $adults = is_array($adultsSession) ? count($adultsSession) : 0;
+            $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
+            $infants = is_array($infantsSession) ? count($infantsSession) : 0;
 
             $adults_count = (int) $request->input('adults_data', 0);
             $children_count = (int) $request->input('childrens_data', 0);
@@ -759,8 +768,8 @@ class UserController extends Controller
                     'name' => $full_name,
                     'phone' => $phone,
                     'email' => $email,
-                    'adult_count' => $adultsCount,
-                    'child_count' => $childrensCount,
+                    'adult_count' => $adults,
+                    'child_count' => $childrens,
                     'infant_count' => 0,
                     'address' => $address,
                     'flight_id' => $flight->id,
@@ -777,8 +786,8 @@ class UserController extends Controller
                     'name' => $full_name,
                     'phone' => $phone,
                     'email' => $email,
-                    'adult_count' => $adultsCount,
-                    'child_count' => $childrensCount,
+                    'adult_count' => $adults,
+                    'child_count' => $childrens,
                     'infant_count' => 0,
                     'address' => $address,
                     'total_price' => $total_price,
@@ -832,9 +841,9 @@ class UserController extends Controller
                 'departureDate' => $departureDate,
                 'duration' => $duration,
                 'total_price' => $total_price,
-                'adultsCount' => $adultsCount,
-                'childrensCount' => $childrensCount,
-                'infantsCount' => $infantsCount,
+                'adultsCount' => $adults,
+                'childrensCount' => $childrens,
+                'infantsCount' => $infants,
                 'full_name' => $full_name,
                 'phone' => $phone,
                 'email' => $email,
