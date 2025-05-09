@@ -10,10 +10,9 @@ class Payment extends Model
     use HasFactory;
     protected $table = 'payments';
     protected $fillable = [
-        'booking_id',
-        'payment_method',
+        'name',
+        'img_qr',
         'status',
-        'amount',
-        'transaction_id'
+        'created_at'
     ];
 }
