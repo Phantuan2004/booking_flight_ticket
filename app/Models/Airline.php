@@ -10,8 +10,8 @@ class Airline extends Model
     use HasFactory;
     protected $table = 'airlines';
     protected $fillable = [
+        'airline_code',
         'name',
         'logo'
     ];
-
 }

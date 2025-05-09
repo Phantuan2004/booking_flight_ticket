@@ -49,7 +49,7 @@ class User extends Authenticatable
 
     // Kiểm tra vai trò người dùng
     public function isAdmin(): bool
-{
+    {
         return $this->role === 'admin';
     }
 
