@@ -1228,9 +1228,41 @@
                         <div class="price-title">Phí dịch vụ</div>
                         <div class="price-value">{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
                     </div>
+                    <hr style="border: 1px solid #eee; margin: 20px 0;">
+                    <div class="price-row">
+                        <div class="price-title">Chuyến về: {{ $returnFlight->departure }} -
+                            {{ $returnFlight->destination }}</div>
+                        <div class="price-value">{{ $returnDepartureDate }}</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">{{ $returnFlight->airline->name }}
+                            ({{ $returnFlight->flight_code }})</div>
+                        <div class="price-value">{{ $returnFlightStartTime }} -
+                            {{ $returnFlightEndTime }}</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Người lớn (x{{ $adults }})</div>
+                        <div class="price-value">{{ number_format($returnAdultPrice, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Trẻ em (x{{ $childrens }})</div>
+                        <div class="price-value">{{ number_format($returnChildPrice, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Em bé (x{{ $infants }})</div>
+                        <div class="price-value">{{ number_format($returnInfantPrice, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Thuế & Phí</div>
+                        <div class="price-value">{{ number_format($returnTaxFee, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Phí dịch vụ</div>
+                        <div class="price-value">{{ number_format($returnServiceFee, 0, ',', '.') }} VNĐ</div>
+                    </div>
                     <div class="total-row">
                         <div>Tổng cộng</div>
-                        <div>{{ number_format($outboundTotalPrice, 0, ',', '.') }} VNĐ</div>
+                        <div>{{ number_format($outboundTotalPrice + $returnTotalPrice, 0, ',', '.') }} VNĐ</div>
                     </div>
 
                     <div class="payment-notice">
