@@ -5,6 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SkyJet - Thanh Toán Đặt Vé</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -15,47 +20,6 @@
 
         body {
             background-color: #f5f5f5;
-        }
-
-        header {
-            background-color: #003580;
-            color: white;
-            padding: 15px 0;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .logo span {
-            color: #ffd700;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 15px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
         }
 
         .page-title {
@@ -149,6 +113,7 @@
             border-bottom: 1px solid #eee;
         }
 
+        /* Styles cho phần phương thức thanh toán */
         .payment-method-selection {
             margin-bottom: 20px;
         }
@@ -160,11 +125,16 @@
         }
 
         .method-tab {
-            padding: 10px 20px;
+            padding: 12px 20px;
             cursor: pointer;
             font-size: 14px;
             color: #666;
             border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .method-tab:hover {
+            color: #003580;
         }
 
         .method-tab.active {
@@ -174,9 +144,140 @@
         }
 
         .card-form {
-            padding: 10px 0;
+            padding: 15px 0;
         }
 
+        /* Styles cho phương thức chuyển khoản */
+        .bank-info {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        .bank-info h3 {
+            color: #003580;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .bank-detail {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+            display: flex;
+            gap: 10px;
+        }
+
+        .bank-detail:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .bank-detail p {
+            margin-bottom: 6px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .qr-code-container-hanoi,
+        .qr-code-container-hochiminh {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-code-container-hanoi {
+            margin: -40px -50px 20px 0;
+        }
+
+        .qr-code-container-hochiminh {
+            margin: -35px -50px 10px 0;
+        }
+
+        .qr-guide-hanoi,
+        .qr-guide-hochiminh {
+            font-size: 9px;
+            color: #666;
+        }
+
+        .hint-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        input[readonly] {
+            background-color: #f5f5f5;
+            cursor: default;
+        }
+
+        /* Styles cho phương thức Ví MoMo */
+        .qr-code-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .qr-code-box {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        .qr-guide {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Styles cho phương thức thanh toán tại quầy */
+        .office-locations {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        .office-locations h3 {
+            color: #003580;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .office-detail {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .office-detail:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .office-detail p {
+            margin-bottom: 6px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        /* Styles chung cho form */
         .form-row {
             display: flex;
             gap: 15px;
@@ -189,91 +290,183 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-size: 14px;
-            color: #666;
+            color: #333;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
+            transition: border-color 0.3s ease;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             border-color: #003580;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 53, 128, 0.1);
         }
 
-        .card-icons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+        .required-field::after {
+            content: " *";
+            color: #f44336;
         }
 
-        .card-icon {
-            width: 50px;
-            height: 35px;
-            background-color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Upload biên lai */
+        .file-upload {
+            position: relative;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .upload-button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #003580;
+            font-weight: bold;
             border-radius: 4px;
-            border: 1px solid #ddd;
-            font-size: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
         }
 
-        .card-icon.active {
-            border-color: #003580;
-            background-color: #f0f8ff;
+        .upload-button:hover {
+            background-color: #002660;
         }
 
+        .file-name {
+            font-size: 14px;
+            color: #666;
+            vertical-align: middle;
+            font-weight: bold;
+        }
+
+        .remove-file {
+            border: none;
+            background-color: #00388c;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Styles cho thông báo bảo mật */
         .security-info {
             display: flex;
-            align-items: center;
-            margin-top: 15px;
+            align-items: flex-start;
+            margin-top: 20px;
             padding: 15px;
-            background-color: #f9f9f9;
             border-radius: 4px;
             font-size: 14px;
             color: #666;
+            line-height: 1.5;
+        }
+
+        .security-info.warning {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+        }
+
+        .security-info.info {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .security-info.success {
+            background-color: #f1f8e9;
+            border-left: 4px solid #8bc34a;
         }
 
         .security-icon {
             margin-right: 10px;
-            color: #4caf50;
-            font-weight: bold;
+            font-size: 18px;
+            margin-top: 1px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .method-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px;
+            }
+
+            .method-tab {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .bank-info,
+            .office-locations {
+                padding: 15px;
+            }
+        }
+
+        .flight-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
         .flight-info-container {
             display: flex;
             gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 300px;
+            background: #f8f9fa;
         }
 
         .flight-date {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-right: 15px;
-            border-right: 1px solid #eee;
-            min-width: 80px;
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            min-width: 100px;
+        }
+
+        .date-day {
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: white;
+            margin-top: 10px;
         }
 
         .date-number {
             font-size: 24px;
             font-weight: bold;
-            color: #003580;
+            line-height: 1;
+            margin-top: 20px;
         }
 
         .date-month {
             font-size: 14px;
-            color: #666;
+            margin-top: 5px;
         }
 
         .flight-details {
@@ -283,66 +476,67 @@
         .flight-route {
             display: flex;
             align-items: center;
+            gap: 10px;
             margin-bottom: 10px;
         }
 
         .airport-code {
             font-size: 18px;
             font-weight: bold;
+            color: #2c3e50;
         }
 
         .flight-arrow {
-            margin: 0 10px;
-            color: #666;
+            color: #3498db;
+            font-size: 1.2rem;
         }
 
         .flight-times {
             display: flex;
             align-items: center;
+            gap: 10px;
             color: #666;
-            font-size: 14px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            margin-top: 10px;
         }
 
         .flight-duration {
-            margin: 0 10px;
-            padding: 0 10px;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            font-size: 0.9rem;
         }
 
-        .airport-names {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
+        .airline-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .airline-logo img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
         }
 
         .airline-info {
             display: flex;
             align-items: center;
+            gap: 10px;
             margin-top: 10px;
         }
 
-        .airline-logo {
-            width: 40px;
-            height: 40px;
-            background-color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-
         .airline-name {
-            font-size: 14px;
-            color: #003580;
+            font-weight: 500;
+            color: #2c3e50;
         }
 
         .flight-number {
+            display: flex;
+            align-items: center;
             font-size: 14px;
             color: #666;
-            margin-left: 10px;
         }
 
         .passenger-summary {
@@ -512,6 +706,38 @@
             font-weight: bold;
             color: #ff6d00;
         }
+
+        .transfer-content {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .transfer-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f8f9fa;
+            color: #003580;
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            padding: 10px 20px;
+            background-color: #003580;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #002660;
+        }
     </style>
 </head>
 
@@ -519,22 +745,8 @@
     {{-- Scroll to top --}}
     @include('components.scroll-to-top')
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">Sky<span>Jet</span></div>
-                <nav>
-                    <ul>
-                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
-                        <li><a href="{{ route('datve_khuhoi') }}">Đặt Vé</a></li>
-                        <li><a href="#">Khuyến Mãi</a></li>
-                        <li><a href="#">Lịch Bay</a></li>
-                        <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+    {{-- Header --}}
+    @include('components.header')
 
     <div class="page-title">
         <div class="container">
@@ -583,75 +795,211 @@
                     <h2 class="payment-title">Thông Tin Thanh Toán</h2>
                     <div class="payment-method-selection">
                         <div class="method-tabs">
-                            <div class="method-tab active">Thẻ tín dụng/ghi nợ</div>
-                            <div class="method-tab">Internet Banking</div>
-                            <div class="method-tab">Ví điện tử</div>
+                            <div class="method-tab active">Chuyển khoản</div>
+                            <div class="method-tab">Ví MoMo</div>
+                            <div class="method-tab">Thanh toán tại quầy</div>
                         </div>
 
-                        <div class="card-form">
-                            <div class="card-icons">
-                                <div class="card-icon active">VISA</div>
-                                <div class="card-icon">MC</div>
-                                <div class="card-icon">JCB</div>
-                                <div class="card-icon">AMEX</div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="required-field">Số thẻ</label>
-                                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" />
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="required-field">Tên chủ thẻ</label>
-                                    <input type="text" placeholder="Tên in trên thẻ" />
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="required-field">Ngày hết hạn</label>
-                                    <div class="form-row" style="margin-bottom: 0">
-                                        <select>
-                                            <option value="">Tháng</option>
-                                            <option value="01">01</option>
-                                            <option value="02">02</option>
-                                            <option value="03">03</option>
-                                            <option value="04">04</option>
-                                            <option value="05">05</option>
-                                            <option value="06">06</option>
-                                            <option value="07">07</option>
-                                            <option value="08">08</option>
-                                            <option value="09">09</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                        </select>
-                                        <select>
-                                            <option value="">Năm</option>
-                                            <option value="2025">2025</option>
-                                            <option value="2026">2026</option>
-                                            <option value="2027">2027</option>
-                                            <option value="2028">2028</option>
-                                            <option value="2029">2029</option>
-                                            <option value="2030">2030</option>
-                                        </select>
+                        <!-- Form Chuyển khoản (hiển thị mặc định) -->
+                        <div class="card-form" id="bank-transfer-form">
+                            <div class="bank-info">
+                                <h3>Thông tin tài khoản ngân hàng Hà Nội</h3>
+                                <div class="bank-detail">
+                                    <div class="thongtinbank-hanoi">
+                                        <p><strong>Ngân hàng:</strong> MB bank</p>
+                                        <p><strong>Tên tài khoản:</strong> CÔNG TY TNHH SKYJET VIỆT NAM</p>
+                                        <p><strong>Chủ tài khoản:</strong>SKYJET VIỆT NAM</p>
+                                        <p><strong>Số tài khoản:</strong> 1234567890</p>
+                                        <p><strong>Chi nhánh:</strong> Hà Nội</p>
+                                    </div>
+                                    <div class="qr-code-container-hanoi">
+                                        <div class="qr-guide-hanoi">Mở app ngân hàng để quét mã qrcode</div>
+                                        <div class="qr-code-box">
+                                            <a href="https://img.vietqr.io/image/MB-0398694446-print.png"
+                                                data-fancybox="gallery">
+                                                <img style="width: 150px; height: auto; cursor: pointer;"
+                                                    src="https://img.vietqr.io/image/MB-0398694446-print.png"
+                                                    alt="Mã QR ngân hàng MB bank" width="150">
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="required-field">Mã CVV/CVC</label>
-                                    <input type="text" placeholder="XXX" />
+                                <h3>Thông tin tài khoản ngân hàng TP.HCM</h3>
+                                <div class="bank-detail">
+                                    <div class="thongtinbank-hochiminh">
+                                        <p><strong>Ngân hàng:</strong> MB bank</p>
+                                        <p><strong>Tên tài khoản:</strong> CÔNG TY TNHH SKYJET VIỆT NAM</p>
+                                        <p><strong>Chủ tài khoản:</strong> SKYJET VIỆT NAM</p>
+                                        <p><strong>Số tài khoản:</strong> 0987654321</p>
+                                        <p><strong>Chi nhánh:</strong> Hồ Chí Minh</p>
+                                    </div>
+                                    <div class="qr-code-container-hochiminh">
+                                        <div class="qr-guide-hochiminh">Mở app ngân hàng để quét mã qrcode</div>
+                                        <div class="qr-code-box">
+                                            <a href="https://img.vietqr.io/image/MB-0398694446-print.png"
+                                                data-fancybox="gallery">
+                                                <img style="width: 150px; height: auto; cursor: pointer;"
+                                                    src="https://img.vietqr.io/image/MB-0398694446-print.png"
+                                                    alt="Mã QR ngân hàng MB bank" width="150">
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="security-info">
-                                <div class="security-icon">🔒</div>
-                                <div>
-                                    Thông tin thanh toán được bảo mật bằng công nghệ mã hóa SSL
-                                    256-bit.
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Nội dung chuyển khoản</label>
+                                    @if (isset($flight))
+                                        {{-- Chuyến bay một chiều --}}
+                                        <div class="transfer-content">
+                                            <input type="text" class="transfer-input"
+                                                value="SKYJET-{{ $flight->flight_code }} {{ $departureDay }}/{{ $departureMonth }}/{{ $departureYear }} - {{ $full_name }}"
+                                                readonly>
+                                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                        </div>
+                                    @else
+                                        {{-- Chuyến bay khứ hồi --}}
+                                        <div class="transfer-content">
+                                            <input type="text" class="transfer-input"
+                                                value="SKYJET-{{ $outboundFlight->flight_code }} {{ $outboundDepartureDay }}/{{ $outboundDepartureMonth }}/{{ $outboundDepartureYear }} - {{ $returnFlight->flight_code }} {{ $returnDepartureDay }}/{{ $returnDepartureMonth }}/{{ $returnDepartureYear }} - {{ $full_name }}"
+                                                readonly>
+                                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                        </div>
+                                    @endif
+                                    <div class="hint-text">Vui lòng sử dụng đúng nội dung chuyển khoản này để hệ thống
+                                        có thể xác nhận thanh toán của bạn.</div>
                                 </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Người chuyển khoản</label>
+                                    <input type="text" placeholder="Nhập họ tên người chuyển khoản">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group file-upload">
+                                    <label>Tải lên biên lai chuyển khoản (nếu có)</label>
+                                    <input type="file" id="receipt-upload">
+                                    <label for="receipt-upload" class="upload-button" style="color: #eee">Chọn
+                                        tệp</label>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span class="file-name">Chưa có tệp nào được chọn</span>
+                                        <button class="remove-file" style="display: none;">Xóa</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="security-info warning">
+                                <div class="security-icon">ℹ️</div>
+                                <div>Sau khi chuyển khoản thành công, vui lòng chụp ảnh biên lai và tải lên hoặc gửi về
+                                    email: <strong>booking@skyjet.vn</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Form Ví MoMo -->
+                        <div class="card-form" id="momo-form" style="display: none;">
+                            <div class="qr-code-container">
+                                <div class="qr-code-box">
+                                    <a href="{{ asset('images/qr/qr-code-momo.jpg') }}" data-fancybox="gallery">
+                                        <img style="width: 150px; height: auto; cursor: pointer;"
+                                            src="{{ asset('images/qr/qr-code-momo.jpg') }}"
+                                            alt="Mã QR ngân hàng MB bank" width="150">
+                                    </a>
+                                </div>
+                                <p class="qr-guide">Quét mã QR để thanh toán qua ví MoMo</p>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Nội dung chuyển khoản</label>
+                                    @if (isset($flight))
+                                        {{-- Chuyến bay một chiều --}}
+                                        <div class="transfer-content">
+                                            <input type="text" class="transfer-input"
+                                                value="SKYJET-{{ $flight->flight_code }} {{ $departureDay }}/{{ $departureMonth }}/{{ $departureYear }} - {{ $full_name }}"
+                                                readonly>
+                                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                        </div>
+                                    @else
+                                        {{-- Chuyến bay khứ hồi --}}
+                                        <div class="transfer-content">
+                                            <input type="text" class="transfer-input"
+                                                value="SKYJET-{{ $outboundFlight->flight_code }} {{ $outboundDepartureDay }}/{{ $outboundDepartureMonth }}/{{ $outboundDepartureYear }} - {{ $returnFlight->flight_code }} {{ $returnDepartureDay }}/{{ $returnDepartureMonth }}/{{ $returnDepartureYear }} - {{ $full_name }}"
+                                                readonly>
+                                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                                        </div>
+                                    @endif
+                                    <div class="hint-text">Vui lòng sử dụng đúng nội dung chuyển khoản này để hệ thống
+                                        có thể xác nhận thanh toán của bạn.</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Số điện thoại đăng ký MoMo</label>
+                                    <input type="tel" placeholder="Nhập số điện thoại MoMo của bạn">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Họ tên người thanh toán</label>
+                                    <input type="text" placeholder="Nhập họ tên người thanh toán">
+                                </div>
+                            </div>
+
+                            <div class="security-info info">
+                                <div class="security-icon">ℹ️</div>
+                                <div>Vui lòng giữ lại biên lai giao dịch sau khi thanh toán thành công. Hệ thống sẽ tự
+                                    động cập nhật trong vòng 5 phút sau khi thanh toán.</div>
+                            </div>
+                        </div>
+
+                        <!-- Form Thanh toán tại quầy -->
+                        <div class="card-form" id="counter-payment-form" style="display: none;">
+                            <div class="office-locations">
+                                <h3>Địa điểm thanh toán</h3>
+                                <div class="office-detail">
+                                    <p><strong>Văn phòng Hà Nội:</strong> Tầng 5, Tòa nhà ABC, 123 Nguyễn Chí Thanh,
+                                        Đống Đa, Hà Nội</p>
+                                    <p><strong>Giờ làm việc:</strong> 8:00 - 17:30 (Thứ Hai - Thứ Sáu), 8:00 - 12:00
+                                        (Thứ Bảy)</p>
+                                    <p><strong>Hotline:</strong> 024.1234.5678</p>
+                                </div>
+                                <div class="office-detail">
+                                    <p><strong>Văn phòng TP.HCM:</strong> Tầng 3, Tòa nhà XYZ, 456 Cách Mạng Tháng 8,
+                                        Quận 3, TP.HCM</p>
+                                    <p><strong>Giờ làm việc:</strong> 8:00 - 17:30 (Thứ Hai - Thứ Sáu), 8:00 - 12:00
+                                        (Thứ Bảy)</p>
+                                    <p><strong>Hotline:</strong> 028.1234.5678</p>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Dự kiến ngày đến thanh toán</label>
+                                    <input type="date" min="{{ date('Y-m-d') }}">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="required-field">Văn phòng thanh toán</label>
+                                    <select>
+                                        <option value="">-- Chọn văn phòng --</option>
+                                        <option value="hanoi">Văn phòng Hà Nội</option>
+                                        <option value="hcmc">Văn phòng TP.HCM</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="security-info success">
+                                <div class="security-icon">ℹ️</div>
+                                <div>Quý khách vui lòng mang theo CMND/CCCD khi đến thanh toán tại quầy. Vé sẽ được giữ
+                                    trong vòng 24 giờ kể từ thời điểm đặt.</div>
                             </div>
                         </div>
                     </div>
@@ -661,27 +1009,63 @@
                     <h2 class="review-title">Xác Nhận Thông Tin Đặt Vé</h2>
                     <div class="flight-info-container">
                         <div class="flight-date">
-                            <div class="date-number">{{ $departureTime->format('d') }}</div>
-                            <div class="date-month">Tháng {{ $departureTime->format('m') }}</div>
+                            @if (isset($flight))
+                                {{-- Chuyến bay một chiều --}}
+                                <div class="date-number">{{ $departureDay }}</div>
+                                <div class="date-month">Tháng {{ $departureMonth }}</div>
+                                <div class="date-day">{{ $departureDayOfWeek }}</div>
+                            @else
+                                {{-- Chuyến bay khứ hồi --}}
+                                <div class="date-number">{{ $outboundDepartureDay }}</div>
+                                <div class="date-month">Tháng {{ $outboundDepartureMonth }}</div>
+                                <div class="date-day">{{ $outboundDayOfWeek }}</div>
+                            @endif
                         </div>
                         <div class="flight-details">
                             <div class="flight-route">
-                                <div class="airport-code">{{ $flight->departure }}</div>
-                                <div class="flight-arrow">→</div>
-                                <div class="airport-code">{{ $flight->destination }}</div>
+                                @if (isset($flight))
+                                    {{-- Chuyến bay một chiều --}}
+                                    <div class="airport-code">{{ $flight->departure }}</div>
+                                    <div class="flight-arrow">→</div>
+                                    <div class="airport-code">{{ $flight->destination }}</div>
+                                @else
+                                    {{-- Chuyến bay khứ hồi --}}
+                                    <div class="airport-code">{{ $outboundFlight->departure }}</div>
+                                    <div class="flight-arrow">→</div>
+                                    <div class="airport-code">{{ $outboundFlight->destination }}</div>
+                                @endif
                             </div>
                             <div class="flight-times">
-                                <div class="departure-time">{{ $flightStart->format('H:i') }}</div>
-                                <div class="flight-duration">{{ $duration }}</div>
-                                <div class="arrival-time">{{ $flightEnd->format('H:i') }}</div>
+                                @if (isset($flight))
+                                    <div class="departure-time">{{ $flightStartTime }}</div>
+                                    <div class="flight-arrow">-</div>
+                                    <div class="arrival-time">{{ $flightEndTime }}</div>
+                                @else
+                                    <div class="departure-time">{{ $outboundFlightStartTime }}</div>
+                                    <div class="flight-arrow">-</div>
+                                    <div class="arrival-time">{{ $outboundFlightEndTime }}</div>
+                                @endif
                             </div>
-                            <div class="airport-names">
-                                {{ $flight->departure }} → {{ $flight->destination }}
+                            <div class="flight-number">Chuyến bay: <p style="font-weight: bold; margin-left: 5px;">
+                                    @if (isset($flight))
+                                        {{ $flight->flight_code }}
+                                    @else
+                                        {{ $outboundFlight->flight_code }}
+                                    @endif
+                                </p>
                             </div>
                             <div class="airline-info">
-                                <div class="airline-logo">{{ $flight->airline->logo }}</div>
-                                <div class="airline-name">{{ $flight->airline->name }}</div>
-                                <div class="flight-number">{{ $flight->flight_code }}</div>
+                                <div class="airline-logo">
+                                    @if (isset($flight))
+                                        <img src="{{ asset('storage/airline_logos/' . $flight->airline->logo) }}"
+                                            alt="Airline Logo" />
+                                        <div class="airline-name">{{ $flight->airline->name }}</div>
+                                    @else
+                                        <img src="{{ asset('storage/airline_logos/' . $outboundFlight->airline->logo) }}"
+                                            alt="Airline Logo" />
+                                        <div class="airline-name">{{ $outboundFlight->airline->name }}</div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -735,80 +1119,159 @@
                 </div>
             </div>
 
-            <div class="price-summary">
-                <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
-                <div class="price-row">
-                    <div class="price-title">{{ $flight->departure }} - {{ $flight->destination }}</div>
-                    <div class="price-value">{{ $departureTime }}</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">{{ $flight->airline->name }} ({{ $flight->flight_code }})</div>
-                    <div class="price-value">{{ $flightStartTime }} -
-                        {{ $flightEndTime }}</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Người lớn (x{{ $adults }})</div>
-                    <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                    <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Em bé (x{{ $infants }})</div>
-                    <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Thuế & Phí</div>
-                    <div class="price-value">{{ number_format(50000, 0, ',', '.') }} VNĐ</div>
-                </div>
-                <div class="price-row">
-                    <div class="price-title">Phí dịch vụ</div>
-                    <div class="price-value">{{ number_format(20000, 0, ',', '.') }} VNĐ</div>
-                </div>
-                <div class="total-row">
-                    <div>Tổng cộng</div>
-                    <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
-                </div>
+            @if (isset($flight))
+                <div class="price-summary">
+                    <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
+                    <div class="price-row">
+                        <div class="price-title">{{ $flight->departure }} - {{ $flight->destination }}</div>
+                        <div class="price-value">{{ $departureDate }}</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">{{ $flight->airline->name }} ({{ $flight->flight_code }})</div>
+                        <div class="price-value">{{ $flightStartTime }} -
+                            {{ $flightEndTime }}</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Người lớn (x{{ $adults }})</div>
+                        <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Trẻ em (x{{ $childrens }})</div>
+                        <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Em bé (x{{ $infants }})</div>
+                        <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Thuế & Phí</div>
+                        <div class="price-value">{{ number_format($tax_fee, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Phí dịch vụ</div>
+                        <div class="price-value">{{ number_format($service_fee, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="total-row">
+                        <div>Tổng cộng</div>
+                        <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
+                    </div>
 
-                <div class="payment-notice">
-                    Lưu ý: Vé máy bay sẽ được gửi qua email sau khi thanh toán hoàn tất.
-                    Vui lòng kiểm tra email của bạn và hộp thư spam.
+                    <div class="payment-notice">
+                        Lưu ý: Vé máy bay sẽ được gửi qua email sau khi thanh toán hoàn tất.
+                        Vui lòng kiểm tra email của bạn và hộp thư spam.
+                    </div>
+
+                    <form action="{{ route('thanhcong') }}" method="POST">
+                        @csrf
+                        <!-- Thông tin chuyến bay -->
+                        <input type="hidden" name="flight_id" value="{{ $flight->id }}">
+                        <input type="hidden" name="departure" value="{{ $flight->departure }}">
+                        <input type="hidden" name="destination" value="{{ $flight->destination }}">
+                        <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
+                        <input type="hidden" name="price" value="{{ $flight->price }}">
+
+                        <!-- Thông tin hành khách -->
+                        <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
+                        <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
+                        <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
+
+                        <!-- Thông tin liên hệ -->
+                        <input type="hidden" name="full_name" value="{{ $full_name }}">
+                        <input type="hidden" name="phone" value="{{ $phone }}">
+                        <input type="hidden" name="email" value="{{ $email }}">
+                        <input type="hidden" name="address" value="{{ $address }}">
+
+                        <!-- Thông tin thanh toán -->
+                        <input type="hidden" name="adult_price" value="{{ $adult_price }}">
+                        <input type="hidden" name="child_price" value="{{ $child_price }}">
+                        <input type="hidden" name="infant_price" value="{{ $infant_price }}">
+                        <input type="hidden" name="tax_fee" value="{{ $tax_fee }}">
+                        <input type="hidden" name="service_fee" value="{{ $service_fee }}">
+                        <input type="hidden" name="total_price" value="{{ $total_price }}">
+
+                        <!-- Nút xác nhận -->
+                        <button class="confirm-btn" type="submit">XÁC NHẬN THANH TOÁN</button>
+                    </form>
+                    <button class="back-btn">QUAY LẠI</button>
                 </div>
+            @else
+                <div class="price-summary">
+                    <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
+                    <div class="price-row">
+                        <div class="price-title">{{ $outboundFlight->departure }} -
+                            {{ $outboundFlight->destination }}</div>
+                        <div class="price-value">{{ $outboundDepartureDate }}</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">{{ $outboundFlight->airline->name }}
+                            ({{ $outboundFlight->flight_code }})</div>
+                        <div class="price-value">{{ $outboundFlightStartTime }} -
+                            {{ $outboundFlightEndTime }}</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Người lớn (x{{ $adults }})</div>
+                        <div class="price-value">{{ number_format($outboundAdultPrice, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Trẻ em (x{{ $childrens }})</div>
+                        <div class="price-value">{{ number_format($outboundChildPrice, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Em bé (x{{ $infants }})</div>
+                        <div class="price-value">{{ number_format($outboundInfantPrice, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Thuế & Phí</div>
+                        <div class="price-value">{{ number_format($outboundTaxFee, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="price-row">
+                        <div class="price-title">Phí dịch vụ</div>
+                        <div class="price-value">{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
+                    </div>
+                    <div class="total-row">
+                        <div>Tổng cộng</div>
+                        <div>{{ number_format($outboundTotalPrice, 0, ',', '.') }} VNĐ</div>
+                    </div>
 
-                <form action="{{ route('thanhcong') }}" method="POST">
-                    @csrf
-                    <!-- Thông tin chuyến bay -->
-                    <input type="hidden" name="flight_id" value="{{ $flight->id }}">
-                    <input type="hidden" name="departure" value="{{ $flight->departure }}">
-                    <input type="hidden" name="destination" value="{{ $flight->destination }}">
-                    <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
-                    <input type="hidden" name="price" value="{{ $flight->price }}">
+                    <div class="payment-notice">
+                        Lưu ý: Vé máy bay sẽ được gửi qua email sau khi thanh toán hoàn tất.
+                        Vui lòng kiểm tra email của bạn và hộp thư spam.
+                    </div>
 
-                    <!-- Thông tin hành khách -->
-                    <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
-                    <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
-                    <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
+                    <form action="{{ route('thanhcong') }}" method="POST">
+                        @csrf
+                        <!-- Thông tin chuyến bay -->
+                        <input type="hidden" name="flight_id" value="{{ $outboundFlight->id }}">
+                        <input type="hidden" name="departure" value="{{ $outboundFlight->departure }}">
+                        <input type="hidden" name="destination" value="{{ $outboundFlight->destination }}">
+                        <input type="hidden" name="departure_time" value="{{ $outboundFlight->departure_time }}">
+                        <input type="hidden" name="price" value="{{ $outboundFlight->price }}">
 
-                    <!-- Thông tin liên hệ -->
-                    <input type="hidden" name="full_name" value="{{ $full_name }}">
-                    <input type="hidden" name="phone" value="{{ $phone }}">
-                    <input type="hidden" name="email" value="{{ $email }}">
-                    <input type="hidden" name="address" value="{{ $address }}">
+                        <!-- Thông tin hành khách -->
+                        <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
+                        <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
+                        <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
 
-                    <!-- Thông tin thanh toán -->
-                    <input type="hidden" name="adult_price" value="{{ $adult_price }}">
-                    <input type="hidden" name="child_price" value="{{ $child_price }}">
-                    <input type="hidden" name="infant_price" value="{{ $infant_price }}">
-                    <input type="hidden" name="tax_fee" value="{{ $tax_fee }}">
-                    <input type="hidden" name="service_fee" value="{{ $service_fee }}">
-                    <input type="hidden" name="total_price" value="{{ $total_price }}">
+                        <!-- Thông tin liên hệ -->
+                        <input type="hidden" name="full_name" value="{{ $full_name }}">
+                        <input type="hidden" name="phone" value="{{ $phone }}">
+                        <input type="hidden" name="email" value="{{ $email }}">
+                        <input type="hidden" name="address" value="{{ $address }}">
 
-                    <!-- Nút xác nhận -->
-                    <button class="confirm-btn" type="submit">XÁC NHẬN THANH TOÁN</button>
-                </form>
-                <button class="back-btn">QUAY LẠI</button>
-            </div>
+                        <!-- Thông tin thanh toán -->
+                        <input type="hidden" name="outboundAdultPrice" value="{{ $outboundAdultPrice }}">
+                        <input type="hidden" name="outboundChildPrice" value="{{ $outboundChildPrice }}">
+                        <input type="hidden" name="outboundInfantPrice" value="{{ $outboundInfantPrice }}">
+                        <input type="hidden" name="outboundTaxFee" value="{{ $outboundTaxFee }}">
+                        <input type="hidden" name="outboundServiceFee" value="{{ $outboundServiceFee }}">
+                        <input type="hidden" name="outboundTotalPrice" value="{{ $outboundTotalPrice }}">
+
+                        <!-- Nút xác nhận -->
+                        <button class="confirm-btn" type="submit">XÁC NHẬN THANH TOÁN</button>
+                    </form>
+                    <button class="back-btn">QUAY LẠI</button>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -819,6 +1282,163 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // JavaScript để quản lý các phương thức thanh toán
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lấy tất cả các tab phương thức thanh toán
+            const methodTabs = document.querySelectorAll('.method-tab');
+
+            // Lấy tất cả các form thanh toán
+            const bankTransferForm = document.getElementById('bank-transfer-form');
+            const momoForm = document.getElementById('momo-form');
+            const counterPaymentForm = document.getElementById('counter-payment-form');
+
+            // Thêm sự kiện click cho mỗi tab
+            methodTabs.forEach(function(tab, index) {
+                tab.addEventListener('click', function() {
+                    // Xóa active class từ tất cả các tab
+                    methodTabs.forEach(t => t.classList.remove('active'));
+
+                    // Thêm active class cho tab được click
+                    this.classList.add('active');
+
+                    // Ẩn tất cả các form
+                    bankTransferForm.style.display = 'none';
+                    momoForm.style.display = 'none';
+                    counterPaymentForm.style.display = 'none';
+
+                    // Hiển thị form tương ứng với tab được chọn
+                    if (index === 0) {
+                        bankTransferForm.style.display = 'block';
+                    } else if (index === 1) {
+                        momoForm.style.display = 'block';
+                    } else if (index === 2) {
+                        counterPaymentForm.style.display = 'block';
+                    }
+                });
+            });
+
+            // Xử lý hiển thị tên file khi upload biên lai
+            const fileInput = document.getElementById('receipt-upload');
+            const fileNameDisplay = document.querySelector('.file-name');
+            const removeFileButton = document.querySelector('.remove-file');
+            if (fileInput && fileNameDisplay) {
+                fileInput.addEventListener('change', function() {
+                    if (this.files.length > 0) {
+                        fileNameDisplay.textContent = this.files[0].name;
+                        removeFileButton.style.display = 'block';
+                    } else {
+                        fileNameDisplay.textContent = 'Chưa có tệp nào được chọn';
+                        removeFileButton.style.display = 'none';
+                    }
+                });
+            }
+
+            // Xử lý xóa tệp
+            if (removeFileButton) {
+                removeFileButton.addEventListener('click', function() {
+                    fileInput.value = '';
+                    fileNameDisplay.textContent = 'Chưa có tệp nào được chọn!';
+                    removeFileButton.style.display = 'none';
+                })
+            }
+
+            // Xử lý đếm ngược thời gian thanh toán
+            const timerElement = document.querySelector('.timer');
+
+            if (timerElement) {
+                let timeInSeconds = 15 * 60; // 15 phút = 900 giây
+
+                function updateTimer() {
+                    const minutes = Math.floor(timeInSeconds / 60);
+                    const seconds = timeInSeconds % 60;
+
+                    // Hiển thị thời gian dạng MM:SS
+                    timerElement.textContent =
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                    // Giảm thời gian
+                    timeInSeconds--;
+
+                    // Nếu hết thời gian
+                    if (timeInSeconds < 0) {
+                        clearInterval(timerInterval);
+                        timerElement.textContent = '00:00';
+                        alert('Thời gian giữ vé đã hết. Vui lòng đặt vé lại.');
+                        // Có thể thêm code để quay về trang đặt vé
+                    }
+                }
+
+                // Cập nhật timer mỗi giây
+                updateTimer(); // Gọi ngay lập tức để cập nhật hiển thị ban đầu
+                const timerInterval = setInterval(updateTimer, 1000);
+            }
+
+            // Xử lý nút xác nhận thanh toán
+            const confirmButton = document.querySelector('.confirm-btn');
+
+            if (confirmButton) {
+                confirmButton.addEventListener('click', function() {
+                    // Kiểm tra form đang active
+                    let activeTabIndex = 0;
+                    methodTabs.forEach((tab, index) => {
+                        if (tab.classList.contains('active')) {
+                            activeTabIndex = index;
+                        }
+                    });
+
+                    // Xử lý theo từng loại thanh toán
+                    if (activeTabIndex === 0) {
+                        // Xác nhận thông tin chuyển khoản
+                        alert(
+                            'Cảm ơn bạn đã chọn phương thức chuyển khoản. Vui lòng thực hiện chuyển khoản và giữ lại biên lai.'
+                        );
+                        // Điều hướng đến trang xác nhận
+                        // window.location.href = 'confirmation.html';
+                    } else if (activeTabIndex === 1) {
+                        // Xác nhận thanh toán qua MoMo
+                        alert(
+                            'Cảm ơn bạn đã chọn thanh toán qua MoMo. Vui lòng quét mã QR và hoàn tất thanh toán.'
+                        );
+                        // Điều hướng đến trang xác nhận
+                        // window.location.href = 'confirmation.html';
+                    } else if (activeTabIndex === 2) {
+                        // Xác nhận thanh toán tại quầy
+                        alert(
+                            'Đặt vé thành công! Vui lòng đến văn phòng đã chọn để hoàn tất thanh toán trong vòng 24 giờ.'
+                        );
+                        // Điều hướng đến trang xác nhận
+                        // window.location.href = 'confirmation.html';
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        // Khởi tạo fancybox
+        Fancybox.bind("[data-fancybox='gallery']");
+    </script>
+
+    <script>
+        function copyToClipboard(button) {
+            const input = button.previousElementSibling;
+            input.select();
+            document.execCommand('copy');
+
+            // Thay đổi text của button
+            const originalText = button.textContent;
+            button.textContent = 'Đã copy!';
+            button.style.backgroundColor = '#28a745';
+
+            // Đổi lại sau 2 giây
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.backgroundColor = '#003580';
+            }, 2000);
+        }
+    </script>
 </body>
 
 </html>

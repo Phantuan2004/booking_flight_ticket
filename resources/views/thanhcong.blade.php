@@ -17,47 +17,6 @@
             background-color: #f5f5f5;
         }
 
-        header {
-            background-color: #003580;
-            color: white;
-            padding: 15px 0;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .logo span {
-            color: #ffd700;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 15px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-
         .page-title {
             background-color: #003580;
             color: white;
@@ -174,28 +133,43 @@
         .flight-info-container {
             display: flex;
             gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 300px;
+            background: #f8f9fa;
         }
 
         .flight-date {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-right: 15px;
-            border-right: 1px solid #eee;
-            min-width: 80px;
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            min-width: 100px;
+        }
+
+        .date-day {
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: white;
+            margin-top: 10px;
         }
 
         .date-number {
             font-size: 24px;
             font-weight: bold;
-            color: #003580;
+            line-height: 1;
+            margin-top: 20px;
         }
 
         .date-month {
             font-size: 14px;
-            color: #666;
+            margin-top: 5px;
         }
 
         .flight-details {
@@ -205,66 +179,67 @@
         .flight-route {
             display: flex;
             align-items: center;
+            gap: 10px;
             margin-bottom: 10px;
         }
 
         .airport-code {
             font-size: 18px;
             font-weight: bold;
+            color: #2c3e50;
         }
 
         .flight-arrow {
-            margin: 0 10px;
-            color: #666;
+            color: #3498db;
+            font-size: 1.2rem;
         }
 
         .flight-times {
             display: flex;
             align-items: center;
+            gap: 10px;
             color: #666;
-            font-size: 14px;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            margin-top: 10px;
         }
 
         .flight-duration {
-            margin: 0 10px;
-            padding: 0 10px;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            font-size: 0.9rem;
         }
 
-        .airport-names {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
+        .airline-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .airline-logo img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
         }
 
         .airline-info {
             display: flex;
             align-items: center;
+            gap: 10px;
             margin-top: 10px;
         }
 
-        .airline-logo {
-            width: 40px;
-            height: 40px;
-            background-color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-
         .airline-name {
-            font-size: 14px;
-            color: #003580;
+            font-weight: 500;
+            color: #2c3e50;
         }
 
         .flight-number {
+            display: flex;
+            align-items: center;
             font-size: 14px;
             color: #666;
-            margin-left: 10px;
         }
 
         .passenger-summary {
@@ -441,22 +416,8 @@
     {{-- Scroll to top --}}
     @include('components.scroll-to-top')
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">Sky<span>Jet</span></div>
-                <nav>
-                    <ul>
-                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
-                        <li><a href="{{ route('datve_khuhoi') }}">Đặt Vé</a></li>
-                        <li><a href="#">Khuyến Mãi</a></li>
-                        <li><a href="#">Lịch Bay</a></li>
-                        <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+    {{-- Header --}}
+    @include('components.header')
 
     <div class="page-title">
         <div class="container">
@@ -516,8 +477,9 @@
 
                 <div class="flight-info-container">
                     <div class="flight-date">
-                        <div class="date-number">{{ $departureTime->format('d') }}</div>
-                        <div class="date-month">Tháng {{ $departureTime->format('m') }}</div>
+                        <div class="date-number">{{ $departureDay }}</div>
+                        <div class="date-month">Tháng {{ $departureMonth }}</div>
+                        <div class="date-day">{{ $departureDayOfWeek }}</div>
                     </div>
                     <div class="flight-details">
                         <div class="flight-route">
@@ -527,16 +489,18 @@
                         </div>
                         <div class="flight-times">
                             <div class="departure-time">{{ $flightStartTime }}</div>
-                            <div class="flight-duration">{{ $duration }}</div>
+                            <div class="flight-arrow">-</div>
                             <div class="arrival-time">{{ $flightEndTime }}</div>
                         </div>
-                        <div class="airport-names">
-                            {{ $flight->departure }} → {{ $flight->destination }}
+                        <div class="flight-number">Chuyến bay: <p style="font-weight: bold; margin-left: 5px;">
+                                {{ $flight->flight_code }}</p>
                         </div>
                         <div class="airline-info">
-                            <div class="airline-logo">{{ $flight->airline->logo }}</div>
-                            <div class="airline-name">{{ $flight->airline->name }}</div>
-                            <div class="flight-number">{{ $flight->flight_code }}</div>
+                            <div class="airline-logo">
+                                <img src="{{ asset('storage/airline_logos/' . $flight->airline->logo) }}"
+                                    alt="Airline Logo" />
+                                <div class="airline-name">{{ $flight->airline->name }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>

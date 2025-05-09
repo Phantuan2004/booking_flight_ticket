@@ -297,6 +297,21 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Sửa người dùng thành công!');
     }
 
+    public function searchAirline(Request $request)
+    {
+        $keyword = $request->keyword;
+
+        $airlines = Airline::where('name', 'like', "%{keyword}%")->take(5)->get();
+
+        $output = '<ul class="list-group">';
+        foreach ($airlines as $airline) {
+            $output .= '<li class="list-group-item">' . $airline->name . '</li>';
+        }
+        $output .= '<ul>';
+
+        return response($output);
+    }
+
     public function searchFlight(Request $request)
     {
         $query = Flight::query();

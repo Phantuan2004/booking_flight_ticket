@@ -17,47 +17,6 @@
             background-color: #f5f5f5;
         }
 
-        header {
-            background-color: #003580;
-            color: white;
-            padding: 15px 0;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .logo span {
-            color: #ffd700;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 15px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-
         .page-title {
             background-color: #003580;
             color: white;
@@ -357,32 +316,6 @@
             margin-top: 5px;
         }
 
-        .payment-options {
-            margin-top: 20px;
-        }
-
-        .payment-method {
-            margin-bottom: 15px;
-        }
-
-        .payment-label {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-            cursor: pointer;
-        }
-
-        .payment-label input {
-            margin-right: 10px;
-        }
-
-        .payment-cards {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            margin-left: 25px;
-        }
-
         .card-icon {
             width: 40px;
             height: 30px;
@@ -541,22 +474,8 @@
     {{-- Scroll to top --}}
     @include('components.scroll-to-top')
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">Sky<span>Jet</span></div>
-                <nav>
-                    <ul>
-                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
-                        <li><a href="{{ route('datve_khuhoi') }}">Đặt Vé</a></li>
-                        <li><a href="#">Khuyến Mãi</a></li>
-                        <li><a href="#">Lịch Bay</a></li>
-                        <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+    {{-- Header --}}
+    @include('components.header')
 
     <div class="page-title">
         <div class="container">
@@ -594,6 +513,9 @@
     </div>
 
     <div class="container">
+        {{-- Flash Message --}}
+        @include('components.flash-message')
+
         <form action="{{ route('thanhtoan') }}" method="POST">
             @csrf
             @if (isset($flight))
@@ -877,35 +799,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="confirmation-box">
-                        <h2 class="confirmation-title">Phương Thức Thanh Toán</h2>
-                        <div class="payment-options">
-                            <div class="payment-method">
-                                <label class="payment-label">
-                                    <input type="radio" name="payment" value="credit" checked />
-                                    Thanh toán bằng thẻ tín dụng/ghi nợ
-                                </label>
-                                <div class="payment-cards">
-                                    <div class="card-icon">VISA</div>
-                                    <div class="card-icon">MC</div>
-                                    <div class="card-icon">JCB</div>
-                                </div>
-                            </div>
-                            <div class="payment-method">
-                                <label class="payment-label">
-                                    <input type="radio" name="payment" value="bank" />
-                                    Thanh toán qua ngân hàng trực tuyến
-                                </label>
-                            </div>
-                            <div class="payment-method">
-                                <label class="payment-label">
-                                    <input type="radio" name="payment" value="ewallet" />
-                                    Thanh toán qua ví điện tử (Momo, ZaloPay, VNPay)
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="price-summary">
@@ -975,6 +868,7 @@
                             <div class="price-title">Phí dịch vụ</div>
                             <div class="price-value">{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
                         </div>
+                        <hr style="border: 1px solid #eee; margin: 20px 0;">
                         <div class="price-row">
                             <div class="price-title">Chuyến về: {{ $returnFlight->departure }} -
                                 {{ $returnFlight->destination }}</div>
@@ -1037,7 +931,7 @@
         </div>
     </footer>
 
-    <script>
+    {{-- <script>
         // Hiển thị thông báo khi chưa nhập thông tin đầy đủ mà đã submit
         document.querySelector('form').addEventListener('submit', function(event) {
             // Kiểm tra giá trị các trường thông tin hành khách
@@ -1068,7 +962,7 @@
                 return;
             }
         })
-    </script>
+    </script> --}}
 </body>
 
 </html>

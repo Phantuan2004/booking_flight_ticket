@@ -473,7 +473,7 @@
         <div class="sidebar">
             <div class="logo">
                 <a href="{{ route('admin') }}" class="text-white text-decoration-none">
-                    <h1>SkyTicket</h1>
+                    <h1>SkyJet</h1>
                 </a>
             </div>
             <ul class="sidebar-menu ps-0">
@@ -551,7 +551,10 @@
 
                 <div class="search-box mb-3">
                     <form class="search-flight" action="{{ route('search-airline-admin') }}" method="get">
-                        <input type="text" name="{{ $airline_code ?? '' }}" placeholder="Mã hoặc tên hãng bay">
+                        <input type="text" id="search" name="{{ $airline_code ?? '' }}"
+                            placeholder="Mã hoặc tên hãng bay" autocomplete="off">
+                        <div id="search-results" style="position: absolute; background: #fff; border: 1px solid #ccc;">
+                        </div>
                         <button type="submit"><i class="bi bi-search"></i></button>
                     </form>
                 </div>
@@ -1511,6 +1514,37 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        // Tìm kiếm hãng bay bằng Jquery và AJAX
+        $(doucument).ready(function() {
+            $('search').on('keyup', function() {
+                let keyword = $(this).val();
+                if (keyword.length > 1) {
+                    $.ajax({
+                        url: '{{ route('search-airline-admin') }}',
+                        type: 'GET',
+                        data: {
+                            keyword: keyword
+                        },
+                        success: function(data) {
+                            $('search-results').html(data).show();
+                        }
+                    });
+                } else {
+                    $('search-results').hide();
+                }
+            });
+
+            // Click ngoài input sẽ ẩn kết quả tìm kiếm
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#search, #search-results').length) {
+                    $('search-results').hide();
+                }
+            });
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

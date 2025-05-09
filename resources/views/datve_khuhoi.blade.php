@@ -685,24 +685,8 @@
     {{-- Scroll to top --}}
     @include('components.scroll-to-top')
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">Sky<span>Jet</span></div>
-                <nav>
-                    <ul>
-                        <li>
-                            <a href="{{ route('index') }}">Trang Chủ</a>
-                        </li>
-                        <li><a href="#">Đặt Vé</a></li>
-                        <li><a href="#">Khuyến Mãi</a></li>
-                        <li><a href="#">Lịch Bay</a></li>
-                        <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+    {{-- Header --}}
+    @include('components.header')
 
     <div class="page-title">
         <div class="container">

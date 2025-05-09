@@ -36,57 +36,6 @@
             background-color: #f5f5f5;
         }
 
-        header {
-            background-color: #003580;
-            color: white;
-            padding: 20px 0;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-a {
-            text-decoration: none;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffffff
-        }
-
-        .logo span {
-            color: #ffd700;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        nav ul li a:hover {
-            color: #ffd700;
-        }
-
         .hero {
             background-image: url({{ asset('images/banners/banner-web-ve-bay.jpg') }});
             background-size: cover;
@@ -370,25 +319,8 @@
     {{-- Scroll to top --}}
     @include('components.scroll-to-top')
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <a class="logo-a" href="{{ route('index') }}">
-                    <div class="logo">Sky<span>Jet</span></div>
-                </a>
-                <nav>
-                    <ul>
-                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
-                        <li><a href="{{ route('datve_khuhoi') }}">Đặt Vé</a></li>
-                        <li><a href="#">Khuyến Mãi</a></li>
-                        <li><a href="#">Lịch Bay</a></li>
-                        <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
-                        <li><a href="{{ route('lichsudatve') }}">Xem lại lịch sử</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+    {{-- Header --}}
+    @include('components.header')
 
     <section class="hero">
         <div class="container">
@@ -401,12 +333,9 @@
 
     <div class="container">
         <div class="search-box">
-            @if (session('flash_message'))
-                <div class="alert alert-{{ session('flash_message.type') }}"
-                    style="margin-bottom: 20px; padding: 15px; border-radius: 4px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
-                    {{ session('flash_message.message') }}
-                </div>
-            @endif
+            {{-- Flash Message --}}
+            @include('components.flash-message')
+
             <div class="search-tabs">
                 <div class="tab active" onclick="showForm('roundtrip')">Vé Khứ Hồi</div>
                 <div class="tab" onclick="showForm('oneway')">Vé Một Chiều</div>

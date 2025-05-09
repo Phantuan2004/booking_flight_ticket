@@ -64,7 +64,7 @@
                                 <tr>
                                     <td align="center" style="padding-bottom: 30px;">
                                         <p style="margin: 0; font-size: 16px; color: #666;">
-                                            Cảm ơn bạn đã đặt vé với SkyJet. Dưới đây là thông tin chi tiết về chuyến
+                                            Cảm ơn bạn đã đặt vé với SkyJet. Dưới đây là thông tin chuyến
                                             bay của bạn.<br>
                                             Vui lòng lưu giữ thông tin này để sử dụng khi làm thủ tục bay.
                                         </p>
@@ -307,6 +307,12 @@
                                                             <td
                                                                 style="font-size: 16px; font-weight: bold; text-align: right; padding-top: 10px; border-top: 1px solid #eee;">
                                                                 {{ number_format($total_price, 0, ',', '.') }} VNĐ</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <strong>Hình thức thanh toán: </strong>
+                                                                {{ $payment_method }}
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </td>

@@ -17,23 +17,6 @@
             background-color: #f5f5f5;
         }
 
-        header {
-            background-color: #003580;
-            color: white;
-            padding: 15px 0;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
 
         .steps-container {
             display: flex;
@@ -91,29 +74,6 @@
             height: 1px;
             background-color: #ddd;
             margin: 0 15px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .logo span {
-            color: #ffd700;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 15px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
         }
 
         .page-title {
@@ -483,22 +443,8 @@
     {{-- Scroll to top --}}
     @include('components.scroll-to-top')
 
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">Sky<span>Jet</span></div>
-                <nav>
-                    <ul>
-                        <li><a href="{{ route('index') }}">Trang Chủ</a></li>
-                        <li><a href="#">Đặt Vé</a></li>
-                        <li><a href="#">Khuyến Mãi</a></li>
-                        <li><a href="#">Lịch Bay</a></li>
-                        <li><a href="/lienhe.html">Liên Hệ</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </header>
+    {{-- Header --}}
+    @include('components.header')
 
     <div class="page-title">
         <div class="container">
