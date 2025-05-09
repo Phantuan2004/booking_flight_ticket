@@ -308,12 +308,12 @@
                                                                 style="font-size: 16px; font-weight: bold; text-align: right; padding-top: 10px; border-top: 1px solid #eee;">
                                                                 {{ number_format($total_price, 0, ',', '.') }} VNĐ</td>
                                                         </tr>
-                                                        <tr>
+                                                        {{-- <tr>
                                                             <td>
                                                                 <strong>Hình thức thanh toán: </strong>
                                                                 {{ $payment_method }}
                                                             </td>
-                                                        </tr>
+                                                        </tr> --}}
                                                     </table>
                                                 </td>
                                             </tr>
