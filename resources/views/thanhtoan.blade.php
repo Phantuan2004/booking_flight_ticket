@@ -951,6 +951,19 @@
                                 </div>
                             </div>
 
+                            <div class="form-row">
+                                <div class="form-group file-upload">
+                                    <label>Tải lên biên lai chuyển khoản (nếu có)</label>
+                                    <input type="file" id="receipt-upload">
+                                    <label for="receipt-upload" class="upload-button" style="color: #eee">Chọn
+                                        tệp</label>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span class="file-name">Chưa có tệp nào được chọn</span>
+                                        <button class="remove-file" style="display: none;">Xóa</button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="security-info info">
                                 <div class="security-icon">ℹ️</div>
                                 <div>Vui lòng giữ lại biên lai giao dịch sau khi thanh toán thành công. Hệ thống sẽ tự
@@ -1380,7 +1393,7 @@
             const timerElement = document.querySelector('.timer');
 
             if (timerElement) {
-                let timeInSeconds = 15 * 60; // 15 phút = 900 giây
+                let timeInSeconds = 10 * 60; // 10 phút = 600 giây
 
                 function updateTimer() {
                     const minutes = Math.floor(timeInSeconds / 60);
@@ -1405,45 +1418,6 @@
                 // Cập nhật timer mỗi giây
                 updateTimer(); // Gọi ngay lập tức để cập nhật hiển thị ban đầu
                 const timerInterval = setInterval(updateTimer, 1000);
-            }
-
-            // Xử lý nút xác nhận thanh toán
-            const confirmButton = document.querySelector('.confirm-btn');
-
-            if (confirmButton) {
-                confirmButton.addEventListener('click', function() {
-                    // Kiểm tra form đang active
-                    let activeTabIndex = 0;
-                    methodTabs.forEach((tab, index) => {
-                        if (tab.classList.contains('active')) {
-                            activeTabIndex = index;
-                        }
-                    });
-
-                    // Xử lý theo từng loại thanh toán
-                    if (activeTabIndex === 0) {
-                        // Xác nhận thông tin chuyển khoản
-                        alert(
-                            'Cảm ơn bạn đã chọn phương thức chuyển khoản. Vui lòng thực hiện chuyển khoản và giữ lại biên lai.'
-                        );
-                        // Điều hướng đến trang xác nhận
-                        // window.location.href = 'confirmation.html';
-                    } else if (activeTabIndex === 1) {
-                        // Xác nhận thanh toán qua MoMo
-                        alert(
-                            'Cảm ơn bạn đã chọn thanh toán qua MoMo. Vui lòng quét mã QR và hoàn tất thanh toán.'
-                        );
-                        // Điều hướng đến trang xác nhận
-                        // window.location.href = 'confirmation.html';
-                    } else if (activeTabIndex === 2) {
-                        // Xác nhận thanh toán tại quầy
-                        alert(
-                            'Đặt vé thành công! Vui lòng đến văn phòng đã chọn để hoàn tất thanh toán trong vòng 24 giờ.'
-                        );
-                        // Điều hướng đến trang xác nhận
-                        // window.location.href = 'confirmation.html';
-                    }
-                });
             }
         });
     </script>
