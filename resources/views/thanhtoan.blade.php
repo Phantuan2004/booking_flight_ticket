@@ -1020,68 +1020,105 @@
 
                 <div class="review-box">
                     <h2 class="review-title">Xác Nhận Thông Tin Đặt Vé</h2>
-                    <div class="flight-info-container">
-                        <div class="flight-date">
-                            @if (isset($flight))
-                                {{-- Chuyến bay một chiều --}}
+                    @if (isset($flight))
+                        {{-- Chuyến bay một chiều --}}
+                        <div class="flight-info-container">
+                            <div class="flight-date">
                                 <div class="date-number">{{ $departureDay }}</div>
                                 <div class="date-month">Tháng {{ $departureMonth }}</div>
                                 <div class="date-day">{{ $departureDayOfWeek }}</div>
-                            @else
-                                {{-- Chuyến bay khứ hồi --}}
-                                <div class="date-number">{{ $outboundDepartureDay }}</div>
-                                <div class="date-month">Tháng {{ $outboundDepartureMonth }}</div>
-                                <div class="date-day">{{ $outboundDayOfWeek }}</div>
-                            @endif
-                        </div>
-                        <div class="flight-details">
-                            <div class="flight-route">
-                                @if (isset($flight))
-                                    {{-- Chuyến bay một chiều --}}
+                            </div>
+                            <div class="flight-details">
+                                <div class="flight-route">
                                     <div class="airport-code">{{ $flight->departure }}</div>
                                     <div class="flight-arrow">→</div>
                                     <div class="airport-code">{{ $flight->destination }}</div>
-                                @else
-                                    {{-- Chuyến bay khứ hồi --}}
-                                    <div class="airport-code">{{ $outboundFlight->departure }}</div>
-                                    <div class="flight-arrow">→</div>
-                                    <div class="airport-code">{{ $outboundFlight->destination }}</div>
-                                @endif
-                            </div>
-                            <div class="flight-times">
-                                @if (isset($flight))
+                                </div>
+                                <div class="flight-times">
                                     <div class="departure-time">{{ $flightStartTime }}</div>
                                     <div class="flight-arrow">-</div>
                                     <div class="arrival-time">{{ $flightEndTime }}</div>
-                                @else
-                                    <div class="departure-time">{{ $outboundFlightStartTime }}</div>
-                                    <div class="flight-arrow">-</div>
-                                    <div class="arrival-time">{{ $outboundFlightEndTime }}</div>
-                                @endif
-                            </div>
-                            <div class="flight-number">Chuyến bay: <p style="font-weight: bold; margin-left: 5px;">
-                                    @if (isset($flight))
-                                        {{ $flight->flight_code }}
-                                    @else
-                                        {{ $outboundFlight->flight_code }}
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="airline-info">
-                                <div class="airline-logo">
-                                    @if (isset($flight))
+                                </div>
+                                <div class="flight-number">Chuyến bay: <p
+                                        style="font-weight: bold; margin-left: 5px;">{{ $flight->flight_code }}</p>
+                                </div>
+                                <div class="airline-info">
+                                    <div class="airline-logo">
                                         <img src="{{ asset('storage/airline_logos/' . $flight->airline->logo) }}"
                                             alt="Airline Logo" />
                                         <div class="airline-name">{{ $flight->airline->name }}</div>
-                                    @else
-                                        <img src="{{ asset('storage/airline_logos/' . $outboundFlight->airline->logo) }}"
-                                            alt="Airline Logo" />
-                                        <div class="airline-name">{{ $outboundFlight->airline->name }}</div>
-                                    @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        {{-- Chuyến bay khứ hồi --}}
+                        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                            {{-- Chuyến đi --}}
+                            <div class="flight-info-container" style="flex: 1;">
+                                <div class="flight-date">
+                                    <div class="date-number">{{ $outboundDepartureDay }}</div>
+                                    <div class="date-month">Tháng {{ $outboundDepartureMonth }}</div>
+                                    <div class="date-day">{{ $outboundDayOfWeek }}</div>
+                                </div>
+                                <div class="flight-details">
+                                    <div class="flight-route">
+                                        <div class="airport-code">{{ $outboundFlight->departure }}</div>
+                                        <div class="flight-arrow">→</div>
+                                        <div class="airport-code">{{ $outboundFlight->destination }}</div>
+                                    </div>
+                                    <div class="flight-times">
+                                        <div class="departure-time">{{ $outboundFlightStartTime }}</div>
+                                        <div class="flight-arrow">-</div>
+                                        <div class="arrival-time">{{ $outboundFlightEndTime }}</div>
+                                    </div>
+                                    <div class="flight-number">Chuyến bay: <p
+                                            style="font-weight: bold; margin-left: 5px;">
+                                            {{ $outboundFlight->flight_code }}</p>
+                                    </div>
+                                    <div class="airline-info">
+                                        <div class="airline-logo">
+                                            <img src="{{ asset('storage/airline_logos/' . $outboundFlight->airline->logo) }}"
+                                                alt="Airline Logo" />
+                                            <div class="airline-name">{{ $outboundFlight->airline->name }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Chuyến về --}}
+                            <div class="flight-info-container" style="flex: 1;">
+                                <div class="flight-date">
+                                    <div class="date-number">{{ $returnDepartureDay }}</div>
+                                    <div class="date-month">Tháng {{ $returnDepartureMonth }}</div>
+                                    <div class="date-day">{{ $returnDayOfWeek }}</div>
+                                </div>
+                                <div class="flight-details">
+                                    <div class="flight-route">
+                                        <div class="airport-code">{{ $returnFlight->departure }}</div>
+                                        <div class="flight-arrow">→</div>
+                                        <div class="airport-code">{{ $returnFlight->destination }}</div>
+                                    </div>
+                                    <div class="flight-times">
+                                        <div class="departure-time">{{ $returnFlightStartTime }}</div>
+                                        <div class="flight-arrow">-</div>
+                                        <div class="arrival-time">{{ $returnFlightEndTime }}</div>
+                                    </div>
+                                    <div class="flight-number">Chuyến bay: <p
+                                            style="font-weight: bold; margin-left: 5px;">
+                                            {{ $returnFlight->flight_code }}</p>
+                                    </div>
+                                    <div class="airline-info">
+                                        <div class="airline-logo">
+                                            <img src="{{ asset('storage/airline_logos/' . $returnFlight->airline->logo) }}"
+                                                alt="Airline Logo" />
+                                            <div class="airline-name">{{ $returnFlight->airline->name }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="passenger-summary">
                         <div class="passenger-count">
@@ -1134,191 +1171,189 @@
 
             @if (isset($flight))
                 <div class="price-summary">
-                    <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
-                    <div class="price-row">
-                        <div class="price-title">{{ $flight->departure }} - {{ $flight->destination }}</div>
-                        <div class="price-value">{{ $departureDate }}</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">{{ $flight->airline->name }} ({{ $flight->flight_code }})</div>
-                        <div class="price-value">{{ $flightStartTime }} -
-                            {{ $flightEndTime }}</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Người lớn (x{{ $adults }})</div>
-                        <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                        <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Em bé (x{{ $infants }})</div>
-                        <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Thuế & Phí</div>
-                        <div class="price-value">{{ number_format($tax_fee, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Phí dịch vụ</div>
-                        <div class="price-value">{{ number_format($service_fee, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="total-row">
-                        <div>Tổng cộng</div>
-                        <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
-                    </div>
-
-                    <div class="payment-notice">
-                        Lưu ý: Vé máy bay sẽ được gửi qua email sau khi chúng tôi xác nhận rằng bạn đã thanh toán hoàn
-                        tất.
-                        Vui lòng kiểm tra email của bạn và hộp thư spam trong vòng 5 phút.
-                    </div>
-
-                    <form action="{{ route('thanhcong') }}" method="POST">
-                        @csrf
-                        <!-- Thông tin chuyến bay -->
-                        <input type="hidden" name="flight_id" value="{{ $flight->id }}">
-                        <input type="hidden" name="departure" value="{{ $flight->departure }}">
-                        <input type="hidden" name="destination" value="{{ $flight->destination }}">
-                        <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
-                        <input type="hidden" name="price" value="{{ $flight->price }}">
-
-                        <!-- Thông tin hành khách -->
-                        <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
-                        <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
-                        <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
-
-                        <!-- Thông tin liên hệ -->
-                        <input type="hidden" name="full_name" value="{{ $full_name }}">
-                        <input type="hidden" name="phone" value="{{ $phone }}">
-                        <input type="hidden" name="email" value="{{ $email }}">
-                        <input type="hidden" name="address" value="{{ $address }}">
-
-                        <!-- Thông tin thanh toán -->
-                        <input type="hidden" name="adult_price" value="{{ $adult_price }}">
-                        <input type="hidden" name="child_price" value="{{ $child_price }}">
-                        <input type="hidden" name="infant_price" value="{{ $infant_price }}">
-                        <input type="hidden" name="tax_fee" value="{{ $tax_fee }}">
-                        <input type="hidden" name="service_fee" value="{{ $service_fee }}">
-                        <input type="hidden" name="total_price" value="{{ $total_price }}">
-
-                        <!-- Nút xác nhận -->
-                        <button class="confirm-btn" type="submit">HOÀN TẤT THANH TOÁN</button>
-                    </form>
-                    <button class="back-btn">QUAY LẠI</button>
+                    <div class="price-title">{{ $flight->departure }} - {{ $flight->destination }}</div>
+                    <div class="price-value">{{ $departureDate }}</div>
                 </div>
-            @else
-                <div class="price-summary">
-                    <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
-                    <div class="price-row">
-                        <div class="price-title">{{ $outboundFlight->departure }} -
-                            {{ $outboundFlight->destination }}</div>
-                        <div class="price-value">{{ $outboundDepartureDate }}</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">{{ $outboundFlight->airline->name }}
-                            ({{ $outboundFlight->flight_code }})</div>
-                        <div class="price-value">{{ $outboundFlightStartTime }} -
-                            {{ $outboundFlightEndTime }}</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Người lớn (x{{ $adults }})</div>
-                        <div class="price-value">{{ number_format($outboundAdultPrice, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                        <div class="price-value">{{ number_format($outboundChildPrice, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Em bé (x{{ $infants }})</div>
-                        <div class="price-value">{{ number_format($outboundInfantPrice, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Thuế & Phí</div>
-                        <div class="price-value">{{ number_format($outboundTaxFee, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Phí dịch vụ</div>
-                        <div class="price-value">{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <hr style="border: 1px solid #eee; margin: 20px 0;">
-                    <div class="price-row">
-                        <div class="price-title">Chuyến về: {{ $returnFlight->departure }} -
-                            {{ $returnFlight->destination }}</div>
-                        <div class="price-value">{{ $returnDepartureDate }}</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">{{ $returnFlight->airline->name }}
-                            ({{ $returnFlight->flight_code }})</div>
-                        <div class="price-value">{{ $returnFlightStartTime }} -
-                            {{ $returnFlightEndTime }}</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Người lớn (x{{ $adults }})</div>
-                        <div class="price-value">{{ number_format($returnAdultPrice, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                        <div class="price-value">{{ number_format($returnChildPrice, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Em bé (x{{ $infants }})</div>
-                        <div class="price-value">{{ number_format($returnInfantPrice, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Thuế & Phí</div>
-                        <div class="price-value">{{ number_format($returnTaxFee, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="price-row">
-                        <div class="price-title">Phí dịch vụ</div>
-                        <div class="price-value">{{ number_format($returnServiceFee, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="total-row">
-                        <div>Tổng cộng</div>
-                        <div>{{ number_format($outboundTotalPrice + $returnTotalPrice, 0, ',', '.') }} VNĐ</div>
-                    </div>
-
-                    <div class="payment-notice">
-                        Lưu ý: Vé máy bay sẽ được gửi qua email sau khi thanh toán hoàn tất.
-                        Vui lòng kiểm tra email của bạn và hộp thư spam.
-                    </div>
-
-                    <form action="{{ route('thanhcong') }}" method="POST">
-                        @csrf
-                        <!-- Thông tin chuyến bay -->
-                        <input type="hidden" name="flight_id" value="{{ $outboundFlight->id }}">
-                        <input type="hidden" name="departure" value="{{ $outboundFlight->departure }}">
-                        <input type="hidden" name="destination" value="{{ $outboundFlight->destination }}">
-                        <input type="hidden" name="departure_time" value="{{ $outboundFlight->departure_time }}">
-                        <input type="hidden" name="price" value="{{ $outboundFlight->price }}">
-
-                        <!-- Thông tin hành khách -->
-                        <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
-                        <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
-                        <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
-
-                        <!-- Thông tin liên hệ -->
-                        <input type="hidden" name="full_name" value="{{ $full_name }}">
-                        <input type="hidden" name="phone" value="{{ $phone }}">
-                        <input type="hidden" name="email" value="{{ $email }}">
-                        <input type="hidden" name="address" value="{{ $address }}">
-
-                        <!-- Thông tin thanh toán -->
-                        <input type="hidden" name="outboundAdultPrice" value="{{ $outboundAdultPrice }}">
-                        <input type="hidden" name="outboundChildPrice" value="{{ $outboundChildPrice }}">
-                        <input type="hidden" name="outboundInfantPrice" value="{{ $outboundInfantPrice }}">
-                        <input type="hidden" name="outboundTaxFee" value="{{ $outboundTaxFee }}">
-                        <input type="hidden" name="outboundServiceFee" value="{{ $outboundServiceFee }}">
-                        <input type="hidden" name="outboundTotalPrice" value="{{ $outboundTotalPrice }}">
-
-                        <!-- Nút xác nhận -->
-                        <button class="confirm-btn" type="submit">HOÀN TẤT THANH TOÁN</button>
-                    </form>
-                    <button class="back-btn">QUAY LẠI</button>
+                <div class="price-row">
+                    <div class="price-title">{{ $flight->airline->name }} ({{ $flight->flight_code }})</div>
+                    <div class="price-value">{{ $flightStartTime }} -
+                        {{ $flightEndTime }}</div>
                 </div>
-            @endif
+                <div class="price-row">
+                    <div class="price-title">Người lớn (x{{ $adults }})</div>
+                    <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Trẻ em (x{{ $childrens }})</div>
+                    <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Em bé (x{{ $infants }})</div>
+                    <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Thuế & Phí</div>
+                    <div class="price-value">{{ number_format($tax_fee, 0, ',', '.') }} VNĐ</div>
+                </div>
+                <div class="price-row">
+                    <div class="price-title">Phí dịch vụ</div>
+                    <div class="price-value">{{ number_format($service_fee, 0, ',', '.') }} VNĐ</div>
+                </div>
+                <div class="total-row">
+                    <div>Tổng cộng</div>
+                    <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
+                </div>
+
+                <div class="payment-notice">
+                    Lưu ý: Vé máy bay sẽ được gửi qua email sau khi chúng tôi xác nhận rằng bạn đã thanh toán hoàn
+                    tất.
+                    Vui lòng kiểm tra email của bạn và hộp thư spam trong vòng 5 phút.
+                </div>
+
+                <form action="{{ route('thanhcong') }}" method="POST">
+                    @csrf
+                    <!-- Thông tin chuyến bay -->
+                    <input type="hidden" name="flight_id" value="{{ $flight->id }}">
+                    <input type="hidden" name="departure" value="{{ $flight->departure }}">
+                    <input type="hidden" name="destination" value="{{ $flight->destination }}">
+                    <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
+                    <input type="hidden" name="price" value="{{ $flight->price }}">
+
+                    <!-- Thông tin hành khách -->
+                    <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
+                    <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
+                    <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
+
+                    <!-- Thông tin liên hệ -->
+                    <input type="hidden" name="full_name" value="{{ $full_name }}">
+                    <input type="hidden" name="phone" value="{{ $phone }}">
+                    <input type="hidden" name="email" value="{{ $email }}">
+                    <input type="hidden" name="address" value="{{ $address }}">
+
+                    <!-- Thông tin thanh toán -->
+                    <input type="hidden" name="adult_price" value="{{ $adult_price }}">
+                    <input type="hidden" name="child_price" value="{{ $child_price }}">
+                    <input type="hidden" name="infant_price" value="{{ $infant_price }}">
+                    <input type="hidden" name="tax_fee" value="{{ $tax_fee }}">
+                    <input type="hidden" name="service_fee" value="{{ $service_fee }}">
+                    <input type="hidden" name="total_price" value="{{ $total_price }}">
+
+                    <!-- Nút xác nhận -->
+                    <button class="confirm-btn" type="submit">HOÀN TẤT THANH TOÁN</button>
+                </form>
+                <button class="back-btn">QUAY LẠI</button>
         </div>
+    @else
+        <div class="price-summary">
+            <h2 class="summary-title">Tổng Kết Thanh Toán</h2>
+            <div class="price-row">
+                <div class="price-title">{{ $outboundFlight->departure }} -
+                    {{ $outboundFlight->destination }}</div>
+                <div class="price-value">{{ $outboundDepartureDate }}</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">{{ $outboundFlight->airline->name }}
+                    ({{ $outboundFlight->flight_code }})</div>
+                <div class="price-value">{{ $outboundFlightStartTime }} -
+                    {{ $outboundFlightEndTime }}</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Người lớn (x{{ $adults }})</div>
+                <div class="price-value">{{ number_format($outboundAdultPrice, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Trẻ em (x{{ $childrens }})</div>
+                <div class="price-value">{{ number_format($outboundChildPrice, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Em bé (x{{ $infants }})</div>
+                <div class="price-value">{{ number_format($outboundInfantPrice, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Thuế & Phí</div>
+                <div class="price-value">{{ number_format($outboundTaxFee, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Phí dịch vụ</div>
+                <div class="price-value">{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <hr style="border: 1px solid #eee; margin: 20px 0;">
+            <div class="price-row">
+                <div class="price-title">Chuyến về: {{ $returnFlight->departure }} -
+                    {{ $returnFlight->destination }}</div>
+                <div class="price-value">{{ $returnDepartureDate }}</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">{{ $returnFlight->airline->name }}
+                    ({{ $returnFlight->flight_code }})</div>
+                <div class="price-value">{{ $returnFlightStartTime }} -
+                    {{ $returnFlightEndTime }}</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Người lớn (x{{ $adults }})</div>
+                <div class="price-value">{{ number_format($returnAdultPrice, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Trẻ em (x{{ $childrens }})</div>
+                <div class="price-value">{{ number_format($returnChildPrice, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Em bé (x{{ $infants }})</div>
+                <div class="price-value">{{ number_format($returnInfantPrice, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Thuế & Phí</div>
+                <div class="price-value">{{ number_format($returnTaxFee, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="price-row">
+                <div class="price-title">Phí dịch vụ</div>
+                <div class="price-value">{{ number_format($returnServiceFee, 0, ',', '.') }} VNĐ</div>
+            </div>
+            <div class="total-row">
+                <div>Tổng cộng</div>
+                <div>{{ number_format($outboundTotalPrice + $returnTotalPrice, 0, ',', '.') }} VNĐ</div>
+            </div>
+
+            <div class="payment-notice">
+                Lưu ý: Vé máy bay sẽ được gửi qua email sau khi thanh toán hoàn tất.
+                Vui lòng kiểm tra email của bạn và hộp thư spam.
+            </div>
+
+            <form action="{{ route('thanhcong') }}" method="POST">
+                @csrf
+                <!-- Thông tin chuyến bay -->
+                <input type="hidden" name="flight_id" value="{{ $outboundFlight->id }}">
+                <input type="hidden" name="departure" value="{{ $outboundFlight->departure }}">
+                <input type="hidden" name="destination" value="{{ $outboundFlight->destination }}">
+                <input type="hidden" name="departure_time" value="{{ $outboundFlight->departure_time }}">
+                <input type="hidden" name="price" value="{{ $outboundFlight->price }}">
+
+                <!-- Thông tin hành khách -->
+                <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
+                <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
+                <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
+
+                <!-- Thông tin liên hệ -->
+                <input type="hidden" name="full_name" value="{{ $full_name }}">
+                <input type="hidden" name="phone" value="{{ $phone }}">
+                <input type="hidden" name="email" value="{{ $email }}">
+                <input type="hidden" name="address" value="{{ $address }}">
+
+                <!-- Thông tin thanh toán -->
+                <input type="hidden" name="outboundAdultPrice" value="{{ $outboundAdultPrice }}">
+                <input type="hidden" name="outboundChildPrice" value="{{ $outboundChildPrice }}">
+                <input type="hidden" name="outboundInfantPrice" value="{{ $outboundInfantPrice }}">
+                <input type="hidden" name="outboundTaxFee" value="{{ $outboundTaxFee }}">
+                <input type="hidden" name="outboundServiceFee" value="{{ $outboundServiceFee }}">
+                <input type="hidden" name="outboundTotalPrice" value="{{ $outboundTotalPrice }}">
+
+                <!-- Nút xác nhận -->
+                <button class="confirm-btn" type="submit">HOÀN TẤT THANH TOÁN</button>
+            </form>
+            <button class="back-btn">QUAY LẠI</button>
+        </div>
+        @endif
+    </div>
     </div>
 
     <footer>
