@@ -283,25 +283,33 @@
                                                     <p style="margin: 0 0 10px 0; font-weight: bold; color: #003580;">
                                                         Hà Nội:</p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Ngân hàng:</strong> MB bank</p>
+                                                        <strong>Ngân hàng:</strong> MB bank
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Chủ tài khoản:</strong> SKYJET VIỆT NAM</p>
+                                                        <strong>Chủ tài khoản:</strong> SKYJET VIỆT NAM
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Số tài khoản:</strong> 1234567890</p>
+                                                        <strong>Số tài khoản:</strong> 1234567890
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Chi nhánh:</strong> Hà Nội</p>
+                                                        <strong>Chi nhánh:</strong> Hà Nội
+                                                    </p>
                                                 </td>
                                                 <td width="50%" valign="top" style="padding-left: 10px;">
                                                     <p style="margin: 0 0 10px 0; font-weight: bold; color: #003580;">
                                                         TP.HCM:</p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Ngân hàng:</strong> MB bank</p>
+                                                        <strong>Ngân hàng:</strong> MB bank
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Chủ tài khoản:</strong> SKYJET VIỆT NAM</p>
+                                                        <strong>Chủ tài khoản:</strong> SKYJET VIỆT NAM
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Số tài khoản:</strong> 0987654321</p>
+                                                        <strong>Số tài khoản:</strong> 0987654321
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Chi nhánh:</strong> Hồ Chí Minh</p>
+                                                        <strong>Chi nhánh:</strong> Hồ Chí Minh
+                                                    </p>
                                                 </td>
                                             </tr>
                                         </table>
@@ -315,7 +323,7 @@
                                             style="background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                                             <p style="margin: 0; font-size: 14px; word-break: break-all;">
                                                 SKYJET-{{ $flight_code }}
-                                                {{ $departure_day }}/{{ $departure_month }}/{{ $departure_year }} -
+                                                {{ $departureDay }}/{{ $departureMonth }}/{{ $departureYear }} -
                                                 {{ $full_name }}</p>
                                         </div>
                                         <p style="margin: 0; font-size: 13px; color: #777; font-style: italic;">Vui
@@ -347,19 +355,22 @@
                                             <tr>
                                                 <td width="70%" valign="top">
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Số điện thoại:</strong> 0987654321</p>
+                                                        <strong>Số điện thoại:</strong> 0987654321
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Tên tài khoản:</strong> SKYJET VIỆT NAM</p>
+                                                        <strong>Tên tài khoản:</strong> SKYJET VIỆT NAM
+                                                    </p>
                                                     <p style="margin: 0 0 10px 0; font-size: 14px; color: #666;">
                                                         <strong>Số tiền:</strong>
-                                                        {{ number_format($total_price, 0, ',', '.') }} VNĐ</p>
+                                                        {{ number_format($total_price, 0, ',', '.') }} VNĐ
+                                                    </p>
                                                     <p style="margin: 0 0 10px 0; font-weight: bold; color: #003580;">
                                                         Nội dung chuyển khoản:</p>
                                                     <div
                                                         style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;">
                                                         <p style="margin: 0; font-size: 14px; word-break: break-all;">
                                                             SKYJET-{{ $flight_code }}
-                                                            {{ $departure_day }}/{{ $departure_month }}/{{ $departure_year }}
+                                                            {{ $departureDay }}/{{ $departureMonth }}/{{ $departureYear }}
                                                             - {{ $full_name }}</p>
                                                     </div>
                                                 </td>
@@ -397,9 +408,11 @@
                                                         Tòa nhà ABC, 123 Nguyễn Chí Thanh, Đống Đa, Hà Nội</p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
                                                         <strong>Giờ làm việc:</strong> 8:00 - 17:30 (T2 - T6), 8:00 -
-                                                        12:00 (T7)</p>
+                                                        12:00 (T7)
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Hotline:</strong> 024.1234.5678</p>
+                                                        <strong>Hotline:</strong> 024.1234.5678
+                                                    </p>
                                                 </td>
                                                 <td width="50%" valign="top" style="padding-left: 10px;">
                                                     <p style="margin: 0 0 10px 0; font-weight: bold; color: #003580;">
@@ -408,9 +421,11 @@
                                                         Tòa nhà XYZ, 456 Cách Mạng Tháng 8, Quận 3, TP.HCM</p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
                                                         <strong>Giờ làm việc:</strong> 8:00 - 17:30 (T2 - T6), 8:00 -
-                                                        12:00 (T7)</p>
+                                                        12:00 (T7)
+                                                    </p>
                                                     <p style="margin: 0 0 5px 0; font-size: 14px; color: #666;">
-                                                        <strong>Hotline:</strong> 028.1234.5678</p>
+                                                        <strong>Hotline:</strong> 028.1234.5678
+                                                    </p>
                                                 </td>
                                             </tr>
                                         </table>
@@ -427,7 +442,7 @@
                         </td>
                     </tr>
 
-                    <!-- Confirm Payment Button -->
+                    {{-- <!-- Confirm Payment Button -->
                     <tr>
                         <td align="center" style="padding: 15px 30px 30px 30px;">
                             <table border="0" cellspacing="0" cellpadding="0">
@@ -441,7 +456,7 @@
                                 </tr>
                             </table>
                         </td>
-                    </tr>
+                    </tr> --}}
 
                     <!-- Payment Instructions -->
                     <tr>
