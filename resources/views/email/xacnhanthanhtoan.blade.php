@@ -258,7 +258,7 @@
                             <h2 style="color: #003580; margin-bottom: 15px; font-size: 20px;">Phương Thức Thanh Toán
                             </h2>
                             <p style="color: #e74c3c; font-weight: bold; margin-top: 0; margin-bottom: 20px;">Vui lòng
-                                thanh toán trước ngày {{ $payment_deadline }}</p>
+                                thanh toán trong vòng 24h sau khi đặt vé</p>
                         </td>
                     </tr>
 
