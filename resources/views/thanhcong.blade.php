@@ -130,6 +130,28 @@
             border-bottom: 1px solid #eee;
         }
 
+        .confirmation-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .confirmation-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #003580;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .flight-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
         .flight-info-container {
             display: flex;
             gap: 15px;
@@ -475,36 +497,101 @@
                     <strong>Mã đặt chỗ:</strong> {{ $booking_code }}
                 </div>
 
-                <div class="flight-info-container">
-                    <div class="flight-date">
-                        <div class="date-number">{{ $departureDay }}</div>
-                        <div class="date-month">Tháng {{ $departureMonth }}</div>
-                        <div class="date-day">{{ $departureDayOfWeek }}</div>
-                    </div>
-                    <div class="flight-details">
-                        <div class="flight-route">
-                            <div class="airport-code">{{ $flight->departure }}</div>
-                            <div class="flight-arrow">→</div>
-                            <div class="airport-code">{{ $flight->destination }}</div>
+                @if (isset($flight))
+                    <div class="flight-info-container">
+                        <div class="flight-date">
+                            <div class="date-number">{{ $departureDay }}</div>
+                            <div class="date-month">Tháng {{ $departureMonth }}</div>
+                            <div class="date-day">{{ $departureDayOfWeek }}</div>
                         </div>
-                        <div class="flight-times">
-                            <div class="departure-time">{{ $flightStartTime }}</div>
-                            <div class="flight-arrow">-</div>
-                            <div class="arrival-time">{{ $flightEndTime }}</div>
-                        </div>
-                        <div class="flight-number">Chuyến bay: <p style="font-weight: bold; margin-left: 5px;">
-                                {{ $flight->flight_code }}</p>
-                        </div>
-                        <div class="airline-info">
-                            <div class="airline-logo">
-                                <img src="{{ asset('storage/airline_logos/' . $flight->airline->logo) }}"
-                                    alt="Airline Logo" />
-                                <div class="airline-name">{{ $flight->airline->name }}</div>
+                        <div class="flight-details">
+                            <div class="flight-route">
+                                <div class="airport-code">{{ $flight->departure }}</div>
+                                <div class="flight-arrow">→</div>
+                                <div class="airport-code">{{ $flight->destination }}</div>
+                            </div>
+                            <div class="flight-times">
+                                <div class="departure-time">{{ $flightStartTime }}</div>
+                                <div class="flight-arrow">-</div>
+                                <div class="arrival-time">{{ $flightEndTime }}</div>
+                            </div>
+                            <div class="flight-number">Chuyến bay: <p style="font-weight: bold; margin-left: 5px;">
+                                    {{ $flight->flight_code }}</p>
+                            </div>
+                            <div class="airline-info">
+                                <div class="airline-logo">
+                                    <img src="{{ asset('storage/airline_logos/' . $flight->airline->logo) }}"
+                                        alt="Airline Logo" />
+                                    <div class="airline-name">{{ $flight->airline->name }}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                @else
+                    <div class="confirmation-box">
+                        <h2 class="confirmation-title">Chi Tiết Chuyến Bay</h2>
+                        <div class="flight-info">
+                            <div class="flight-info-container">
+                                <div class="flight-date">
+                                    <div class="date-number">{{ $outboundDepartureDay }}</div>
+                                    <div class="date-month">Tháng {{ $outboundDepartureMonth }}</div>
+                                    <div class="date-day">{{ $outboundDayOfWeek }}</div>
+                                </div>
+                                <div class="flight-details">
+                                    <div class="flight-route">
+                                        <div class="airport-code">{{ $outboundFlight->departure }}</div>
+                                        <div class="flight-arrow">→</div>
+                                        <div class="airport-code">{{ $outboundFlight->destination }}</div>
+                                    </div>
+                                    <div class="airport-names">
+                                        Chuyến bay: {{ $outboundFlight->flight_code }}
+                                    </div>
+                                    <div class="flight-times">
+                                        <div class="departure-time">{{ $outboundFlightStartTime }}</div>
+                                        <div class="flight-duration">-</div>
+                                        <div class="arrival-time">{{ $outboundFlightEndTime }}</div>
+                                    </div>
+                                    <div class="airline-info">
+                                        <div class="airline-logo">
+                                            <img src="{{ asset('storage/airline_logos/' . $outboundFlight->airline->logo) }}"
+                                                alt="Airline Logo" />
+                                        </div>
+                                        <div class="flight-number">{{ $outboundFlight->airline->name }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flight-info-container">
+                                <div class="flight-date">
+                                    <div class="date-number">{{ $returnDepartureDay }}</div>
+                                    <div class="date-month">Tháng {{ $returnDepartureMonth }}</div>
+                                    <div class="date-day">{{ $returnDayOfWeek }}</div>
+                                </div>
+                                <div class="flight-details">
+                                    <div class="flight-route">
+                                        <div class="airport-code">{{ $returnFlight->departure }}</div>
+                                        <div class="flight-arrow">→</div>
+                                        <div class="airport-code">{{ $returnFlight->destination }}</div>
+                                    </div>
+                                    <div class="airport-names">
+                                        Chuyến bay: {{ $returnFlight->flight_code }}
+                                    </div>
+                                    <div class="flight-times">
+                                        <div class="departure-time">{{ $returnFlightStartTime }}</div>
+                                        <div class="flight-duration">-</div>
+                                        <div class="arrival-time">{{ $returnFlightEndTime }}</div>
+                                    </div>
+                                    <div class="airline-info">
+                                        <div class="airline-logo">
+                                            <img src="{{ asset('storage/airline_logos/' . $returnFlight->airline->logo) }}"
+                                                alt="Airline Logo" />
+                                        </div>
+                                        <div class="flight-number">{{ $returnFlight->airline->name }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 <div class="passenger-summary">
                     <div class="passenger-count">
                         Hành khách (
