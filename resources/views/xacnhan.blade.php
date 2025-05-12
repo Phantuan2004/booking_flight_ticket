@@ -589,9 +589,9 @@
                             <div class="flight-info">
                                 <div class="flight-info-container">
                                     <div class="flight-date">
-                                        <div class="date-number">{{ $outboundDepartureDay }}</div>
-                                        <div class="date-month">Tháng {{ $outboundDepartureMonth }}</div>
-                                        <div class="date-day">{{ $outboundDayOfWeek }}</div>
+                                        <div class="date-number">{{ $departureDay }}</div>
+                                        <div class="date-month">Tháng {{ $departureMonth }}</div>
+                                        <div class="date-day">{{ $departureDayOfWeek }}</div>
                                     </div>
                                     <div class="flight-details">
                                         <div class="flight-route">
@@ -603,9 +603,9 @@
                                             Chuyến bay: {{ $outboundFlight->flight_code }}
                                         </div>
                                         <div class="flight-times">
-                                            <div class="departure-time">{{ $outboundFlightStartTime }}</div>
+                                            <div class="departure-time">{{ $flightStartTime }}</div>
                                             <div class="flight-duration">-</div>
-                                            <div class="arrival-time">{{ $outboundFlightEndTime }}</div>
+                                            <div class="arrival-time">{{ $flightEndTime }}</div>
                                         </div>
                                         <div class="airline-info">
                                             <div class="airline-logo">
@@ -618,8 +618,8 @@
                                 </div>
                                 <div class="flight-info-container">
                                     <div class="flight-date">
-                                        <div class="date-number">{{ $returnDepartureDay }}</div>
-                                        <div class="date-month">Tháng {{ $returnDepartureMonth }}</div>
+                                        <div class="date-number">{{ $returnDay }}</div>
+                                        <div class="date-month">Tháng {{ $returnMonth }}</div>
                                         <div class="date-day">{{ $returnDayOfWeek }}</div>
                                     </div>
                                     <div class="flight-details">
@@ -632,9 +632,9 @@
                                             Chuyến bay: {{ $returnFlight->flight_code }}
                                         </div>
                                         <div class="flight-times">
-                                            <div class="departure-time">{{ $returnFlightStartTime }}</div>
+                                            <div class="departure-time">{{ $returnStartTime }}</div>
                                             <div class="flight-duration">-</div>
-                                            <div class="arrival-time">{{ $returnFlightEndTime }}</div>
+                                            <div class="arrival-time">{{ $returnEndTime }}</div>
                                         </div>
                                         <div class="airline-info">
                                             <div class="airline-logo">
@@ -840,69 +840,69 @@
                         <div class="price-row">
                             <div class="price-title">Chuyến đi: {{ $outboundFlight->departure }} -
                                 {{ $outboundFlight->destination }}</div>
-                            <div class="price-value">{{ $outboundDepartureDate }}</div>
+                            <div class="price-value">{{ $departureDate }}</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">{{ $outboundFlight->airline->name }}
                                 ({{ $outboundFlight->flight_code }})</div>
-                            <div class="price-value">{{ $outboundFlightStartTime }} - {{ $outboundFlightEndTime }}
+                            <div class="price-value">{{ $flightStartTime }} - {{ $flightEndTime }}
                             </div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Người lớn (x{{ $adults }})</div>
-                            <div class="price-value">{{ number_format($outboundAdultPrice, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                            <div class="price-value">{{ number_format($outboundChildPrice, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Em bé (x{{ $infants }})</div>
-                            <div class="price-value">{{ number_format($outboundInfantPrice, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Thuế & Phí</div>
-                            <div class="price-value">{{ number_format($outboundTaxFee, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($tax_fee, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Phí dịch vụ</div>
-                            <div class="price-value">{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($service_fee, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <hr style="border: 1px solid #eee; margin: 20px 0;">
                         <div class="price-row">
                             <div class="price-title">Chuyến về: {{ $returnFlight->departure }} -
                                 {{ $returnFlight->destination }}</div>
-                            <div class="price-value">{{ $returnDepartureDate }}</div>
+                            <div class="price-value">{{ $returnDate }}</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">{{ $returnFlight->airline->name }}
                                 ({{ $returnFlight->flight_code }})</div>
-                            <div class="price-value">{{ $returnFlightStartTime }} - {{ $returnFlightEndTime }}
+                            <div class="price-value">{{ $returnStartTime }} - {{ $returnEndTime }}
                             </div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Người lớn (x{{ $adults }})</div>
-                            <div class="price-value">{{ number_format($returnAdultPrice, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                            <div class="price-value">{{ number_format($returnChildPrice, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Em bé (x{{ $infants }})</div>
-                            <div class="price-value">{{ number_format($returnInfantPrice, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Thuế & Phí</div>
-                            <div class="price-value">{{ number_format($returnTaxFee, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($tax_fee, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Phí dịch vụ</div>
-                            <div class="price-value">{{ number_format($returnServiceFee, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($service_fee, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="total-row">
                             <div>Tổng cộng</div>
-                            <div>{{ number_format($totalPrice, 0, ',', '.') }} VNĐ</div>
+                            <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
                         </div>
                     @endif
                     <div class="terms-checkbox">
