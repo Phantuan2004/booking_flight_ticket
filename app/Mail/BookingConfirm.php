@@ -25,8 +25,8 @@ class BookingConfirm extends Mailable
 
     public function build()
     {
-        return $this->view('email.email')
-            ->subject('Xác nhận đặt vé chuyến bay')
+        return $this->view('email.xacnhanthanhtoan')
+            ->subject('Xác nhận đặt vé chuyến bay, yêu cầu thanh toán')
             ->with($this->booking);
     }
 
@@ -36,7 +36,7 @@ class BookingConfirm extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Booking Confirm',
+            subject: 'Xác nhận đặt vé chuyến bay, yêu cầu thanh toán',
         );
     }
 
@@ -46,7 +46,7 @@ class BookingConfirm extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'email.email',
+            view: 'email.xacnhanthanhtoan',
         );
     }
 
