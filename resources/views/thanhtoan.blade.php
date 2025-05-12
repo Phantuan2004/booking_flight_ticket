@@ -1220,7 +1220,6 @@
                         <input type="hidden" name="departure" value="{{ $flight->departure }}">
                         <input type="hidden" name="destination" value="{{ $flight->destination }}">
                         <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
-                        <input type="hidden" name="price" value="{{ $flight->price }}">
 
                         <!-- Thông tin hành khách -->
                         <input type="hidden" name="adults_data"
