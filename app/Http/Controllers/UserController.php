@@ -15,15 +15,7 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
-    // Hiển thị giao diện trang chủ
-    public function index()
-    {
-        $flights = Flight::all();
-        return view('index', compact('flights'));
-    }
-
     // Phưởng thức tìm kiếm chuyến bay một chiều
-
     public function search_flights_oneway(Request $request)
     {
         $departure = $request->input('departure');
@@ -33,13 +25,11 @@ class UserController extends Controller
         $childrens = (int) $request->input('childrens', 0);
         $infants = (int) $request->input('infants', 0);
 
-        // Validate number of infants
         if ($infants > $adults) {
             return redirect()->back()->withErrors(['error' => 'Số em bé không thể lớn hơn số người lớn!']);
         }
         $passengers = $adults + $childrens;
 
-        // Save search data to session
         session([
             'search_data' => [
                 'departure' => $departure,
@@ -52,14 +42,12 @@ class UserController extends Controller
             ]
         ]);
 
-        // Build the query
         $query = Flight::query()
             ->where('departure', 'like', "%$departure%")
             ->where('destination', 'like', "%$destination%")
             ->whereDate('departure_time', $departure_time)
             ->where('available_seats', '>=', $passengers);
 
-        // Áp dụng sắp xếp dựa trên tham số yêu cầu
         $sort = $request->input('sort');
         if ($sort == 'asc') {
             $query->orderBy('price_economy', 'asc')
@@ -69,10 +57,8 @@ class UserController extends Controller
                 ->orderBy('price_business', 'desc');
         }
 
-        // Get flights after sorting
         $flights = $query->get();
 
-        // Format prices
         foreach ($flights as $flight) {
             if ($flight->seat_class == 'phổ thông') {
                 $flight->formatted_price = number_format($flight->price_economy, 0, ',', '.') . ' VNĐ';
