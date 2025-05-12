@@ -1203,7 +1203,7 @@
                         <input type="hidden" name="total_price" value="{{ $total_price }}">
 
                         <!-- Nút xác nhận -->
-                        <button class="confirm-btn" type="submit">XÁC NHẬN THANH TOÁN</button>
+                        <button class="confirm-btn" type="submit">HOÀN TẤT THANH TOÁN</button>
                     </form>
                     <button class="back-btn">QUAY LẠI</button>
                 </div>
