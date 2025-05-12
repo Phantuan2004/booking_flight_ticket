@@ -15,6 +15,12 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $flights = Flight::all();
+        return view('index', compact('flights'));
+    }
+
     // Phưởng thức tìm kiếm chuyến bay một chiều
     public function search_flights_oneway(Request $request)
     {
@@ -183,6 +189,76 @@ class UserController extends Controller
     }
 
 
+    // Hàm xử lý giá tiền 
+    public function xulygia($flight, $adults, $childrens, $infants)
+    {
+        $adult_price = $flight->seat_class = 'phổ thông' ? $flight->price_economy : $flight->price_business * $adults;
+        $child_price = $adult_price * 0.2 * $childrens;
+        $infant_price = $adult_price * 0 * $infants;
+        $tax_fee = $flight->seat_class = 'phổ thông' ? 50000 : 150000;
+        $service_fee = $flight->seat_class = 'phổ thông' ? 20000 : 60000;
+        $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;
+
+        return compact('adult_price', 'child_price', 'infant_price', 'tax_fee', 'service_fee', 'total_price');
+    }
+
+    // Hàm xử lý thời gian bay
+    public function xulythoigianbay($departureFlight, $returnFlight = null)
+    {
+        // Xử lý thời gian bay chuyến bay
+        $departureTime = Carbon::parse($departureFlight->departure_time);
+        $flightStart = Carbon::parse($departureFlight->flight_start);
+        $flightEnd = Carbon::parse($departureFlight->flight_end);
+
+        $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
+        $flightStartTime = $flightStart->format('H:i');
+        $flightEndTime = $flightEnd->format('H:i');
+        $departureDate = $departureTime->format('d/m/Y');
+        $departureMonth = $departureTime->format('m');
+        $departureYear = $departureTime->format('Y');
+        $departureDay = $departureTime->format('d');
+        $departureDayOfWeek = $departureTime->locale('vi')->isoFormat('dddd');
+
+        $data = [
+            'duration' => $duration,
+            'flightStartTime' => $flightStartTime,
+            'flightEndTime' => $flightEndTime,
+            'departureDate' => $departureDate,
+            'departureMonth' => $departureMonth,
+            'departureYear' => $departureYear,
+            'departureDay' => $departureDay,
+            'departureDayOfWeek' => $departureDayOfWeek,
+        ];
+
+        // Xử lý thời gian bay chuyến về (khứ hồi)
+        if ($returnFlight) {
+            $returnTime = Carbon::parse($returnFlight->departure_time);
+            $returnStart = Carbon::parse($returnFlight->flight_start);
+            $returnEnd = Carbon::parse($returnFlight->flight_end);
+
+            $returnDuration = $returnStart->diff($returnEnd)->format('%h giờ %i phút');
+            $returnStartTime = $returnStart->format('H:i');
+            $returnEndTime = $returnEnd->format('H:i');
+            $returnDate = $returnTime->format('d/m/Y');
+            $returnMonth = $returnTime->format('m');
+            $returnYear = $returnTime->format('Y');
+            $returnDay = $returnTime->format('d');
+            $returnDayOfWeek = $returnTime->locale('vi')->isoFormat('dddd');
+
+            $data = array_merge($data, [
+                'returnDuration' => $returnDuration,
+                'returnStartTime' => $returnStartTime,
+                'returnEndTime' => $returnEndTime,
+                'returnDate' => $returnDate,
+                'returnMonth' => $returnMonth,
+                'returnYear' => $returnYear,
+                'returnDay' => $returnDay,
+                'returnDayOfWeek' => $returnDayOfWeek,
+            ]);
+        }
+
+        return $data;
+    }
 
     // Hiển thị giao diện trang xác nhận
     public function xacnhan(Request $request)
@@ -190,10 +266,6 @@ class UserController extends Controller
         if ($request->has('flight_id')) {
             // Xử lý khi chuyến bay là chuyến bay 1 chiều
             $flight = Flight::find($request->input('flight_id'));
-
-            if (!$flight) {
-                return redirect()->back()->withErrors(['error' => 'Chuyến bay không tồn tại!']);
-            }
 
             // Lấy dữ liệu từ form - đảm bảo lấy đúng định dạng mảng
             $adults = $request->input('adults', []);
@@ -220,73 +292,18 @@ class UserController extends Controller
                 'address' => is_array($address) ? implode(' ', $address) : strval($address)
             ]);
 
-            // Xử lý giá tiền
-            $adult_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $adults;
-            $child_price = $adult_price * 0.2;
-            $infant_price = $adult_price * 0;
-            $tax_fee = $flight->seat_class == 'phổ thông' ? 50000 : 100000;
-            $service_fee = $flight->seat_class == 'phổ thông' ? 20000 : 40000;
-            $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;
+            $gia = $this->xulygia($flight, $adults, $childrens, $infants);
+            $thoigian = $this->xulythoigianbay($flight);
 
-            // Xử lý thời gian bay
-            $departureTime = Carbon::parse($flight->departure_time);
-            $flightStart = Carbon::parse($flight->flight_start);
-            $flightEnd = Carbon::parse($flight->flight_end);
-
-            // Lấy giờ và phút dưới dạng chuỗi định dạng sẵn
-            $flightStartTime = $flightStart->format('H:i');  // Ví dụ: 14:30
-            $flightEndTime = $flightEnd->format('H:i');      // Ví dụ: 16:40
-            $departureDate = $departureTime->format('d/m/Y'); // Ví dụ: 05/04/2024
-            $departureMonth = $departureTime->format('m');
-            $departureYear = $departureTime->format('Y');
-            $departureDay = $departureTime->format('d');
-            $departureDayOfWeek = $departureTime->locale('vi')->isoFormat('dddd');
-
-            // Tính thời gian bay
-            $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
-
-            return view('xacnhan', compact(
-                'flight',
-                'adults',
-                'childrens',
-                'infants',
-                'full_name',
-                'phone',
-                'email',
-                'address',
-                'adult_price',
-                'child_price',
-                'infant_price',
-                'tax_fee',
-                'service_fee',
-                'total_price',
-                'flightStartTime',
-                'flightEndTime',
-                'departureDate',
-                'duration',
-                'flightStart',
-                'flightEnd',
-                'departureTime',
-                'departureMonth',
-                'departureYear',
-                'departureDay',
-                'departureDayOfWeek',
-            ));
+            return view('xacnhan', array_merge(compact('flight', 'adults', 'childrens', 'infants', 'full_name', 'phone', 'email', 'address'), $gia, $thoigian));
         } else {
             // Xử lý khi chuyến bay là chuyến bay khứ hồi
-
-            // Lấy ID của hai chuyến bay
             $outboundFlightId = $request->input('outbound_flight_id');
             $returnFlightId = $request->input('return_flight_id');
 
             // Tìm thông tin chuyến bay
             $outboundFlight = Flight::find($outboundFlightId);
             $returnFlight = Flight::find($returnFlightId);
-
-            // Kiểm tra xem cả hai chuyến bay có tồn tại không
-            if (!$outboundFlight || !$returnFlight) {
-                return redirect()->back()->withErrors(['error' => 'Một hoặc cả hai chuyến bay không tồn tại!']);
-            }
 
             // Lấy thông tin hành khách
             $adults = (int) $request->input('adults', 0);
@@ -302,91 +319,15 @@ class UserController extends Controller
                 'return_flight' => $returnFlight,
             ]);
 
-            // Xử lý giá tiền cho chuyến đi
-            $outboundAdultPrice = $outboundFlight->seat_class == 'phổ thông'
-                ? $outboundFlight->price_economy * $adults
-                : $outboundFlight->price_business * $adults;
-            $outboundChildPrice = $outboundAdultPrice * 0.3 * $childrens;
-            $outboundInfantPrice = $outboundAdultPrice * 0 * $infants;
-            $outboundTaxFee = $outboundFlight->seat_class == 'phổ thông' ? 50000 : 100000;
-            $outboundServiceFee = $outboundFlight->seat_class == 'phổ thông' ? 20000 : 40000;
-            $outboundTotalPrice = $outboundAdultPrice + $outboundChildPrice + $outboundInfantPrice + $outboundTaxFee + $outboundServiceFee;
+            // Xử lý giá tiền
+            $giadi = $this->xulygia($outboundFlight, $adults, $childrens, $infants);
+            $giave = $this->xulygia($returnFlight, $adults, $childrens, $infants);
+            $totalPrice = $giadi['total_price'] + $giave['total_price'];
 
-            // Xử lý giá tiền cho chuyến về
-            $returnAdultPrice = $returnFlight->seat_class == 'phổ thông'
-                ? $returnFlight->price_economy * $adults
-                : $returnFlight->price_business * $adults;
-            $returnChildPrice = $returnAdultPrice * 0.3 * $childrens;
-            $returnInfantPrice = $returnAdultPrice * 0 * $infants;
-            $returnTaxFee = $returnFlight->seat_class == 'phổ thông' ? 50000 : 100000;
-            $returnServiceFee = $returnFlight->seat_class == 'phổ thông' ? 20000 : 40000;
-            $returnTotalPrice = $returnAdultPrice + $returnChildPrice + $returnInfantPrice + $returnTaxFee + $returnServiceFee;
+            // Xử lý thời gian bay
+            $dataTime = $this->xulythoigianbay($outboundFlight, $returnFlight);
 
-            // Tổng giá tiền
-            $totalPrice = $outboundTotalPrice + $returnTotalPrice;
-
-            // Xử lý thời gian bay cho chuyến đi
-            $outboundDepartureTime = Carbon::parse($outboundFlight->departure_time);
-            $outboundFlightStart = Carbon::parse($outboundFlight->flight_start);
-            $outboundFlightEnd = Carbon::parse($outboundFlight->flight_end);
-            $outboundFlightStartTime = $outboundFlightStart->format('H:i');
-            $outboundFlightEndTime = $outboundFlightEnd->format('H:i');
-            $outboundDepartureDate = $outboundDepartureTime->format('d/m/Y');
-            $outboundDepartureMonth = $outboundDepartureTime->format('m');
-            $outboundDepartureYear = $outboundDepartureTime->format('Y');
-            $outboundDepartureDay = $outboundDepartureTime->format('d');
-            $outboundDuration = $outboundFlightStart->diff($outboundFlightEnd)->format('%h giờ %i phút');
-            $outboundDayOfWeek = $outboundDepartureTime->locale('vi')->isoFormat('dddd');
-            // Xử lý thời gian bay cho chuyến về
-            $returnDepartureTime = Carbon::parse($returnFlight->departure_time);
-            $returnFlightStart = Carbon::parse($returnFlight->flight_start);
-            $returnFlightEnd = Carbon::parse($returnFlight->flight_end);
-            $returnFlightStartTime = $returnFlightStart->format('H:i');
-            $returnFlightEndTime = $returnFlightEnd->format('H:i');
-            $returnDepartureDate = $returnDepartureTime->format('d/m/Y');
-            $returnDepartureMonth = $returnDepartureTime->format('m');
-            $returnDepartureYear = $returnDepartureTime->format('Y');
-            $returnDepartureDay = $returnDepartureTime->format('d');
-            $returnDuration = $returnFlightStart->diff($returnFlightEnd)->format('%h giờ %i phút');
-            $returnDayOfWeek = $returnDepartureTime->locale('vi')->isoFormat('dddd');
-            // Trả về view xacnhan với dữ liệu
-            return view('xacnhan', compact(
-                'outboundFlight',
-                'returnFlight',
-                'adults',
-                'childrens',
-                'infants',
-                'outboundAdultPrice',
-                'outboundChildPrice',
-                'outboundInfantPrice',
-                'outboundTaxFee',
-                'outboundServiceFee',
-                'outboundTotalPrice',
-                'returnAdultPrice',
-                'returnChildPrice',
-                'returnInfantPrice',
-                'returnTaxFee',
-                'returnServiceFee',
-                'returnTotalPrice',
-                'totalPrice',
-                'outboundFlightStartTime',
-                'outboundFlightEndTime',
-                'outboundDepartureDate',
-                'outboundDuration',
-                'returnFlightStartTime',
-                'returnFlightEndTime',
-                'returnDepartureDate',
-                'returnDuration',
-                'returnDepartureTime',
-                'outboundDepartureMonth',
-                'outboundDepartureYear',
-                'outboundDepartureDay',
-                'outboundDayOfWeek',
-                'returnDepartureMonth',
-                'returnDepartureYear',
-                'returnDepartureDay',
-                'returnDayOfWeek',
-            ));
+            return view('xacnhan', array_merge(compact('outboundFlight', 'returnFlight', 'adults', 'childrens', 'infants', 'totalPrice'), $dataTime, $giadi, $giave));
         }
     }
 
