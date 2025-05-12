@@ -1170,8 +1170,9 @@
                     </div>
 
                     <div class="payment-notice">
-                        Lưu ý: Vé máy bay sẽ được gửi qua email sau khi thanh toán hoàn tất.
-                        Vui lòng kiểm tra email của bạn và hộp thư spam.
+                        Lưu ý: Vé máy bay sẽ được gửi qua email sau khi chúng tôi xác nhận rằng bạn đã thanh toán hoàn
+                        tất.
+                        Vui lòng kiểm tra email của bạn và hộp thư spam trong vòng 5 phút.
                     </div>
 
                     <form action="{{ route('thanhcong') }}" method="POST">
