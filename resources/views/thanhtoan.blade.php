@@ -1213,7 +1213,7 @@
                         Vui lòng kiểm tra email của bạn và hộp thư spam trong vòng 5 phút.
                     </div>
 
-                    <form action="{{ route('thanhcong') }}" method="POST">
+                    <form action="{{ route('thanhcong') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <!-- Thông tin chuyến bay -->
                         <input type="hidden" name="flight_id" value="{{ $flight->id }}">
@@ -1223,15 +1223,18 @@
                         <input type="hidden" name="price" value="{{ $flight->price }}">
 
                         <!-- Thông tin hành khách -->
-                        <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
-                        <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
-                        <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
+                        <input type="hidden" name="adults_data"
+                            value="{{ htmlspecialchars(json_encode($adultsSession)) }}">
+                        <input type="hidden" name="childrens_data"
+                            value="{{ htmlspecialchars(json_encode($childrensSession)) }}">
+                        <input type="hidden" name="infants_data"
+                            value="{{ htmlspecialchars(json_encode($infantsSession)) }}">
 
                         <!-- Thông tin liên hệ -->
-                        <input type="hidden" name="full_name" value="{{ $full_name }}">
-                        <input type="hidden" name="phone" value="{{ $phone }}">
-                        <input type="hidden" name="email" value="{{ $email }}">
-                        <input type="hidden" name="address" value="{{ $address }}">
+                        <input type="hidden" name="full_name" value="{{ htmlspecialchars($full_name) }}">
+                        <input type="hidden" name="phone" value="{{ htmlspecialchars($phone) }}">
+                        <input type="hidden" name="email" value="{{ htmlspecialchars($email) }}">
+                        <input type="hidden" name="address" value="{{ htmlspecialchars($address) }}">
 
                         <!-- Thông tin thanh toán -->
                         <input type="hidden" name="adult_price" value="{{ $adult_price }}">
@@ -1322,7 +1325,7 @@
                         Vui lòng kiểm tra email của bạn và hộp thư spam.
                     </div>
 
-                    <form action="{{ route('thanhcong') }}" method="POST">
+                    <form action="{{ route('thanhcong') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <!-- Thông tin chuyến bay đi -->
                         <input type="hidden" name="flight_id" value="{{ $outboundFlight->id }}">
@@ -1340,15 +1343,18 @@
                         <input type="hidden" name="return_price" value="{{ $returnFlight->price }}">
 
                         <!-- Thông tin hành khách -->
-                        <input type="hidden" name="adults_data" value="{{ json_encode($adultsSession) }}">
-                        <input type="hidden" name="childrens_data" value="{{ json_encode($childrensSession) }}">
-                        <input type="hidden" name="infants_data" value="{{ json_encode($infantsSession) }}">
+                        <input type="hidden" name="adults_data"
+                            value="{{ htmlspecialchars(json_encode($adultsSession)) }}">
+                        <input type="hidden" name="childrens_data"
+                            value="{{ htmlspecialchars(json_encode($childrensSession)) }}">
+                        <input type="hidden" name="infants_data"
+                            value="{{ htmlspecialchars(json_encode($infantsSession)) }}">
 
                         <!-- Thông tin liên hệ -->
-                        <input type="hidden" name="full_name" value="{{ $full_name }}">
-                        <input type="hidden" name="phone" value="{{ $phone }}">
-                        <input type="hidden" name="email" value="{{ $email }}">
-                        <input type="hidden" name="address" value="{{ $address }}">
+                        <input type="hidden" name="full_name" value="{{ htmlspecialchars($full_name) }}">
+                        <input type="hidden" name="phone" value="{{ htmlspecialchars($phone) }}">
+                        <input type="hidden" name="email" value="{{ htmlspecialchars($email) }}">
+                        <input type="hidden" name="address" value="{{ htmlspecialchars($address) }}">
 
                         <!-- Thông tin thanh toán chuyến đi -->
                         <input type="hidden" name="outboundAdultPrice" value="{{ $outboundAdultPrice }}">
