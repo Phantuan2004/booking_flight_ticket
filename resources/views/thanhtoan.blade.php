@@ -1312,7 +1312,7 @@
                         <input type="hidden" name="outboundTotalPrice" value="{{ $outboundTotalPrice }}">
 
                         <!-- Nút xác nhận -->
-                        <button class="confirm-btn" type="submit">XÁC NHẬN THANH TOÁN</button>
+                        <button class="confirm-btn" type="submit">HOÀN TẤT THANH TOÁN</button>
                     </form>
                     <button class="back-btn">QUAY LẠI</button>
                 </div>
