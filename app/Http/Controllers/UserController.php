@@ -192,11 +192,11 @@ class UserController extends Controller
     // Hàm xử lý giá tiền 
     public function xulygia($flight, $adults, $childrens, $infants)
     {
-        $adult_price = $flight->seat_class = 'phổ thông' ? $flight->price_economy : $flight->price_business * $adults;
+        $adult_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $adults;
         $child_price = $adult_price * 0.2 * $childrens;
         $infant_price = $adult_price * 0 * $infants;
-        $tax_fee = $flight->seat_class = 'phổ thông' ? 50000 : 150000;
-        $service_fee = $flight->seat_class = 'phổ thông' ? 20000 : 60000;
+        $tax_fee = $flight->seat_class == 'phổ thông' ? 50000 : 150000;
+        $service_fee = $flight->seat_class == 'phổ thông' ? 20000 : 60000;
         $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;
 
         return compact('adult_price', 'child_price', 'infant_price', 'tax_fee', 'service_fee', 'total_price');
@@ -263,6 +263,7 @@ class UserController extends Controller
     // Hiển thị giao diện trang xác nhận
     public function xacnhan(Request $request)
     {
+        // dd($request->all());
         if ($request->has('flight_id')) {
             // Xử lý khi chuyến bay là chuyến bay 1 chiều
             $flight = Flight::find($request->input('flight_id'));
