@@ -805,7 +805,8 @@
                     <h2 class="summary-title">Tổng Kết Đặt Vé</h2>
                     @if (isset($flight))
                         <div class="price-row">
-                            <div class="price-title">{{ $flight->departure }} - {{ $flight->destination }}</div>
+                            <div class="price-title"> Chuyến đi: {{ $flight->departure }} -
+                                {{ $flight->destination }}</div>
                             <div class="price-value">{{ $departureDate }}</div>
                         </div>
                         <div class="price-row">
@@ -836,7 +837,7 @@
                             <div>Tổng cộng</div>
                             <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
                         </div>
-                    @else
+                    @elseif (isset($outboundFlight) && isset($returnFlight))
                         <div class="price-row">
                             <div class="price-title">Chuyến đi: {{ $outboundFlight->departure }} -
                                 {{ $outboundFlight->destination }}</div>
@@ -850,23 +851,28 @@
                         </div>
                         <div class="price-row">
                             <div class="price-title">Người lớn (x{{ $adults }})</div>
-                            <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($outboundPrices['adult_price'], 0, ',', '.') }}
+                                VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                            <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($outboundPrices['child_price'], 0, ',', '.') }}
+                                VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Em bé (x{{ $infants }})</div>
-                            <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($outboundPrices['infant_price'], 0, ',', '.') }}
+                                VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Thuế & Phí</div>
-                            <div class="price-value">{{ number_format($tax_fee, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($outboundPrices['tax_fee'], 0, ',', '.') }} VNĐ
+                            </div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Phí dịch vụ</div>
-                            <div class="price-value">{{ number_format($service_fee, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($outboundPrices['service_fee'], 0, ',', '.') }}
+                                VNĐ</div>
                         </div>
                         <hr style="border: 1px solid #eee; margin: 20px 0;">
                         <div class="price-row">
@@ -882,27 +888,32 @@
                         </div>
                         <div class="price-row">
                             <div class="price-title">Người lớn (x{{ $adults }})</div>
-                            <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($returnPrices['adult_price'], 0, ',', '.') }}
+                                VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                            <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($returnPrices['child_price'], 0, ',', '.') }}
+                                VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Em bé (x{{ $infants }})</div>
-                            <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($returnPrices['infant_price'], 0, ',', '.') }}
+                                VNĐ</div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Thuế & Phí</div>
-                            <div class="price-value">{{ number_format($tax_fee, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($returnPrices['tax_fee'], 0, ',', '.') }} VNĐ
+                            </div>
                         </div>
                         <div class="price-row">
                             <div class="price-title">Phí dịch vụ</div>
-                            <div class="price-value">{{ number_format($service_fee, 0, ',', '.') }} VNĐ</div>
+                            <div class="price-value">{{ number_format($returnPrices['service_fee'], 0, ',', '.') }}
+                                VNĐ</div>
                         </div>
                         <div class="total-row">
                             <div>Tổng cộng</div>
-                            <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
+                            <div>{{ number_format($totalPrice, 0, ',', '.') }} VNĐ</div>
                         </div>
                     @endif
                     <div class="terms-checkbox">
