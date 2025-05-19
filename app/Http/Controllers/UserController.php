@@ -321,14 +321,21 @@ class UserController extends Controller
             ]);
 
             // Xử lý giá tiền
-            $giadi = $this->xulygia($outboundFlight, $adults, $childrens, $infants);
-            $giave = $this->xulygia($returnFlight, $adults, $childrens, $infants);
-            $totalPrice = $giadi['total_price'] + $giave['total_price'];
+            $outboundPrices = $this->xulygia($outboundFlight, $adults, $childrens, $infants);
+            $returnPrices = $this->xulygia($returnFlight, $adults, $childrens, $infants);
+            $totalPrice = $outboundPrices['total_price'] + $returnPrices['total_price'];
 
             // Xử lý thời gian bay
             $dataTime = $this->xulythoigianbay($outboundFlight, $returnFlight);
 
-            return view('xacnhan', array_merge(compact('outboundFlight', 'returnFlight', 'adults', 'childrens', 'infants', 'totalPrice'), $dataTime, $giadi, $giave));
+            return view('xacnhan', array_merge(
+                compact('outboundFlight', 'returnFlight', 'adults', 'childrens', 'infants', 'totalPrice'),
+                $dataTime,
+                [
+                    'outboundPrices' => $outboundPrices,
+                    'returnPrices' => $returnPrices
+                ]
+            ));
         }
     }
 
