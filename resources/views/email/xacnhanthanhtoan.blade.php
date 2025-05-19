@@ -75,88 +75,88 @@
                         </td>
                     </tr>
 
+                    <!-- Flight Type Information -->
+                    <tr>
+                        <td align="center" style="padding: 0 30px;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0"
+                                style="border: 1px solid #eee; border-radius: 8px; margin-bottom: 20px;">
+                                <tr>
+                                    <td style="padding: 15px;">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="font-size: 16px; color: #003580; padding-bottom: 10px;">
+                                                    Thông tin chuyến bay:
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table width="100%" border="0" cellspacing="0"
+                                                        cellpadding="0">
+                                                        <tr>
+                                                            <td
+                                                                style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                Loại chuyến bay:
+                                                            </td>
+                                                            <td
+                                                                style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                @if (isset($outbound_departure))
+                                                                    <span style="color: #003580; font-weight: bold;">Khứ
+                                                                        hồi</span>
+                                                                @else
+                                                                    <span style="color: #003580; font-weight: bold;">Một
+                                                                        chiều</span>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                        @if (isset($outbound_departure))
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến đi:
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ $outbound_departure }} →
+                                                                    {{ $outbound_destination }}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến về:
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ $return_departure }} → {{ $return_destination }}
+                                                                </td>
+                                                            </tr>
+                                                        @else
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Hành trình:
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ $departure }} → {{ $destination }}
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
                     <!-- Booking Details -->
                     <tr>
                         <td align="center" style="padding: 0 30px;">
                             <table width="100%" border="0" cellspacing="0" cellpadding="0"
                                 style="border: 1px solid #eee; border-radius: 8px;">
-                                <!-- Booking ID -->
-                                <tr>
-                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">
-                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                            <tr>
-                                                <td>
-                                                    <strong style="font-size: 16px; color: #003580;">Mã đặt
-                                                        chỗ:</strong> <span
-                                                        style="font-size: 1.2rem; color:#555">{{ $booking_code }}</span>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Flight Info -->
-                                <tr>
-                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">
-                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                            <tr>
-                                                <td width="80" valign="top"
-                                                    style="border-right: 1px solid #eee; padding-right: 15px;">
-                                                    <table width="100%" border="0" cellspacing="0"
-                                                        cellpadding="0">
-                                                        <tr>
-                                                            <td align="center"
-                                                                style="font-size: 24px; font-weight: bold; color: #003580;">
-                                                                {{ $departureDate }}
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td valign="top" style="padding-left: 15px;">
-                                                    <table width="100%" border="0" cellspacing="0"
-                                                        cellpadding="0">
-                                                        <tr>
-                                                            <td style="padding-bottom: 10px;">
-                                                                <table width="100%" border="0" cellspacing="0"
-                                                                    cellpadding="0">
-                                                                    <tr>
-                                                                        <td
-                                                                            style="font-size: 18px; font-weight: bold;">
-                                                                            {{ $departure }}</td>
-                                                                        <td
-                                                                            style="font-size: 18px; color: #666; text-align: center;">
-                                                                            →</td>
-                                                                        <td
-                                                                            style="font-size: 18px; font-weight: bold;">
-                                                                            {{ $destination }}</td>
-                                                                    </tr>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td style="padding-bottom: 5px;">
-                                                                <table width="100%" border="0" cellspacing="0"
-                                                                    cellpadding="0">
-                                                                    <tr>
-                                                                        <td style="font-size: 14px; color: #666;">
-                                                                            {{ $flightStartTime }}</td>
-                                                                        <td
-                                                                            style="font-size: 14px; color: #666; text-align: center; border-left: 1px solid #ddd; border-right: 1px solid #ddd; padding: 0 10px;">
-                                                                            {{ $duration }}</td>
-                                                                        <td
-                                                                            style="font-size: 14px; color: #666; text-align: right;">
-                                                                            {{ $flightEndTime }}</td>
-                                                                    </tr>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-
                                 <!-- Passenger Info -->
                                 <tr>
                                     <td style="padding: 15px; border-bottom: 1px solid #eee;">
@@ -165,17 +165,44 @@
                                                 <td
                                                     style="font-size: 14px; color: #003580; font-weight: bold; padding-bottom: 10px;">
                                                     Hành khách (
-                                                    {{ $adultsCount }} người lớn,
-                                                    {{ $childrensCount }} trẻ em,
-                                                    {{ $infantsCount }} trẻ sơ sinh
+                                                    {{ $adults_count }} người lớn,
+                                                    {{ $childrens_count }} trẻ em,
+                                                    {{ $infants_count }} trẻ sơ sinh
                                                     )
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                    <!-- Passenger list will be populated here dynamically -->
-                                                </td>
-                                            </tr>
+                                            @if (!empty($adultsSession))
+                                                @foreach ($adultsSession as $index => $adult)
+                                                    <tr>
+                                                        <td style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                            {{ $index + 1 }}. {{ $adult['last_name'] ?? 'N/A' }}
+                                                            {{ $adult['first_name'] ?? 'N/A' }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                            @if (!empty($childrensSession))
+                                                @foreach ($childrensSession as $index => $child)
+                                                    <tr>
+                                                        <td style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                            {{ count($adultsSession) + $index + 1 }}.
+                                                            {{ $child['last_name'] ?? 'N/A' }}
+                                                            {{ $child['first_name'] ?? 'N/A' }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                            @if (!empty($infantsSession))
+                                                @foreach ($infantsSession as $index => $infant)
+                                                    <tr>
+                                                        <td style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                            {{ count($adultsSession) + count($childrensSession) + $index + 1 }}.
+                                                            {{ $infant['last_name'] ?? 'N/A' }}
+                                                            {{ $infant['first_name'] ?? 'N/A' }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
                                         </table>
                                     </td>
                                 </tr>
@@ -193,54 +220,178 @@
                                                 <td>
                                                     <table width="100%" border="0" cellspacing="0"
                                                         cellpadding="0">
-                                                        <tr>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                                Người lớn (x{{ $adultsCount }})</td>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                {{ number_format($adult_price, 0, ',', '.') }} VNĐ</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                                Trẻ em (x{{ $childrensCount }})</td>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                {{ number_format($child_price, 0, ',', '.') }} VNĐ</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                                Trẻ sơ sinh (x{{ $infantsCount }})</td>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                {{ number_format($infant_price, 0, ',', '.') }} VNĐ
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                                Thuế & Phí</td>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                {{ number_format(50000, 0, ',', '.') }} VNĐ</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; padding-bottom: 10px;">
-                                                                Phí dịch vụ</td>
-                                                            <td
-                                                                style="font-size: 14px; color: #666; text-align: right; padding-bottom: 10px;">
-                                                                {{ number_format(20000, 0, ',', '.') }} VNĐ</td>
-                                                        </tr>
+                                                        @if (isset($outbound_departure))
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến đi - Người lớn (x{{ $adults_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($outbound_adult_price, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến đi - Trẻ em (x{{ $childrens_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($outbound_child_price, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến đi - Trẻ sơ sinh (x{{ $infants_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($outbound_infant_price, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến đi - Thuế & Phí
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($outbound_tax_fee, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến đi - Phí dịch vụ
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($outbound_service_fee, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến về - Người lớn (x{{ $adults_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($return_adult_price, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến về - Trẻ em (x{{ $childrens_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($return_child_price, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến về - Trẻ sơ sinh (x{{ $infants_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($return_infant_price, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Chuyến về - Thuế & Phí
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($return_tax_fee, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 10px;">
+                                                                    Chuyến về - Phí dịch vụ
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 10px;">
+                                                                    {{ number_format($return_service_fee, 0, ',', '.') }}
+                                                                    VNĐ
+                                                                </td>
+                                                            </tr>
+                                                        @else
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Người lớn (x{{ $adults_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($adult_price, 0, ',', '.') }} VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Trẻ em (x{{ $childrens_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($child_price, 0, ',', '.') }} VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Trẻ sơ sinh (x{{ $infants_count }})
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format($infant_price, 0, ',', '.') }} VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 5px;">
+                                                                    Thuế & Phí
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
+                                                                    {{ number_format(50000, 0, ',', '.') }} VNĐ
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; padding-bottom: 10px;">
+                                                                    Phí dịch vụ
+                                                                </td>
+                                                                <td
+                                                                    style="font-size: 14px; color: #666; text-align: right; padding-bottom: 10px;">
+                                                                    {{ number_format(20000, 0, ',', '.') }} VNĐ
+                                                                </td>
+                                                            </tr>
+                                                        @endif
                                                         <tr>
                                                             <td
                                                                 style="font-size: 16px; font-weight: bold; padding-top: 10px; border-top: 1px solid #eee;">
-                                                                Tổng cộng</td>
+                                                                Tổng cộng
+                                                            </td>
                                                             <td
                                                                 style="font-size: 16px; font-weight: bold; text-align: right; padding-top: 10px; border-top: 1px solid #eee;">
-                                                                {{ number_format($total_price, 0, ',', '.') }} VNĐ</td>
+                                                                {{ number_format($total_price, 0, ',', '.') }} VNĐ
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </td>
@@ -322,9 +473,13 @@
                                         <div
                                             style="background-color: #f5f5f5; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                                             <p style="margin: 0; font-size: 14px; word-break: break-all;">
-                                                SKYJET-{{ $flight_code }}
-                                                {{ $departureDay }}/{{ $departureMonth }}/{{ $departureYear }} -
-                                                {{ $full_name }}</p>
+                                                SKYJET-@if (isset($outbound_flight_code))
+                                                    {{ $outbound_flight_code }}@else{{ $flight_code }}
+                                                @endif
+                                                @if (isset($outbound_departure_day))
+                                                    {{ $outbound_departure_day }}/{{ $outbound_departure_month }}/{{ $outbound_departure_year }}@else{{ $departureDay }}/{{ $departureMonth }}/{{ $departureYear }}
+                                                @endif - {{ $full_name }}
+                                            </p>
                                         </div>
                                         <p style="margin: 0; font-size: 13px; color: #777; font-style: italic;">Vui
                                             lòng ghi đúng nội dung chuyển khoản này để hệ thống xác nhận thanh toán của
@@ -369,9 +524,13 @@
                                                     <div
                                                         style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;">
                                                         <p style="margin: 0; font-size: 14px; word-break: break-all;">
-                                                            SKYJET-{{ $flight_code }}
-                                                            {{ $departureDay }}/{{ $departureMonth }}/{{ $departureYear }}
-                                                            - {{ $full_name }}</p>
+                                                            SKYJET-@if (isset($outbound_flight_code))
+                                                                {{ $outbound_flight_code }}@else{{ $flight_code }}
+                                                            @endif
+                                                            @if (isset($outbound_departure_day))
+                                                                {{ $outbound_departure_day }}/{{ $outbound_departure_month }}/{{ $outbound_departure_year }}@else{{ $departureDay }}/{{ $departureMonth }}/{{ $departureYear }}
+                                                            @endif - {{ $full_name }}
+                                                        </p>
                                                     </div>
                                                 </td>
                                                 <td width="30%" align="center" valign="top">
@@ -442,22 +601,6 @@
                         </td>
                     </tr>
 
-                    {{-- <!-- Confirm Payment Button -->
-                    <tr>
-                        <td align="center" style="padding: 15px 30px 30px 30px;">
-                            <table border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td align="center" bgcolor="#4CAF50" style="border-radius: 4px;">
-                                        <a href="{{ route('xacnhanthanhtoan', ['booking_id' => $booking_id]) }}"
-                                            target="_blank"
-                                            style="font-size: 16px; font-weight: bold; color: white; text-decoration: none; display: inline-block; padding: 12px 30px;">Xác
-                                            Nhận Đã Thanh Toán</a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr> --}}
-
                     <!-- Payment Instructions -->
                     <tr>
                         <td align="center" style="padding: 0 30px 30px 30px;">
@@ -506,8 +649,9 @@
                                                             <td width="25" valign="top"
                                                                 style="color: #4caf50; font-weight: bold;">3.</td>
                                                             <td style="line-height: 1.6;">Sau khi thanh toán, bạn có
-                                                                thể nhấn vào nút "Xác Nhận Đã Thanh Toán" hoặc gửi biên
-                                                                lai về email: <strong>booking@skyjet.vn</strong></td>
+                                                                thể gửi biên lai về email:
+                                                                <strong>booking@skyjet.vn</strong>
+                                                            </td>
                                                         </tr>
                                                     </table>
                                                 </td>
@@ -543,3 +687,12 @@
                                 Nếu bạn cần hỗ trợ thêm, vui lòng liên hệ với bộ phận hỗ trợ khách hàng của chúng tôi
                                 qua số hotline: 1900 1234
                             </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

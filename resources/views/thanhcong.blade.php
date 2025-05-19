@@ -493,11 +493,10 @@
             </p>
 
             <div class="booking-details">
-                <div class="booking-id">
-                    <strong>Mã đặt chỗ:</strong> {{ $booking_code }}
-                </div>
-
                 @if (isset($flight))
+                    <div class="booking-id">
+                        <strong>Mã đặt chỗ:</strong> {{ $booking_code }}
+                    </div>
                     <div class="flight-info-container">
                         <div class="flight-date">
                             <div class="date-number">{{ $departureDay }}</div>
@@ -528,6 +527,11 @@
                         </div>
                     </div>
                 @else
+                    <div class="booking-id">
+                        <strong>Mã đặt chỗ:</strong> chuyến đi: {{ $booking_code_outbound }} -
+                        chuyến về:
+                        {{ $booking_code_return }}
+                    </div>
                     <div class="confirmation-box">
                         <h2 class="confirmation-title">Chi Tiết Chuyến Bay</h2>
                         <div class="flight-info">
@@ -595,37 +599,36 @@
                 <div class="passenger-summary">
                     <div class="passenger-count">
                         Hành khách (
-                        {{ $adultsCount }} người lớn,
-                        {{ $childrensCount }} trẻ em,
-                        {{ $infantsCount }} em bé
+                        {{ $adults }} người lớn,
+                        {{ $childrens }} trẻ em,
+                        {{ $infants }} em bé
                         )
                     </div>
 
 
-                    @if (!empty($adultsSession))
+                    @if (!empty($adultsSession) && is_array($adultsSession))
                         @foreach ($adultsSession as $index => $adult)
                             <div class="passenger-info">
-                                {{ $index }}. {{ $adult['last_name'] ?? 'Lỗi dữ liệu' }}
+                                {{ $index + 1 }}. {{ $adult['last_name'] ?? 'Lỗi dữ liệu' }}
                                 {{ $adult['first_name'] ?? 'Lỗi dữ liệu' }}
                             </div>
                         @endforeach
-
                     @endif
 
-                    @if (!empty($childrensSession))
+                    @if (!empty($childrensSession) && is_array($childrensSession))
                         @foreach ($childrensSession as $index => $child)
                             <div class="passenger-info">
-                                {{ count($adultsSession) + $index }}.
+                                {{ (is_array($adultsSession) ? count($adultsSession) : 0) + $index + 1 }}.
                                 {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
                                 {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
                             </div>
                         @endforeach
                     @endif
 
-                    @if (!empty($infantsSession))
+                    @if (!empty($infantsSession) && is_array($infantsSession))
                         @foreach ($infantsSession as $index => $infant)
                             <div class="passenger-info">
-                                {{ count($adultsSession) + count($childrensSession) + $index }}.
+                                {{ (is_array($adultsSession) ? count($adultsSession) : 0) + (is_array($childrensSession) ? count($childrensSession) : 0) + $index + 1 }}.
                                 {{ $infant['last_name'] ?? 'Lỗi dữ liệu' }}
                                 {{ $infant['first_name'] ?? 'Lỗi dữ liệu' }}
                             </div>
@@ -642,36 +645,71 @@
                 </div>
 
 
-                <div class="payment-summary">
-                    <div class="payment-title">Chi tiết thanh toán:</div>
-                    <div class="payment-details">
-                        <div class="price-title">Người lớn (x{{ is_array($adults) ? count($adults) : 0 }})
+                @if (isset($flight))
+                    <div class="payment-summary">
+                        <div class="payment-title">Chi tiết thanh toán:</div>
+                        <div class="payment-details">
+                            <div class="price-title">Người lớn (x{{ is_array($adults) ? count($adults) : 0 }})
+                            </div>
+                            <div class="price-value">
+                                {{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
                         </div>
-                        <div class="price-value">
-                            {{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
+                        <div class="payment-details">
+                            <div class="price-title">Trẻ em (x{{ is_array($childrens) ? count($childrens) : 0 }})
+                            </div>
+                            <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="price-title">Em bé (x{{ is_array($infants) ? count($infants) : 0 }})</div>
+                            <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="payment-details">
+                            <div>Thuế & Phí</div>
+                            <div>{{ number_format(50000, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="payment-details">
+                            <div>Phí dịch vụ</div>
+                            <div>{{ number_format(20000, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="total-amount">
+                            <div>Tổng cộng</div>
+                            <div>
+                                {{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
+                        </div>
                     </div>
-                    <div class="payment-details">
-                        <div class="price-title">Trẻ em (x{{ is_array($childrens) ? count($childrens) : 0 }})</div>
-                        <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                @else
+                    <div class="payment-summary">
+                        <div class="payment-title">Chi tiết thanh toán:</div>
+                        <div class="payment-details">
+                            <div class="price-title">Người lớn (x{{ is_array($adults) ? count($adults) : 0 }})
+                            </div>
+                            <div class="price-value">
+                                {{ number_format($outboundAdultPrice, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="price-title">Trẻ em (x{{ is_array($childrens) ? count($childrens) : 0 }})
+                            </div>
+                            <div class="price-value">{{ number_format($outboundChildPrice, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="payment-details">
+                            <div class="price-title">Em bé (x{{ is_array($infants) ? count($infants) : 0 }})</div>
+                            <div class="price-value">{{ number_format($outboundInfantPrice, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="payment-details">
+                            <div>Thuế & Phí</div>
+                            <div>{{ number_format($outboundTaxFee, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="payment-details">
+                            <div>Phí dịch vụ</div>
+                            <div>{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
+                        </div>
+                        <div class="total-amount">
+                            <div>Tổng cộng</div>
+                            <div>
+                                {{ number_format($outboundTotalPrice, 0, ',', '.') }} VNĐ</div>
+                        </div>
                     </div>
-                    <div class="payment-details">
-                        <div class="price-title">Em bé (x{{ is_array($infants) ? count($infants) : 0 }})</div>
-                        <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="payment-details">
-                        <div>Thuế & Phí</div>
-                        <div>{{ number_format(50000, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="payment-details">
-                        <div>Phí dịch vụ</div>
-                        <div>{{ number_format(20000, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                    <div class="total-amount">
-                        <div>Tổng cộng</div>
-                        <div>
-                            {{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
-                    </div>
-                </div>
+                @endif
             </div>
 
             <div class="next-steps">

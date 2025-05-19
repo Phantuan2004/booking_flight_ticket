@@ -1327,11 +1327,16 @@
                     <form action="{{ route('thanhcong') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <!-- Thông tin chuyến bay đi -->
-                        <input type="hidden" name="flight_id" value="{{ $outboundFlight->id }}">
-                        <input type="hidden" name="departure" value="{{ $outboundFlight->departure }}">
-                        <input type="hidden" name="destination" value="{{ $outboundFlight->destination }}">
-                        <input type="hidden" name="departure_time" value="{{ $outboundFlight->departure_time }}">
-                        <input type="hidden" name="price" value="{{ $outboundFlight->price }}">
+                        <input type="hidden" name="outbound_flight_id" value="{{ $outboundFlight->id }}">
+                        <input type="hidden" name="outbound_departure" value="{{ $outboundFlight->departure }}">
+                        <input type="hidden" name="outbound_destination"
+                            value="{{ $outboundFlight->destination }}">
+                        <input type="hidden" name="outbound_departure_time"
+                            value="{{ $outboundFlight->departure_time }}">
+                        <input type="hidden" name="outbound_price_economy"
+                            value="{{ $outboundFlight->price_economy }}">
+                        <input type="hidden" name="outbound_price_business"
+                            value="{{ $outboundFlight->price_business }}">
 
                         <!-- Thông tin chuyến bay về -->
                         <input type="hidden" name="return_flight_id" value="{{ $returnFlight->id }}">
@@ -1339,7 +1344,10 @@
                         <input type="hidden" name="return_destination" value="{{ $returnFlight->destination }}">
                         <input type="hidden" name="return_departure_time"
                             value="{{ $returnFlight->departure_time }}">
-                        <input type="hidden" name="return_price" value="{{ $returnFlight->price }}">
+                        <input type="hidden" name="return_price_economy"
+                            value="{{ $returnFlight->price_economy }}">
+                        <input type="hidden" name="return_price_business"
+                            value="{{ $returnFlight->price_business }}">
 
                         <!-- Thông tin hành khách -->
                         <input type="hidden" name="adults_data"

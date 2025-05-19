@@ -385,6 +385,15 @@ class UserController extends Controller
             $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
             $infants = is_array($infantsSession) ? count($infantsSession) : 0;
 
+            // Lưu thông tin vào session
+            session([
+                'adults' => $adults,
+                'childrens' => $childrens,
+                'infants' => $infants,
+                'outbound_flight' => $flight,
+                'return_flight' => $flight,
+            ]);
+
             // Xử lý thông tin khách hàng
             $full_name = trim($request->input('full_name', session('full_name', '')));
             $phone = trim($request->input('phone', session('phone', '')));
@@ -497,6 +506,14 @@ class UserController extends Controller
             $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
             $infants = is_array($infantsSession) ? count($infantsSession) : 0;
 
+            session([
+                'adults' => $adults,
+                'childrens' => $childrens,
+                'infants' => $infants,
+                'outbound_flight' => $outboundFlight,
+                'return_flight' => $returnFlight,
+            ]);
+
             // Xử lý thông tin khách hàng
             $full_name = trim($request->input('full_name', session('full_name', '')));
             $phone = trim($request->input('phone', session('phone', '')));
@@ -604,6 +621,7 @@ class UserController extends Controller
 
     public function thanhcong(Request $request)
     {
+        // dd($request->all());
         if ($request->has('flight_id')) {
             $flight = Flight::find($request->input('flight_id'));
 
@@ -611,53 +629,40 @@ class UserController extends Controller
                 return redirect()->back()->withErrors(['error' => 'Chuyến bay không tồn tại!']);
             }
 
-            $adultsSession = $request->input('adults_data');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
+            // Handle passenger data
+            $adultsSession = $request->input('adults');
             if (is_string($adultsSession)) {
                 $adultsSession = json_decode($adultsSession, true) ?? [];
             }
-            // Nếu không phải là mảng, lấy từ session
             if (!is_array($adultsSession)) {
-                $adultsSession = session('adults_data', []);
+                $adultsSession = session('adults', []);
             }
 
-            $childrensSession = $request->input('childrens_data');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
+            $childrensSession = $request->input('childrens');
             if (is_string($childrensSession)) {
                 $childrensSession = json_decode($childrensSession, true) ?? [];
             }
-
-            // Nếu không phải là mảng, lấy từ session
             if (!is_array($childrensSession)) {
-                $childrensSession = session('childrens_data', []);
+                $childrensSession = session('childrens', []);
             }
 
-            $infantsSession = $request->input('infants_data');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
+            $infantsSession = $request->input('infants');
             if (is_string($infantsSession)) {
                 $infantsSession = json_decode($infantsSession, true) ?? [];
             }
-            // Nếu không phải là mảng, lấy từ session
             if (!is_array($infantsSession)) {
-                $infantsSession = session('infants_data', []);
+                $infantsSession = session('infants', []);
             }
 
-            // Đảm bảo các biến là mảng trước khi đếm
+            // Calculate passenger counts
             $adults = is_array($adultsSession) ? count($adultsSession) : 0;
             $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
             $infants = is_array($infantsSession) ? count($infantsSession) : 0;
+            $total_passengers = $adults + $childrens + $infants;
 
-            $adults_count = (int) $request->input('adults_data', 0);
-            $children_count = (int) $request->input('childrens_data', 0);
-            $infants_count = (int) $request->input('infants_data', 0);
-            $total_passengers = $adults_count + $children_count + $infants_count;
+            $booking_code = "SK_" . random_int(00000, 99999);
 
-            $adults = json_decode($request->input('adults_data', '[]'), true) ?? [];
-            $childrens = json_decode($request->input('childrens_data', '[]'), true) ?? [];
-            $infants = json_decode($request->input('infants_data', '[]'), true) ?? [];
-
-            $booking_code = "SK_" . rand(10000, 99999);
-
+            // Customer information
             $full_name = $request->input('full_name') ?? session('full_name', '');
             $phone = $request->input('phone') ?? session('phone', '');
             $email = $request->input('email') ?? session('email', '');
@@ -673,27 +678,24 @@ class UserController extends Controller
             $flightStart = Carbon::parse($flight->flight_start);
             $flightEnd = Carbon::parse($flight->flight_end);
 
-            // Lấy giờ và phút dưới dạng chuỗi định dạng sẵn
-            $flightStartTime = $flightStart->format('H:i');  // Ví dụ: 14:30
-            $flightEndTime = $flightEnd->format('H:i');      // Ví dụ: 16:40
-            $departureDate = $departureTime->format('d/m/Y'); // Ví dụ: 05/04/2024
+            $flightStartTime = $flightStart->format('H:i');
+            $flightEndTime = $flightEnd->format('H:i');
+            $departureDate = $departureTime->format('d/m/Y');
             $departureDay = $departureTime->format('d');
             $departureMonth = $departureTime->format('m');
             $departureYear = $departureTime->format('Y');
             $departureDayOfWeek = $departureTime->locale('vi')->isoFormat('dddd');
-
-            // Tính thời gian bay
             $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
 
-            // Xử lý giá tiền
-            $adult_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy : $flight->price_business * $adults;
-            $child_price = $adult_price * 0.2;
-            $infant_price = $adult_price * 0;
+            // Calculate prices
+            $adult_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy * $adults : $flight->price_business * $adults;
+            $child_price = $adult_price * 0.2 * $childrens;
+            $infant_price = $adult_price * 0 * $infants;
             $tax_fee = $flight->seat_class == 'phổ thông' ? 50000 : 100000;
             $service_fee = $flight->seat_class == 'phổ thông' ? 20000 : 40000;
             $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;
 
-            // Check người dùng có tài khoản
+            // Prepare booking data
             if (Auth::check()) {
                 $user = Auth::user();
                 $data = [
@@ -702,9 +704,9 @@ class UserController extends Controller
                     'name' => $full_name,
                     'phone' => $phone,
                     'email' => $email,
-                    'adult_count' => $adults,
-                    'child_count' => $childrens,
-                    'infant_count' => 0,
+                    'adult_count' => $adults, // Integer
+                    'child_count' => $childrens, // Integer
+                    'infant_count' => $infants, // Integer
                     'address' => $address,
                     'flight_id' => $flight->id,
                     'total_price' => $total_price,
@@ -712,7 +714,6 @@ class UserController extends Controller
                     'updated_at' => now()
                 ];
             } else {
-                // Nếu không có tài khoản thì lưu thông tin người dùng vào bảng bookings
                 $data = [
                     'booking_code' => $booking_code,
                     'user_id' => null,
@@ -720,9 +721,9 @@ class UserController extends Controller
                     'name' => $full_name,
                     'phone' => $phone,
                     'email' => $email,
-                    'adult_count' => $adults,
-                    'child_count' => $childrens,
-                    'infant_count' => 0,
+                    'adult_count' => $adults, // Integer
+                    'child_count' => $childrens, // Integer
+                    'infant_count' => $infants, // Integer
                     'address' => $address,
                     'total_price' => $total_price,
                     'created_at' => now(),
@@ -730,11 +731,13 @@ class UserController extends Controller
                 ];
             }
 
+            // Create booking
             Booking::create($data);
 
+            // Handle guest data for non-authenticated users
             if (!Auth::check()) {
                 $guest = Guest::updateOrCreate(
-                    ['phone' => $phone], // Kiểm tra nếu số điện thoại đã tồn tại
+                    ['phone' => $phone],
                     [
                         'name' => $full_name,
                         'email' => $email,
@@ -743,24 +746,23 @@ class UserController extends Controller
                     ]
                 );
 
-                // Nếu bản ghi vừa tạo mới (chưa có booking_count), thì đặt booking_count = 1
                 if ($guest->wasRecentlyCreated) {
                     $guest->booking_count = 1;
                 } else {
-                    $guest->increment('booking_count'); // Nếu đã tồn tại thì tăng booking_count
+                    $guest->increment('booking_count');
                 }
 
-                $guest->save(); // Lưu lại bản ghi
+                $guest->save();
             }
 
-            // Trừ số ghế trên database tương ứng với tổng số hành khách đặt vé bay
+            // Update available seats
             if ($flight->available_seats >= $total_passengers) {
                 $flight->decrement('available_seats', $total_passengers);
             } else {
                 return redirect()->back()->withErrors(['error' => 'Số ghế không đủ!']);
             }
 
-            // Gửi email xác nhận đặt vé
+            // Send confirmation email
             Mail::to($email)->send(new BookingConfirm([
                 'name' => $full_name,
                 'childrens' => $childrens,
@@ -799,14 +801,10 @@ class UserController extends Controller
                 'adults',
                 'infants',
                 'childrens',
-                'adults_count',
-                'children_count',
-                'infants_count',
-                'adultsCount',
-                'childrensCount',
-                'infantsCount',
                 'total_passengers',
                 'booking_code',
+                'departure',
+                'destination',
                 'flightStartTime',
                 'flightEndTime',
                 'departureDate',
@@ -830,7 +828,7 @@ class UserController extends Controller
                 'total_price',
                 'adultsSession',
                 'childrensSession',
-                'infantsSession',
+                'infantsSession'
             ));
         } else {
             // Xử lý khi chuyến bay là chuyến bay khứ hồi
@@ -846,44 +844,45 @@ class UserController extends Controller
                 return redirect()->back()->withErrors(['error' => 'Một hoặc cả hai chuyến bay không tồn tại!']);
             }
 
-            $adultsSession = $request->input('adults_data');
+            $adultsSession = $request->input('adults');
             // Kiểm tra nếu là chuỗi JSON, giải mã nó
             if (is_string($adultsSession)) {
                 $adultsSession = json_decode($adultsSession, true) ?? [];
             }
             // Nếu không phải là mảng, lấy từ session
             if (!is_array($adultsSession)) {
-                $adultsSession = session('adults_data', []);
+                $adultsSession = session('adults', []);
             }
 
-            $childrensSession = $request->input('childrens_data');
+            $childrensSession = $request->input('childrens');
             // Kiểm tra nếu là chuỗi JSON, giải mã nó
             if (is_string($childrensSession)) {
                 $childrensSession = json_decode($childrensSession, true) ?? [];
             }
             // Nếu không phải là mảng, lấy từ session
             if (!is_array($childrensSession)) {
-                $childrensSession = session('childrens_data', []);
+                $childrensSession = session('childrens', []);
             }
 
-            $infantsSession = $request->input('infants_data');
+            $infantsSession = $request->input('infants');
             // Kiểm tra nếu là chuỗi JSON, giải mã nó
             if (is_string($infantsSession)) {
                 $infantsSession = json_decode($infantsSession, true) ?? [];
             }
             // Nếu không phải là mảng, lấy từ session
             if (!is_array($infantsSession)) {
-                $infantsSession = session('infants_data', []);
+                $infantsSession = session('infants', []);
             }
 
             // Đảm bảo các biến là mảng trước khi đếm
-            $adults = is_array($adultsSession) ? count($adultsSession) : 0;
+            $adults = is_array($adultsSession) ? count($adultsSession) : 0; // Default to 1
             $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
-            $infants = is_array($infantsSession) ? count($infantsSession) : 0;
+            $infants = is_array($infantsSession) ? count($infantsSession) : 0;;
 
             $total_passengers = $adults + $childrens + $infants;
 
-            $booking_code = "SK_" . rand(10000, 99999);
+            $booking_code_outbound = "SK_" . random_int(00000, 99999);
+            $booking_code_return = "SK_" . random_int(00000, 99999);
 
             $full_name = $request->input('full_name') ?? session('full_name', '');
             $phone = $request->input('phone') ?? session('phone', '');
@@ -949,7 +948,7 @@ class UserController extends Controller
                 $user = Auth::user();
                 // Tạo booking cho chuyến đi
                 $outboundData = [
-                    'booking_code' => $booking_code,
+                    'booking_code' => $booking_code_outbound,
                     'user_id' => $user->id,
                     'name' => $full_name,
                     'phone' => $phone,
@@ -966,7 +965,7 @@ class UserController extends Controller
 
                 // Tạo booking cho chuyến về
                 $returnData = [
-                    'booking_code' => $booking_code,
+                    'booking_code' => $booking_code_return,
                     'user_id' => $user->id,
                     'name' => $full_name,
                     'phone' => $phone,
@@ -983,7 +982,7 @@ class UserController extends Controller
             } else {
                 // Tạo booking cho chuyến đi
                 $outboundData = [
-                    'booking_code' => $booking_code,
+                    'booking_code' => $booking_code_outbound,
                     'user_id' => null,
                     'name' => $full_name,
                     'phone' => $phone,
@@ -1000,7 +999,7 @@ class UserController extends Controller
 
                 // Tạo booking cho chuyến về
                 $returnData = [
-                    'booking_code' => $booking_code,
+                    'booking_code' => $booking_code_return,
                     'user_id' => null,
                     'name' => $full_name,
                     'phone' => $phone,
@@ -1054,11 +1053,12 @@ class UserController extends Controller
                 'childrens' => $childrens,
                 'adults' => $adults,
                 'infants' => $infants,
-                'booking_code' => $booking_code,
+                'booking_code_outbound' => $booking_code_outbound,
                 'outbound_flight_code' => $outboundFlight->flight_code,
                 'return_flight_code' => $returnFlight->flight_code,
                 'outbound_departure' => $outboundFlight->departure,
                 'outbound_destination' => $outboundFlight->destination,
+                'booking_code_return' => $booking_code_return,
                 'return_departure' => $returnFlight->departure,
                 'return_destination' => $returnFlight->destination,
                 'outbound_flight_start_time' => $outboundFlightStartTime,
@@ -1107,7 +1107,8 @@ class UserController extends Controller
                 'childrens',
                 'infants',
                 'total_passengers',
-                'booking_code',
+                'booking_code_outbound',
+                'booking_code_return',
                 'outboundFlightStartTime',
                 'outboundFlightEndTime',
                 'outboundDepartureDate',
@@ -1145,7 +1146,7 @@ class UserController extends Controller
                 'totalPrice',
                 'adultsSession',
                 'childrensSession',
-                'infantsSession',
+                'infantsSession'
             ));
         }
     }
