@@ -1026,7 +1026,6 @@ class UserController extends Controller
                         'name' => $full_name,
                         'email' => $email,
                         'address' => $address,
-                        'last_booking_date' => now()
                     ]
                 );
 
