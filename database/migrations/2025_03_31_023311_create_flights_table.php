@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('seats');   // Tổng số ghế
             $table->integer('available_seats'); // Số ghế còn trống
             $table->foreign('airline_id')->references('id')->on('airlines')->onDelete('cascade');
+            $table->enum('status', ['chưa hoàn thành', 'hoàn thành', 'hủy bỏ']);
             $table->timestamps();
         });
     }
