@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Booking;
 use App\Models\Flight;
 use App\Models\Airline;
 use App\Models\Guest;
 use App\Models\User;
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
-class AdminController extends Controller
+class AdminController extends Controller 
 {
     public function admin(Request $request)
     {
