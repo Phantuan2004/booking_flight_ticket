@@ -104,7 +104,7 @@
                     <div class="booking-id">
                         <strong>Mã đặt chỗ:</strong> chuyến đi: {{ $booking_code_outbound }} -
                         chuyến về:
-                        {{ $booking_code_return }}
+                        {{ $booking_code_outbound }} - {{ $booking_code_return }}
                     </div>
                     <div class="confirmation-box">
                         <h2 class="confirmation-title">Chi Tiết Chuyến Bay</h2>
@@ -172,11 +172,15 @@
                 @endif
                 <div class="passenger-summary">
                     <div class="passenger-count">
-                        Hành khách (
-                        {{ $adults }} người lớn,
-                        {{ $childrens }} trẻ em,
-                        {{ $infants }} em bé
-                        )
+                        Hành khách @if (isset($flight))   
+                            {{ $adults }} người lớn,
+                            {{ $childrens }} trẻ em,
+                            {{ $infants }} em bé
+                        @else
+                            {{ $adults_count }} người lớn,
+                            {{ $childrens_count }} trẻ em,
+                            {{ $infants_count }} em bé
+                        @endif
                     </div>
 
 
@@ -254,34 +258,43 @@
                 @else
                     <div class="payment-summary">
                         <div class="payment-title">Chi tiết thanh toán:</div>
-                        <div class="payment-details">
-                            <div class="price-title">Người lớn (x{{ is_array($adults) ? count($adults) : 0 }})
-                            </div>
-                            <div class="price-value">
-                                {{ number_format($outboundAdultPrice, 0, ',', '.') }} VNĐ</div>
-                        </div>
-                        <div class="payment-details">
-                            <div class="price-title">Trẻ em (x{{ is_array($childrens) ? count($childrens) : 0 }})
-                            </div>
-                            <div class="price-value">{{ number_format($outboundChildPrice, 0, ',', '.') }} VNĐ</div>
-                        </div>
-                        <div class="payment-details">
-                            <div class="price-title">Em bé (x{{ is_array($infants) ? count($infants) : 0 }})</div>
-                            <div class="price-value">{{ number_format($outboundInfantPrice, 0, ',', '.') }} VNĐ</div>
-                        </div>
-                        <div class="payment-details">
-                            <div>Thuế & Phí</div>
-                            <div>{{ number_format($outboundTaxFee, 0, ',', '.') }} VNĐ</div>
-                        </div>
-                        <div class="payment-details">
-                            <div>Phí dịch vụ</div>
-                            <div>{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
-                        </div>
-                        <div class="total-amount">
-                            <div>Tổng cộng</div>
-                            <div>
-                                {{ number_format($outboundTotalPrice, 0, ',', '.') }} VNĐ</div>
-                        </div>
+                        <table class="table table-striped" border="1">
+                            <thead>
+                                <tr>
+                                    <th>Tên chuyến bay</th>
+                                    <th>Người lớn</th>
+                                    <th>Trẻ em</th>
+                                    <th>Em bé</th>
+                                    <th>Thuế & Phí</th>
+                                    <th>Phí dịch vụ</th>
+                                    <th>Tổng cộng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Chuyến bay đi</td>
+                                    <td>{{ is_array($adults_count) ? count($adults_count) : $adults_count }} x {{ number_format($outboundPriceData['adult_price'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ is_array($childrens_count) ? count($childrens_count) : $childrens_count }} x {{ number_format($outboundPriceData['child_price'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ is_array($infants_count) ? count($infants_count) : $infants_count }} x {{ number_format($outboundPriceData['infant_price'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ number_format($outboundPriceData['tax_fee'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ number_format($outboundPriceData['service_fee'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ number_format($outboundTotalPrice, 0, ',', '.') }} VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <td>Chuyến bay về</td>
+                                    <td>{{ is_array($adults_count) ? count($adults_count) : $adults_count }} x {{ number_format($returnPriceData['adult_price'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ is_array($childrens_count) ? count($childrens_count) : $childrens_count }} x {{ number_format($returnPriceData['child_price'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ is_array($infants_count) ? count($infants_count) : $infants_count }} x {{ number_format($returnPriceData['infant_price'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ number_format($returnPriceData['tax_fee'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ number_format($returnPriceData['service_fee'], 0, ',', '.') }} VNĐ</td>
+                                    <td>{{ number_format($returnTotalPrice, 0, ',', '.') }} VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">Tổng cộng:</td>
+                                    <td>{{ number_format($outboundTotalPrice + $returnTotalPrice, 0, ',', '.') }} VNĐ</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 @endif
             </div>

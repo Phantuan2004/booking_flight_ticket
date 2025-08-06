@@ -275,10 +275,6 @@
             margin-bottom: 5px;
         }
 
-        .payment-summary {
-            margin-top: 15px;
-        }
-
         .payment-title {
             font-size: 16px;
             color: #003580;
@@ -291,6 +287,40 @@
             margin-bottom: 5px;
             font-size: 14px;
             color: #666;
+        }
+
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .table th {
+            background-color: #f0f0f0;
+        }
+
+        .table td {
+            background-color: #fff;
+        }
+
+        .table td:nth-child(2), .table td:nth-child(3), .table td:nth-child(4), .table td:nth-child(5), .table td:nth-child(6) {
+            text-align: left;
+        }
+
+        .table td:last-child {
+            font-weight: bold;
+        }
+
+        .payment-summary {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .total-amount {

@@ -533,23 +533,23 @@
                     </div>
                     <div class="price-row">
                         <div class="price-title">Người lớn (x{{ $adults }})</div>
-                        <div class="price-value">{{ number_format($outboundAdultPrice, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($outboundPriceData['adult_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                        <div class="price-value">{{ number_format($outboundChildPrice, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($outboundPriceData['child_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Em bé (x{{ $infants }})</div>
-                        <div class="price-value">{{ number_format($outboundInfantPrice, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($outboundPriceData['infant_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Thuế & Phí</div>
-                        <div class="price-value">{{ number_format($outboundTaxFee, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($outboundPriceData['tax_fee'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Phí dịch vụ</div>
-                        <div class="price-value">{{ number_format($outboundServiceFee, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($outboundPriceData['service_fee'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <hr style="border: 1px solid #eee; margin: 20px 0;">
                     <div class="price-row">
@@ -565,27 +565,27 @@
                     </div>
                     <div class="price-row">
                         <div class="price-title">Người lớn (x{{ $adults }})</div>
-                        <div class="price-value">{{ number_format($returnAdultPrice, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($returnPriceData['adult_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                        <div class="price-value">{{ number_format($returnChildPrice, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($returnPriceData['child_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Em bé (x{{ $infants }})</div>
-                        <div class="price-value">{{ number_format($returnInfantPrice, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($returnPriceData['infant_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Thuế & Phí</div>
-                        <div class="price-value">{{ number_format($returnTaxFee, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($returnPriceData['tax_fee'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Phí dịch vụ</div>
-                        <div class="price-value">{{ number_format($returnServiceFee, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($returnPriceData['service_fee'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="total-row">
                         <div>Tổng cộng</div>
-                        <div>{{ number_format($outboundTotalPrice + $returnTotalPrice, 0, ',', '.') }} VNĐ</div>
+                        <div>{{ number_format($totalPrice, 0, ',', '.') }} VNĐ</div>
                     </div>
 
                     <div class="payment-notice">
@@ -619,12 +619,10 @@
                             value="{{ $returnFlight->price_business }}">
 
                         <!-- Thông tin hành khách -->
-                        <input type="hidden" name="adults_data"
-                            value="{{ htmlspecialchars(json_encode($adultsSession)) }}">
-                        <input type="hidden" name="childrens_data"
-                            value="{{ htmlspecialchars(json_encode($childrensSession)) }}">
-                        <input type="hidden" name="infants_data"
-                            value="{{ htmlspecialchars(json_encode($infantsSession)) }}">
+                        <!-- Thông tin hành khách -->
+                        <input type="hidden" name="adults" value="{{ json_encode($adultsSession) }}">
+                        <input type="hidden" name="childrens" value="{{ json_encode($childrensSession) }}">
+                        <input type="hidden" name="infants" value="{{ json_encode($infantsSession) }}">
 
                         <!-- Thông tin liên hệ -->
                         <input type="hidden" name="full_name" value="{{ htmlspecialchars($full_name) }}">
@@ -633,19 +631,19 @@
                         <input type="hidden" name="address" value="{{ htmlspecialchars($address) }}">
 
                         <!-- Thông tin thanh toán chuyến đi -->
-                        <input type="hidden" name="outboundAdultPrice" value="{{ $outboundAdultPrice }}">
-                        <input type="hidden" name="outboundChildPrice" value="{{ $outboundChildPrice }}">
-                        <input type="hidden" name="outboundInfantPrice" value="{{ $outboundInfantPrice }}">
-                        <input type="hidden" name="outboundTaxFee" value="{{ $outboundTaxFee }}">
-                        <input type="hidden" name="outboundServiceFee" value="{{ $outboundServiceFee }}">
+                        <input type="hidden" name="outboundAdultPrice" value="{{ $outboundPriceData['adult_price'] }}">
+                        <input type="hidden" name="outboundChildPrice" value="{{ $outboundPriceData['child_price'] }}">
+                        <input type="hidden" name="outboundInfantPrice" value="{{ $outboundPriceData['infant_price'] }}">
+                        <input type="hidden" name="outboundTaxFee" value="{{ $outboundPriceData['tax_fee'] }}">
+                        <input type="hidden" name="outboundServiceFee" value="{{ $outboundPriceData['service_fee'] }}">
                         <input type="hidden" name="outboundTotalPrice" value="{{ $outboundTotalPrice }}">
 
                         <!-- Thông tin thanh toán chuyến về -->
-                        <input type="hidden" name="returnAdultPrice" value="{{ $returnAdultPrice }}">
-                        <input type="hidden" name="returnChildPrice" value="{{ $returnChildPrice }}">
-                        <input type="hidden" name="returnInfantPrice" value="{{ $returnInfantPrice }}">
-                        <input type="hidden" name="returnTaxFee" value="{{ $returnTaxFee }}">
-                        <input type="hidden" name="returnServiceFee" value="{{ $returnServiceFee }}">
+                        <input type="hidden" name="returnAdultPrice" value="{{ $returnPriceData['adult_price'] }}">
+                        <input type="hidden" name="returnChildPrice" value="{{ $returnPriceData['child_price'] }}">
+                        <input type="hidden" name="returnInfantPrice" value="{{ $returnPriceData['infant_price'] }}">
+                        <input type="hidden" name="returnTaxFee" value="{{ $returnPriceData['tax_fee'] }}">
+                        <input type="hidden" name="returnServiceFee" value="{{ $returnPriceData['service_fee'] }}">
                         <input type="hidden" name="returnTotalPrice" value="{{ $returnTotalPrice }}">
 
                         <!-- Nút xác nhận -->

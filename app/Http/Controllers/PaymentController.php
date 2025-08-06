@@ -24,7 +24,7 @@ class PaymentController extends Controller
 
     public function payment(Request $request)
     {
-        // dd(session()->all());
+        // dd($request->all());
 
         // Kiểm tra xem có flight_id không
         if ($request->has('flight_id')) {
@@ -99,6 +99,7 @@ class PaymentController extends Controller
             ]));
 
         } else {
+            // dd($request->all());
             // Xử lý khi chuyến bay là chuyến bay khứ hồi
             $outboundFlightId = $request->input('outbound_flight_id');
             $returnFlightId = $request->input('return_flight_id');
@@ -117,24 +118,16 @@ class PaymentController extends Controller
             $childrensSession = $this->commonSessionData->parseSessionData($request, 'childrens');
             $infantsSession = $this->commonSessionData->parseSessionData($request, 'infants');
 
-            // Đảm bảo các biến là mảng trước khi đếm
-            $adults = is_array($adultsSession) ? count($adultsSession) : 0;
-            $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
-            $infants = is_array($infantsSession) ? count($infantsSession) : 0;
-
-            session([
-                'adults' => $adults,
-                'childrens' => $childrens,
-                'infants' => $infants,
-                'outbound_flight' => $outboundFlight,
-                'return_flight' => $returnFlight,
-            ]);
-
             // Xử lý thông tin khách hàng
             $full_name = trim($request->input('full_name', session('full_name', '')));
             $phone = trim($request->input('phone', session('phone', '')));
             $email = trim($request->input('email', session('email', '')));
             $address = trim($request->input('address', session('address', '')));
+
+            // Xử lý giá tiền
+            $adults = count($adultsSession);
+            $childrens = count($childrensSession);
+            $infants = count($infantsSession);
 
             // Xử lý giá tiền cho chuyến đi
             $outboundPriceData = $this->commonPrice->flightPrice($outboundFlight, $adults, $childrens, $infants);
@@ -148,10 +141,8 @@ class PaymentController extends Controller
             $totalPrice = $outboundTotalPrice + $returnTotalPrice;
 
             // Lấy dữ liệu thời gian bay cho chuyến đi và chuyến về
-            $outboundTime = $this->commonTime->flightTime($outboundFlight);
-            $returnTime = $this->commonTime->flightTime($returnFlight);
+            $flightTime = $this->commonTime->flightTime($outboundFlight, $returnFlight);
 
-            // Đặt biến riêng cho chuyến đi
             [
                 'departureTime' => $outboundDepartureTime,
                 'flightStart' => $outboundFlightStart,
@@ -164,22 +155,19 @@ class PaymentController extends Controller
                 'departureDay' => $outboundDepartureDay,
                 'duration' => $outboundDuration,
                 'departureDayOfWeek' => $outboundDayOfWeek,
-            ] = $outboundTime;
 
-            // Đặt biến riêng cho chuyến về
-            [
-                'departureTime' => $returnDepartureTime,
-                'flightStart' => $returnFlightStart,
-                'flightEnd' => $returnFlightEnd,
-                'flightStartTime' => $returnFlightStartTime,
-                'flightEndTime' => $returnFlightEndTime,
-                'departureDate' => $returnDepartureDate,
-                'departureMonth' => $returnDepartureMonth,
-                'departureYear' => $returnDepartureYear,
-                'departureDay' => $returnDepartureDay,
-                'duration' => $returnDuration,
-                'departureDayOfWeek' => $returnDayOfWeek,
-            ] = $returnTime;
+                'returnTime' => $returnTime,
+                'returnStart' => $returnFlightStart,
+                'returnEnd' => $returnFlightEnd,
+                'returnDuration' => $returnDuration,
+                'returnStartTime' => $returnFlightStartTime,
+                'returnEndTime' => $returnFlightEndTime,
+                'returnDate' => $returnDepartureDate,
+                'returnMonth' => $returnDepartureMonth,
+                'returnYear' => $returnDepartureYear,
+                'returnDay' => $returnDepartureDay,
+                'returnDayOfWeek' => $returnDayOfWeek,
+            ] = $flightTime;
 
             // Truyền dữ liệu sang view
             return view('thanhtoan', compact(
@@ -195,17 +183,9 @@ class PaymentController extends Controller
                 'phone',
                 'email',
                 'address',
-                'outboundAdultPrice',
-                'outboundChildPrice',
-                'outboundInfantPrice',
-                'outboundTaxFee',
-                'outboundServiceFee',
+                'outboundPriceData',
                 'outboundTotalPrice',
-                'returnAdultPrice',
-                'returnChildPrice',
-                'returnInfantPrice',
-                'returnTaxFee',
-                'returnServiceFee',
+                'returnPriceData',
                 'returnTotalPrice',
                 'totalPrice',
                 'outboundFlightStartTime',

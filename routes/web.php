@@ -18,7 +18,7 @@ Route::prefix("")->group(function () {
     Route::get('/flight-search-roundtrip', [RoundTripController::class, 'queryRoundTrip'])->name('flight-search-roundtrip');
     Route::get('/datve_khuhoi', [RoundTripController::class, 'datve_khuhoi'])->name('datve_khuhoi');
     Route::post('/xacnhan', [ConfirmController::class, 'confirm'])->name('confirm');
-    Route::post('/thanhtoan', [PaymentController::class, 'payment'])->name('payment');
+    Route::match(['get', 'post'], '/thanhtoan', [PaymentController::class, 'payment'])->name('payment');
     Route::post('/thanhcong', [SuccessController::class, 'success'])->name('success');
     Route::get('/lienhe', [ContactController::class, 'contact'])->name('contact');
     Route::get('/lichsudatve', [HistoriesController::class, 'history'])->name('history');

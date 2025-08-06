@@ -6,7 +6,7 @@ use Carbon\Carbon;
 class FlightTime {
     public function flightTime($departureFlight, $returnFlight = null)
     {
-        // Xử lý thời gian bay chuyến bay
+        // Xử lý thời gian bay chuyến bay đi
         $departureTime = Carbon::parse($departureFlight->departure_time);
         $flightStart = Carbon::parse($departureFlight->flight_start);
         $flightEnd = Carbon::parse($departureFlight->flight_end);
