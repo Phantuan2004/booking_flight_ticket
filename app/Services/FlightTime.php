@@ -21,6 +21,9 @@ class FlightTime {
         $departureDayOfWeek = $departureTime->locale('vi')->isoFormat('dddd');
 
         $data = [
+            'departureTime' => $departureTime,
+            'flightStart' => $flightStart,
+            'flightEnd' => $flightEnd,
             'duration' => $duration,
             'flightStartTime' => $flightStartTime,
             'flightEndTime' => $flightEndTime,
@@ -47,6 +50,9 @@ class FlightTime {
             $returnDayOfWeek = $returnTime->locale('vi')->isoFormat('dddd');
 
             $data = array_merge($data, [
+                'returnTime' => $returnTime,
+                'returnStart' => $returnStart,
+                'returnEnd' => $returnEnd,
                 'returnDuration' => $returnDuration,
                 'returnStartTime' => $returnStartTime,
                 'returnEndTime' => $returnEndTime,

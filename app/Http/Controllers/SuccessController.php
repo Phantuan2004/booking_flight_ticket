@@ -7,6 +7,9 @@ use App\Mail\BookingConfirm;
 use App\Models\Booking;
 use App\Models\Flight;
 use App\Models\Guest;
+use App\Services\FlightPrice;
+use App\Services\FlightTime;
+use App\Services\ParseSessionData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,217 +17,192 @@ use Illuminate\Support\Facades\Mail;
 
 class SuccessController extends Controller
 {
+    protected $commonPrice;
+    protected $commonTime;
+    protected $commonSessionData;
+
+    public function __construct(FlightPrice $commonPrice, FlightTime $commonTime, ParseSessionData $commonSessionData) {
+        $this->commonPrice = $commonPrice;
+        $this->commonTime = $commonTime;
+        $this->commonSessionData = $commonSessionData;
+    }
+
     public function success(Request $request)
     {
-        // dd($request->all());
+        // dd(session()->all());
         if ($request->has('flight_id')) {
-            $flight = Flight::find($request->input('flight_id'));
+        $flight = Flight::find($request->input('flight_id'));
 
-            if (!$flight) {
-                return redirect()->back()->withErrors(['error' => 'Chuyến bay không tồn tại!']);
-            }
+        if (!$flight) {
+            return redirect()->back()->withErrors(['error' => 'Chuyến bay không tồn tại!']);
+        }
 
-            // Handle passenger data
-            $adultsSession = $request->input('adults');
-            if (is_string($adultsSession)) {
-                $adultsSession = json_decode($adultsSession, true) ?? [];
-            }
-            if (!is_array($adultsSession)) {
-                $adultsSession = session('adults', []);
-            }
+       // Lấy thông tin hành khách
+        $adultsSession = $this->commonSessionData->parseSessionData($request, 'adults');
+        $childrensSession = $this->commonSessionData->parseSessionData($request, 'childrens');
+        $infantsSession = $this->commonSessionData->parseSessionData($request, 'infants');
 
-            $childrensSession = $request->input('childrens');
-            if (is_string($childrensSession)) {
-                $childrensSession = json_decode($childrensSession, true) ?? [];
-            }
-            if (!is_array($childrensSession)) {
-                $childrensSession = session('childrens', []);
-            }
+        // Tính số lượng hành khách
+        $adults = count($adultsSession);
+        $childrens = count($childrensSession);
+        $infants = count($infantsSession);
+        $total_passengers = $adults + $childrens + $infants;
 
-            $infantsSession = $request->input('infants');
-            if (is_string($infantsSession)) {
-                $infantsSession = json_decode($infantsSession, true) ?? [];
-            }
-            if (!is_array($infantsSession)) {
-                $infantsSession = session('infants', []);
-            }
+        $booking_code = "SK_" . random_int(00000, 99999);
 
-            // Calculate passenger counts
-            $adults = is_array($adultsSession) ? count($adultsSession) : 0;
-            $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
-            $infants = is_array($infantsSession) ? count($infantsSession) : 0;
-            $total_passengers = $adults + $childrens + $infants;
+        // Lấy thông tin liên hệ từ form hoặc session
+        $full_name = $request->input('full_name') ?? session('full_name', '');
+        $phone = $request->input('phone') ?? session('phone', '');
+        $email = $request->input('email') ?? session('email', '');
+        $address = $request->input('address') ?? session('address', '');
 
-            $booking_code = "SK_" . random_int(00000, 99999);
+        // Xử lý giá tiền
+        $priceData = $this->commonPrice->flightPrice($flight, $adults, $childrens, $infants);
+        $totalPrice = $priceData['adult_price'] + $priceData['child_price'] + $priceData['infant_price'] + $priceData['tax_fee'] + $priceData['service_fee'];
 
-            // Customer information
-            $full_name = $request->input('full_name') ?? session('full_name', '');
-            $phone = $request->input('phone') ?? session('phone', '');
-            $email = $request->input('email') ?? session('email', '');
-            $address = $request->input('address') ?? session('address', '');
+        // Xử lý thời gian bay
+        $flightTimeData = $this->commonTime->flightTime($flight);
+        [
+            'departureTime' => $departureTime,
+            'flightStart' => $flightStart,
+            'flightEnd' => $flightEnd,
+            'flightStartTime' => $flightStartTime,
+            'flightEndTime' => $flightEndTime,
+            'departureDate' => $departureDate,
+            'departureMonth' => $departureMonth,
+            'departureYear' => $departureYear,
+            'departureDay' => $departureDay,
+            'departureDayOfWeek' => $departureDayOfWeek,
+            'duration' => $duration,
+        ] = $flightTimeData;
 
-            $full_name = is_array($full_name) ? implode(' ', array_filter((array)$full_name, 'is_string')) : (string)$full_name;
-            $phone = is_array($phone) ? implode(' ', array_filter((array)$phone, 'is_string')) : (string)$phone;
-            $email = is_array($email) ? implode(' ', array_filter((array)$email, 'is_string')) : (string)$email;
-            $address = is_array($address) ? implode(' ', array_filter((array)$address, 'is_string')) : (string)$address;
-
-            // Xử lý thời gian bay
-            $departureTime = Carbon::parse($flight->departure_time);
-            $flightStart = Carbon::parse($flight->flight_start);
-            $flightEnd = Carbon::parse($flight->flight_end);
-
-            $flightStartTime = $flightStart->format('H:i');
-            $flightEndTime = $flightEnd->format('H:i');
-            $departureDate = $departureTime->format('d/m/Y');
-            $departureDay = $departureTime->format('d');
-            $departureMonth = $departureTime->format('m');
-            $departureYear = $departureTime->format('Y');
-            $departureDayOfWeek = $departureTime->locale('vi')->isoFormat('dddd');
-            $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
-
-            // Calculate prices
-            $adult_price = $flight->seat_class == 'phổ thông' ? $flight->price_economy * $adults : $flight->price_business * $adults;
-            $child_price = $adult_price * 0.2 * $childrens;
-            $infant_price = $adult_price * 0 * $infants;
-            $tax_fee = $flight->seat_class == 'phổ thông' ? 50000 : 100000;
-            $service_fee = $flight->seat_class == 'phổ thông' ? 20000 : 40000;
-            $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;
-
-            // Prepare booking data
-            if (Auth::check()) {
-                $user = Auth::user();
-                $data = [
-                    'booking_code' => $booking_code,
-                    'user_id' => $user->id,
-                    'name' => $full_name,
-                    'phone' => $phone,
-                    'email' => $email,
-                    'adult_count' => $adults, // Integer
-                    'child_count' => $childrens, // Integer
-                    'infant_count' => $infants, // Integer
-                    'address' => $address,
-                    'flight_id' => $flight->id,
-                    'total_price' => $total_price,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            } else {
-                $data = [
-                    'booking_code' => $booking_code,
-                    'user_id' => null,
-                    'flight_id' => $flight->id,
-                    'name' => $full_name,
-                    'phone' => $phone,
-                    'email' => $email,
-                    'adult_count' => $adults, // Integer
-                    'child_count' => $childrens, // Integer
-                    'infant_count' => $infants, // Integer
-                    'address' => $address,
-                    'total_price' => $total_price,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            }
-
-            // Create booking
-            Booking::create($data);
-
-            // Handle guest data for non-authenticated users
-            if (!Auth::check()) {
-                $guest = Guest::updateOrCreate(
-                    ['phone' => $phone],
-                    [
-                        'name' => $full_name,
-                        'email' => $email,
-                        'address' => $address,
-                        'last_booking_date' => now()
-                    ]
-                );
-
-                if ($guest->wasRecentlyCreated) {
-                    $guest->booking_count = 1;
-                } else {
-                    $guest->increment('booking_count');
-                }
-
-                $guest->save();
-            }
-
-            // Update available seats
-            if ($flight->available_seats >= $total_passengers) {
-                $flight->decrement('available_seats', $total_passengers);
-            } else {
-                return redirect()->back()->withErrors(['error' => 'Số ghế không đủ!']);
-            }
-
-            // Send confirmation email
-            Mail::to($email)->send(new BookingConfirm([
-                'name' => $full_name,
-                'childrens' => $childrens,
-                'adults' => $adults,
-                'infants' => $infants,
+        // Kiểm tra người dùng có tài khoản hay không
+        if (Auth::check()) {
+            $user = Auth::user();
+            $data = [
                 'booking_code' => $booking_code,
-                'flight_code' => $flight->flight_code,
-                'departure' => $flight->departure,
-                'destination' => $flight->destination,
-                'flightStartTime' => $flightStartTime,
-                'flightEndTime' => $flightEndTime,
-                'departureDate' => $departureDate,
-                'duration' => $duration,
-                'total_price' => $total_price,
-                'adultsCount' => $adults,
-                'childrensCount' => $childrens,
-                'infantsCount' => $infants,
-                'full_name' => $full_name,
+                'user_id' => $user->id,
+                'name' => $full_name,
                 'phone' => $phone,
                 'email' => $email,
+                'adult_count' => $adults,
+                'child_count' => $childrens,
+                'infant_count' => $infants,
                 'address' => $address,
-                'adult_price' => $adult_price,
-                'child_price' => $child_price,
-                'infant_price' => $infant_price,
-                'adultsSession' => $adultsSession,
-                'childrensSession' => $childrensSession,
-                'infantsSession' => $infantsSession,
-                'departureDay' => $departureDay,
-                'departureMonth' => $departureMonth,
-                'departureYear' => $departureYear,
-                'departureDayOfWeek' => $departureDayOfWeek,
-            ]));
+                'flight_id' => $flight->id,
+                'total_price' => $totalPrice,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        } else {
+            $data = [
+                'booking_code' => $booking_code,
+                'user_id' => null,
+                'flight_id' => $flight->id,
+                'name' => $full_name,
+                'phone' => $phone,
+                'email' => $email,
+                'adult_count' => $adults,
+                'child_count' => $childrens,
+                'infant_count' => $infants,
+                'address' => $address,
+                'total_price' => $totalPrice,
+                'created_at' => now(),
+                'updated_at' => now()
+            ];
+        }
 
-            return view('thanhcong', compact(
-                'flight',
-                'adults',
-                'infants',
-                'childrens',
-                'total_passengers',
-                'booking_code',
-                'departure',
-                'destination',
-                'flightStartTime',
-                'flightEndTime',
-                'departureDate',
-                'duration',
-                'flightStart',
-                'flightEnd',
-                'departureTime',
-                'departureDay',
-                'departureMonth',
-                'departureYear',
-                'departureDayOfWeek',
-                'full_name',
-                'phone',
-                'email',
-                'address',
-                'adult_price',
-                'child_price',
-                'infant_price',
-                'tax_fee',
-                'service_fee',
-                'total_price',
-                'adultsSession',
-                'childrensSession',
-                'infantsSession'
-            ));
+        // Lưu booking
+        Booking::create($data);
+
+        // Cập nhật guest nếu không đăng nhập
+        if (!Auth::check()) {
+            $guest = Guest::updateOrCreate(
+                ['phone' => $phone],
+                [
+                    'name' => $full_name,
+                    'email' => $email,
+                    'address' => $address,
+                    'last_booking_date' => now()
+                ]
+            );
+
+            if ($guest->wasRecentlyCreated) {
+                $guest->booking_count = 1;
+            } else {
+                $guest->increment('booking_count');
+            }
+            $guest->save();
+        }
+
+        // Trừ số ghế
+        if ($flight->available_seats >= $total_passengers) {
+            $flight->decrement('available_seats', $total_passengers);
+        } else {
+            return redirect()->back()->withErrors(['error' => 'Số ghế không đủ!']);
+        }
+
+        // Gửi mail xác nhận
+        Mail::to($email)->send(new BookingConfirm([
+            'name' => $full_name,
+            'childrens' => $childrens,
+            'adults' => $adults,
+            'infants' => $infants,
+            'booking_code' => $booking_code,
+            'flight_code' => $flight->flight_code,
+            'departure' => $flight->departure,
+            'destination' => $flight->destination,
+            'flightStartTime' => $flightStartTime,
+            'flightEndTime' => $flightEndTime,
+            'departureDate' => $departureDate,
+            'duration' => $duration,
+            'priceData' => $priceData,
+            'totalPrice' => $totalPrice,
+            'adultCount' => $adults,
+            'childCount' => $childrens,
+            'infantCount' => $infants,
+            'full_name' => $full_name,
+            'phone' => $phone,
+            'email' => $email,
+            'address' => $address,
+            'adultsSession' => $adultsSession,
+            'childrensSession' => $childrensSession,
+            'infantsSession' => $infantsSession,
+            'departureDay' => $departureDay,
+            'departureMonth' => $departureMonth,
+            'departureYear' => $departureYear,
+            'departureDayOfWeek' => $departureDayOfWeek,
+        ]));
+
+        // Truyền dữ liệu sang view, trong view có thể dùng foreach để hiển thị từng hành khách
+        return view('thanhcong', compact(
+            'flight',
+            'adults',
+            'infants',
+            'childrens',
+            'total_passengers',
+            'booking_code',
+            'flightStartTime',
+            'flightEndTime',
+            'departureDate',
+            'duration',
+            'flightStart',
+            'flightEnd',
+            'departureTime',
+            'departureDay',
+            'departureMonth',
+            'departureYear',
+            'departureDayOfWeek',
+            'full_name',
+            'phone',
+            'email',
+            'address',
+            'priceData',
+            'totalPrice',
+            'adultsSession',
+            'childrensSession',
+            'infantsSession'
+        ));
         } else {
             // Xử lý khi chuyến bay là chuyến bay khứ hồi
             $outboundFlightId = $request->input('outbound_flight_id');

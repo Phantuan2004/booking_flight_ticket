@@ -456,27 +456,27 @@
                     </div>
                     <div class="price-row">
                         <div class="price-title">Người lớn (x{{ $adults }})</div>
-                        <div class="price-value">{{ number_format($adult_price, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($priceData['adult_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Trẻ em (x{{ $childrens }})</div>
-                        <div class="price-value">{{ number_format($child_price, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($priceData['child_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Em bé (x{{ $infants }})</div>
-                        <div class="price-value">{{ number_format($infant_price, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($priceData['infant_price'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Thuế & Phí</div>
-                        <div class="price-value">{{ number_format($tax_fee, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($priceData['tax_fee'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="price-row">
                         <div class="price-title">Phí dịch vụ</div>
-                        <div class="price-value">{{ number_format($service_fee, 0, ',', '.') }} VNĐ</div>
+                        <div class="price-value">{{ number_format($priceData['service_fee'], 0, ',', '.') }} VNĐ</div>
                     </div>
                     <div class="total-row">
                         <div>Tổng cộng</div>
-                        <div>{{ number_format($total_price, 0, ',', '.') }} VNĐ</div>
+                        <div>{{ number_format($totalPrice, 0, ',', '.') }} VNĐ</div>
                     </div>
 
                     <div class="payment-notice">
@@ -491,15 +491,12 @@
                         <input type="hidden" name="flight_id" value="{{ $flight->id }}">
                         <input type="hidden" name="departure" value="{{ $flight->departure }}">
                         <input type="hidden" name="destination" value="{{ $flight->destination }}">
-                        <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
 
+                        <input type="hidden" name="departure_time" value="{{ $flight->departure_time }}">
                         <!-- Thông tin hành khách -->
-                        <input type="hidden" name="adults_data"
-                            value="{{ htmlspecialchars(json_encode($adultsSession)) }}">
-                        <input type="hidden" name="childrens_data"
-                            value="{{ htmlspecialchars(json_encode($childrensSession)) }}">
-                        <input type="hidden" name="infants_data"
-                            value="{{ htmlspecialchars(json_encode($infantsSession)) }}">
+                        <input type="hidden" name="adults" value="{{ json_encode($adultsSession) }}">
+                        <input type="hidden" name="childrens" value="{{ json_encode($childrensSession) }}">
+                        <input type="hidden" name="infants" value="{{ json_encode($infantsSession) }}">
 
                         <!-- Thông tin liên hệ -->
                         <input type="hidden" name="full_name" value="{{ htmlspecialchars($full_name) }}">
@@ -508,12 +505,12 @@
                         <input type="hidden" name="address" value="{{ htmlspecialchars($address) }}">
 
                         <!-- Thông tin thanh toán -->
-                        <input type="hidden" name="adult_price" value="{{ $adult_price }}">
-                        <input type="hidden" name="child_price" value="{{ $child_price }}">
-                        <input type="hidden" name="infant_price" value="{{ $infant_price }}">
-                        <input type="hidden" name="tax_fee" value="{{ $tax_fee }}">
-                        <input type="hidden" name="service_fee" value="{{ $service_fee }}">
-                        <input type="hidden" name="total_price" value="{{ $total_price }}">
+                        <input type="hidden" name="adult_price" value="{{ $priceData['adult_price'] }}">
+                        <input type="hidden" name="child_price" value="{{ $priceData['child_price'] }}">
+                        <input type="hidden" name="infant_price" value="{{ $priceData['infant_price'] }}">
+                        <input type="hidden" name="tax_fee" value="{{ $priceData['tax_fee'] }}">
+                        <input type="hidden" name="service_fee" value="{{ $priceData['service_fee'] }}">
+                        <input type="hidden" name="total_price" value="{{ $totalPrice }}">
 
                         <!-- Nút xác nhận -->
                         <button class="confirm-btn" type="submit">HOÀN TẤT THANH TOÁN</button>

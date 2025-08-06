@@ -165,44 +165,40 @@
                                                 <td
                                                     style="font-size: 14px; color: #003580; font-weight: bold; padding-bottom: 10px;">
                                                     Hành khách (
-                                                    {{ $adults_count }} người lớn,
-                                                    {{ $childrens_count }} trẻ em,
-                                                    {{ $infants_count }} trẻ sơ sinh
+                                                    {{ $adultCount }} người lớn,
+                                                    {{ $childCount }} trẻ em,
+                                                    {{ $infantCount }} trẻ sơ sinh
                                                     )
                                                 </td>
                                             </tr>
                                             @if (!empty($adultsSession))
-                                                @foreach ($adultsSession as $index => $adult)
-                                                    <tr>
-                                                        <td style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                            {{ $index + 1 }}. {{ $adult['last_name'] ?? 'N/A' }}
-                                                            {{ $adult['first_name'] ?? 'N/A' }}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
-                                            @if (!empty($childrensSession))
-                                                @foreach ($childrensSession as $index => $child)
-                                                    <tr>
-                                                        <td style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                            {{ count($adultsSession) + $index + 1 }}.
-                                                            {{ $child['last_name'] ?? 'N/A' }}
-                                                            {{ $child['first_name'] ?? 'N/A' }}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
-                                            @if (!empty($infantsSession))
-                                                @foreach ($infantsSession as $index => $infant)
-                                                    <tr>
-                                                        <td style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                            {{ count($adultsSession) + count($childrensSession) + $index + 1 }}.
-                                                            {{ $infant['last_name'] ?? 'N/A' }}
-                                                            {{ $infant['first_name'] ?? 'N/A' }}
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
+                            @foreach ($adultsSession as $index => $passenger)
+                                <div class="passenger-info">
+                                    {{ $index }}. {{ $passenger['last_name'] ?? 'Lỗi dữ liệu' }}
+                                    {{ $passenger['first_name'] ?? 'Lỗi dữ liệu' }}
+                                </div>
+                            @endforeach
+                        @endif
+
+                        @if (!empty($childrensSession))
+                            @foreach ($childrensSession as $index => $child)
+                                <div class="passenger-info">
+                                    {{ count($adultsSession) + $index }}.
+                                    {{ $child['last_name'] ?? 'Lỗi dữ liệu' }}
+                                    {{ $child['first_name'] ?? 'Lỗi dữ liệu' }}
+                                </div>
+                            @endforeach
+                        @endif
+
+                        @if (!empty($infantsSession))
+                            @foreach ($infantsSession as $index => $infant)
+                                <div class="passenger-info">
+                                    {{ count($adultsSession) + count($childrensSession) + $index }}.
+                                    {{ $infant['last_name'] ?? 'Lỗi dữ liệu' }}
+                                    {{ $infant['first_name'] ?? 'Lỗi dữ liệu' }}
+                                </div>
+                            @endforeach
+                        @endif
                                         </table>
                                     </td>
                                 </tr>
@@ -335,31 +331,31 @@
                                                             <tr>
                                                                 <td
                                                                     style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                                    Người lớn (x{{ $adults_count }})
+                                                                    Người lớn (x{{ $adultCount }})
                                                                 </td>
                                                                 <td
                                                                     style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                    {{ number_format($adult_price, 0, ',', '.') }} VNĐ
+                                                                    {{ number_format($priceData['adult_price'], 0, ',', '.') }} VNĐ
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td
                                                                     style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                                    Trẻ em (x{{ $childrens_count }})
+                                                                    Trẻ em (x{{ $childCount }})
                                                                 </td>
                                                                 <td
                                                                     style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                    {{ number_format($child_price, 0, ',', '.') }} VNĐ
+                                                                    {{ number_format($priceData['child_price'], 0, ',', '.') }} VNĐ
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td
                                                                     style="font-size: 14px; color: #666; padding-bottom: 5px;">
-                                                                    Trẻ sơ sinh (x{{ $infants_count }})
+                                                                    Trẻ sơ sinh (x{{ $infantCount }})
                                                                 </td>
                                                                 <td
                                                                     style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                    {{ number_format($infant_price, 0, ',', '.') }} VNĐ
+                                                                    {{ number_format($priceData['infant_price'], 0, ',', '.') }} VNĐ
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -369,7 +365,7 @@
                                                                 </td>
                                                                 <td
                                                                     style="font-size: 14px; color: #666; text-align: right; padding-bottom: 5px;">
-                                                                    {{ number_format(50000, 0, ',', '.') }} VNĐ
+                                                                    {{ number_format($priceData['tax_fee'], 0, ',', '.') }} VNĐ
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -379,7 +375,7 @@
                                                                 </td>
                                                                 <td
                                                                     style="font-size: 14px; color: #666; text-align: right; padding-bottom: 10px;">
-                                                                    {{ number_format(20000, 0, ',', '.') }} VNĐ
+                                                                    {{ number_format($priceData['service_fee'], 0, ',', '.') }} VNĐ
                                                                 </td>
                                                             </tr>
                                                         @endif
@@ -390,7 +386,7 @@
                                                             </td>
                                                             <td
                                                                 style="font-size: 16px; font-weight: bold; text-align: right; padding-top: 10px; border-top: 1px solid #eee;">
-                                                                {{ number_format($total_price, 0, ',', '.') }} VNĐ
+                                                                {{ number_format($totalPrice, 0, ',', '.') }} VNĐ
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -517,7 +513,7 @@
                                                     </p>
                                                     <p style="margin: 0 0 10px 0; font-size: 14px; color: #666;">
                                                         <strong>Số tiền:</strong>
-                                                        {{ number_format($total_price, 0, ',', '.') }} VNĐ
+                                                        {{ number_format($totalPrice, 0, ',', '.') }} VNĐ
                                                     </p>
                                                     <p style="margin: 0 0 10px 0; font-weight: bold; color: #003580;">
                                                         Nội dung chuyển khoản:</p>

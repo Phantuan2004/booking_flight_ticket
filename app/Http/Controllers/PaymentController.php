@@ -6,22 +6,25 @@ use App\Http\Controllers\Controller;
 use App\Models\Flight;
 use App\Services\FlightPrice;
 use App\Services\FlightTime;
+use App\Services\ParseSessionData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-
     protected $commonPrice;
     protected $commonTime;
+    protected $commonSessionData;
 
-    public function __construct(FlightPrice $commonPrice, FlightTime $commonTime) {
+    public function __construct(FlightPrice $commonPrice, FlightTime $commonTime, ParseSessionData $commonSessionData) {
         $this->commonPrice = $commonPrice;
         $this->commonTime = $commonTime;
+        $this->commonSessionData = $commonSessionData;
     }
+
     public function payment(Request $request)
     {
-        // dd($request->all());
+        // dd(session()->all());
 
         // Kiểm tra xem có flight_id không
         if ($request->has('flight_id')) {
@@ -31,49 +34,10 @@ class PaymentController extends Controller
                 return redirect()->back()->withErrors(['error' => 'Chuyến bay không tồn tại!']);
             }
 
-            $adultsSession = $request->input('adults');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
-            if (is_string($adultsSession)) {
-                $adultsSession = json_decode($adultsSession, true) ?? [];
-            }
-            // Nếu không phải là mảng, lấy từ session
-            if (!is_array($adultsSession)) {
-                $adultsSession = session('adults', []);
-            }
-
-            $childrensSession = $request->input('childrens');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
-            if (is_string($childrensSession)) {
-                $childrensSession = json_decode($childrensSession, true) ?? [];
-            }
-            // Nếu không phải là mảng, lấy từ session
-            if (!is_array($childrensSession)) {
-                $childrensSession = session('childrens', []);
-            }
-
-            $infantsSession = $request->input('infants');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
-            if (is_string($infantsSession)) {
-                $infantsSession = json_decode($infantsSession, true) ?? [];
-            }
-            // Nếu không phải là mảng, lấy từ session
-            if (!is_array($infantsSession)) {
-                $infantsSession = session('infants', []);
-            }
-
-            // Đảm bảo các biến là mảng trước khi đếm
-            $adults = is_array($adultsSession) ? count($adultsSession) : 0;
-            $childrens = is_array($childrensSession) ? count($childrensSession) : 0;
-            $infants = is_array($infantsSession) ? count($infantsSession) : 0;
-
-            // Lưu thông tin vào session
-            session([
-                'adults' => $adults,
-                'childrens' => $childrens,
-                'infants' => $infants,
-                'outbound_flight' => $flight,
-                'return_flight' => $flight,
-            ]);
+            // Lấy thông tin hành khách
+            $adultsSession = $this->commonSessionData->parseSessionData($request, 'adults');
+            $childrensSession = $this->commonSessionData->parseSessionData($request, 'childrens');
+            $infantsSession = $this->commonSessionData->parseSessionData($request, 'infants');
 
             // Xử lý thông tin khách hàng
             $full_name = trim($request->input('full_name', session('full_name', '')));
@@ -82,34 +46,32 @@ class PaymentController extends Controller
             $address = trim($request->input('address', session('address', '')));
 
             // Xử lý giá tiền
-            $pricing = $this->commonPrice->flightPrice($flight, $adults, $childrens, $infants);
-            $adult_price = $pricing['adult_price'];
-            $child_price = $pricing['child_price'];
-            $infant_price = $pricing['infant_price'];
-            $tax_fee = $pricing['tax_fee'];
-            $service_fee = $pricing['service_fee'];
-
-            $total_price = $adult_price + $child_price + $infant_price + $tax_fee + $service_fee;
+            $adults = count($adultsSession);
+            $childrens = count($childrensSession);
+            $infants = count($infantsSession);
+            
+            $priceData = $this->commonPrice->flightPrice($flight, $adults, $childrens, $infants);
+            $totalPrice = $priceData['adult_price'] + $priceData['child_price'] + $priceData['infant_price'] + $priceData['tax_fee'] + $priceData['service_fee'];
 
             // Xử lý thời gian bay
-            $departureTime = Carbon::parse($flight->departure_time);
-            $flightStart = Carbon::parse($flight->flight_start);
-            $flightEnd = Carbon::parse($flight->flight_end);
-
-            // Lấy giờ và phút dưới dạng chuỗi định dạng sẵn
-            $flightStartTime = $flightStart->format('H:i');
-            $flightEndTime = $flightEnd->format('H:i');
-            $departureDate = $departureTime->format('d/m/Y');
-            $departureDay = $departureTime->format('d');
-            $departureMonth = $departureTime->format('m');
-            $departureYear = $departureTime->format('Y');
-            $departureDayOfWeek = $departureTime->locale('vi')->isoFormat('dddd');
-
-            // Tính thời gian bay
-            $duration = $flightStart->diff($flightEnd)->format('%h giờ %i phút');
+            $flightTimeData = $this->commonTime->flightTime($flight);
+            // Đặt biến riêng cho chuyến bay 1 chiều
+            [
+                'departureTime' => $departureTime,
+                'flightStart' => $flightStart,
+                'flightEnd' => $flightEnd,
+                'flightStartTime' => $flightStartTime,
+                'flightEndTime' => $flightEndTime,
+                'departureDate' => $departureDate,
+                'departureMonth' => $departureMonth,
+                'departureYear' => $departureYear,
+                'departureDay' => $departureDay,
+                'departureDayOfWeek' => $departureDayOfWeek,
+                'duration' => $duration,
+            ] = $flightTimeData;
 
             // Truyền dữ liệu sang view
-            return view('thanhtoan', compact(
+           return view('thanhtoan', compact([
                 'flight',
                 'adults',
                 'childrens',
@@ -121,12 +83,8 @@ class PaymentController extends Controller
                 'phone',
                 'email',
                 'address',
-                'adult_price',
-                'child_price',
-                'infant_price',
-                'tax_fee',
-                'service_fee',
-                'total_price',
+                'priceData',
+                'totalPrice',
                 'flightStartTime',
                 'flightEndTime',
                 'departureDate',
@@ -138,7 +96,8 @@ class PaymentController extends Controller
                 'departureMonth',
                 'departureYear',
                 'departureDayOfWeek',
-            ));
+            ]));
+
         } else {
             // Xử lý khi chuyến bay là chuyến bay khứ hồi
             $outboundFlightId = $request->input('outbound_flight_id');
@@ -154,35 +113,9 @@ class PaymentController extends Controller
             }
 
             // Lấy thông tin hành khách
-            $adultsSession = $request->input('adults');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
-            if (is_string($adultsSession)) {
-                $adultsSession = json_decode($adultsSession, true) ?? [];
-            }
-            // Nếu không phải là mảng, lấy từ session
-            if (!is_array($adultsSession)) {
-                $adultsSession = session('adults', []);
-            }
-
-            $childrensSession = $request->input('childrens');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
-            if (is_string($childrensSession)) {
-                $childrensSession = json_decode($childrensSession, true) ?? [];
-            }
-            // Nếu không phải là mảng, lấy từ session
-            if (!is_array($childrensSession)) {
-                $childrensSession = session('childrens', []);
-            }
-
-            $infantsSession = $request->input('infants');
-            // Kiểm tra nếu là chuỗi JSON, giải mã nó
-            if (is_string($infantsSession)) {
-                $infantsSession = json_decode($infantsSession, true) ?? [];
-            }
-            // Nếu không phải là mảng, lấy từ session
-            if (!is_array($infantsSession)) {
-                $infantsSession = session('infants', []);
-            }
+            $adultsSession = $this->commonSessionData->parseSessionData($request, 'adults');
+            $childrensSession = $this->commonSessionData->parseSessionData($request, 'childrens');
+            $infantsSession = $this->commonSessionData->parseSessionData($request, 'infants');
 
             // Đảm bảo các biến là mảng trước khi đếm
             $adults = is_array($adultsSession) ? count($adultsSession) : 0;
@@ -204,53 +137,49 @@ class PaymentController extends Controller
             $address = trim($request->input('address', session('address', '')));
 
             // Xử lý giá tiền cho chuyến đi
-            $outboundAdultPrice = $outboundFlight->seat_class == 'phổ thông'
-                ? $outboundFlight->price_economy * $adults
-                : $outboundFlight->price_business * $adults;
-            $outboundChildPrice = $outboundAdultPrice * 0.3 * $childrens;
-            $outboundInfantPrice = $outboundAdultPrice * 0 * $infants;
-            $outboundTaxFee = $outboundFlight->seat_class == 'phổ thông' ? 50000 : 100000;
-            $outboundServiceFee = $outboundFlight->seat_class == 'phổ thông' ? 20000 : 40000;
-            $outboundTotalPrice = $outboundAdultPrice + $outboundChildPrice + $outboundInfantPrice + $outboundTaxFee + $outboundServiceFee;
+            $outboundPriceData = $this->commonPrice->flightPrice($outboundFlight, $adults, $childrens, $infants);
+            $outboundTotalPrice = $outboundPriceData['adult_price'] + $outboundPriceData['child_price'] + $outboundPriceData['infant_price'] + $outboundPriceData['tax_fee'] + $outboundPriceData['service_fee'];
 
             // Xử lý giá tiền cho chuyến về
-            $returnAdultPrice = $returnFlight->seat_class == 'phổ thông'
-                ? $returnFlight->price_economy * $adults
-                : $returnFlight->price_business * $adults;
-            $returnChildPrice = $returnAdultPrice * 0.3 * $childrens;
-            $returnInfantPrice = $returnAdultPrice * 0 * $infants;
-            $returnTaxFee = $returnFlight->seat_class == 'phổ thông' ? 50000 : 100000;
-            $returnServiceFee = $returnFlight->seat_class == 'phổ thông' ? 20000 : 40000;
-            $returnTotalPrice = $returnAdultPrice + $returnChildPrice + $returnInfantPrice + $returnTaxFee + $returnServiceFee;
+            $returnPriceData = $this->commonPrice->flightPrice($returnFlight, $adults, $childrens, $infants);
+            $returnTotalPrice = $returnPriceData['adult_price'] + $returnPriceData['child_price'] + $returnPriceData['infant_price'] + $returnPriceData['tax_fee'] + $returnPriceData['service_fee'];
 
             // Tổng giá tiền
             $totalPrice = $outboundTotalPrice + $returnTotalPrice;
 
-            // Xử lý thời gian bay cho chuyến đi
-            $outboundDepartureTime = Carbon::parse($outboundFlight->departure_time);
-            $outboundFlightStart = Carbon::parse($outboundFlight->flight_start);
-            $outboundFlightEnd = Carbon::parse($outboundFlight->flight_end);
-            $outboundFlightStartTime = $outboundFlightStart->format('H:i');
-            $outboundFlightEndTime = $outboundFlightEnd->format('H:i');
-            $outboundDepartureDate = $outboundDepartureTime->format('d/m/Y');
-            $outboundDepartureMonth = $outboundDepartureTime->format('m');
-            $outboundDepartureYear = $outboundDepartureTime->format('Y');
-            $outboundDepartureDay = $outboundDepartureTime->format('d');
-            $outboundDuration = $outboundFlightStart->diff($outboundFlightEnd)->format('%h giờ %i phút');
-            $outboundDayOfWeek = $outboundDepartureTime->locale('vi')->isoFormat('dddd');
+            // Lấy dữ liệu thời gian bay cho chuyến đi và chuyến về
+            $outboundTime = $this->commonTime->flightTime($outboundFlight);
+            $returnTime = $this->commonTime->flightTime($returnFlight);
 
-            // Xử lý thời gian bay cho chuyến về
-            $returnDepartureTime = Carbon::parse($returnFlight->departure_time);
-            $returnFlightStart = Carbon::parse($returnFlight->flight_start);
-            $returnFlightEnd = Carbon::parse($returnFlight->flight_end);
-            $returnFlightStartTime = $returnFlightStart->format('H:i');
-            $returnFlightEndTime = $returnFlightEnd->format('H:i');
-            $returnDepartureDate = $returnDepartureTime->format('d/m/Y');
-            $returnDepartureMonth = $returnDepartureTime->format('m');
-            $returnDepartureYear = $returnDepartureTime->format('Y');
-            $returnDepartureDay = $returnDepartureTime->format('d');
-            $returnDuration = $returnFlightStart->diff($returnFlightEnd)->format('%h giờ %i phút');
-            $returnDayOfWeek = $returnDepartureTime->locale('vi')->isoFormat('dddd');
+            // Đặt biến riêng cho chuyến đi
+            [
+                'departureTime' => $outboundDepartureTime,
+                'flightStart' => $outboundFlightStart,
+                'flightEnd' => $outboundFlightEnd,
+                'flightStartTime' => $outboundFlightStartTime,
+                'flightEndTime' => $outboundFlightEndTime,
+                'departureDate' => $outboundDepartureDate,
+                'departureMonth' => $outboundDepartureMonth,
+                'departureYear' => $outboundDepartureYear,
+                'departureDay' => $outboundDepartureDay,
+                'duration' => $outboundDuration,
+                'departureDayOfWeek' => $outboundDayOfWeek,
+            ] = $outboundTime;
+
+            // Đặt biến riêng cho chuyến về
+            [
+                'departureTime' => $returnDepartureTime,
+                'flightStart' => $returnFlightStart,
+                'flightEnd' => $returnFlightEnd,
+                'flightStartTime' => $returnFlightStartTime,
+                'flightEndTime' => $returnFlightEndTime,
+                'departureDate' => $returnDepartureDate,
+                'departureMonth' => $returnDepartureMonth,
+                'departureYear' => $returnDepartureYear,
+                'departureDay' => $returnDepartureDay,
+                'duration' => $returnDuration,
+                'departureDayOfWeek' => $returnDayOfWeek,
+            ] = $returnTime;
 
             // Truyền dữ liệu sang view
             return view('thanhtoan', compact(
