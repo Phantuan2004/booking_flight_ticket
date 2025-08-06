@@ -10,8 +10,8 @@
                     <li><a href="{{ route('datve_khuhoi') }}">Đặt Vé</a></li>
                     <li><a href="#">Khuyến Mãi</a></li>
                     <li><a href="#">Lịch Bay</a></li>
-                    <li><a href="{{ route('lienhe') }}">Liên Hệ</a></li>
-                    <li><a href="{{ route('lichsudatve') }}">Xem lại lịch sử</a></li>
+                    <li><a href="{{ route('contact') }}">Liên Hệ</a></li>
+                    <li><a href="{{ route('history') }}">Xem lại lịch sử</a></li>
                 </ul>
             </nav>
         </div>
