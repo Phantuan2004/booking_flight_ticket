@@ -204,3 +204,50 @@
                 inputElement.value = count;
             }
         }
+
+        function showForm(formType) {
+            // Ẩn tất cả các form
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.remove('active');
+            });
+
+            // Hiển thị form được chọn
+            const selectedForm = document.getElementById(formType + '-form');
+            if (selectedForm) {
+                selectedForm.classList.add('active');
+            }
+
+            // Cập nhật trạng thái radio buttons
+            document.querySelectorAll('.search-radio input[type="radio"]').forEach(radio => {
+                radio.checked = radio.value === formType;
+            });
+        }
+
+        // Khởi tạo form mặc định khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            showForm('oneway');
+        });
+
+        // khi click vào button sẽ đổi màu button và giữ nguyên
+        document.querySelectorAll('.search-radio button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Xóa màu của tất cả các button
+                document.querySelectorAll('.search-radio button').forEach(btn => {
+                    btn.style.backgroundColor = '#e0e0e0';
+                    btn.style.color = 'black';
+                });
+
+                // Đổi màu button được click
+                this.style.backgroundColor = '#003580';
+                this.style.color = 'white';
+            });
+        });
+
+        // Khởi tạo màu cho button mặc định
+        document.addEventListener('DOMContentLoaded', function() {
+            const defaultButton = document.querySelector('.search-radio button');
+            if (defaultButton) {
+                defaultButton.style.backgroundColor = '#003580';
+                defaultButton.style.color = 'white';
+            }
+        });

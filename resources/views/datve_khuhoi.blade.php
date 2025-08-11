@@ -111,10 +111,10 @@
                                 <div class="flight-card">
                                     <div class="airline-logo">
                                         <img src="{{ asset('storage/airline_logos/' . $trip->airline->logo) }}"
-                                            alt="Airline Logo" />
+                                            alt="Airline Logo" width="" />
                                     </div>
                                     <div class="flight-code">{{ $trip->flight_code }}</div>
-                                    <div class="flight-time">{{ $trip->flight_trip }}</div>
+                                    <div class="flight-time">{{ $trip->flight_start }}</div>
                                     <div><button type="button"
                                             onclick="toggleDetails({{ $trip->id }}, 'outbound')"
                                             class="info-button" aria-label="Toggle flight details">
@@ -226,28 +226,30 @@
                                 <div class="flight-card">
                                     <div class="airline-logo">
                                         <img src="{{ asset('storage/airline_logos/' . $return->airline->logo) }}"
-                                            alt="Airline Logo" />
+                                            alt="Airline Logo" width="50" height="50"/>
                                     </div>
                                     <div class="flight-code">{{ $return->flight_code }}</div>
                                     <div class="flight-time">{{ $return->flight_start }}</div>
-                                    <div><button type="button" onclick="toggleDetails({{ $return->id }}, 'return')"
+                                    <div>
+                                        <button type="button" onclick="toggleDetails({{ $return->id }}, 'return')"
                                             class="info-button" aria-label="Toggle flight details">
                                             <i class="fa-solid fa-square-plus"
                                                 style="color: #74C0FC; font-size: 18px;"></i>
-                                        </button></div>
+                                        </button>
+                                    </div>
                                     <div class="price">{{ number_format($return->price, 0, ',', ',') }}đ</div>
                                     <button type="button"
                                         onclick="selectFlight(
-        {{ $return->id }},
-        'return',
-        this,
-        '{{ $return->flight_code }}',
-        '{{ $return->airline->name }}',
-        '{{ $return->departure }}',
-        '{{ $return->destination }}',
-        '{{ $return->departure_time }}',
-        {{ $return->price }}
-    )"
+                                            {{ $return->id }},
+                                            'return',
+                                            this,
+                                            '{{ $return->flight_code }}',
+                                            '{{ $return->airline->name }}',
+                                            '{{ $return->departure }}',
+                                            '{{ $return->destination }}',
+                                            '{{ $return->departure_time }}',
+                                            {{ $return->price }}
+                                        )"
                                         class="select-btn">Chọn</button>
                                 </div>
 

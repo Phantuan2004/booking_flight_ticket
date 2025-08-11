@@ -120,23 +120,20 @@
                     @else
                         @foreach ($flights as $flight)
                             <div class="flight-card">
-                                <div class="airline-logo"><img
+                                <div class="airline-logo">
+                                    <img
                                         src="{{ asset('storage/airline_logos/' . $flight->airline->logo) }}"
-                                        alt="Airline Logo" width="70px" height="70px"></div>
-                                <div class="flight-info">
-                                    <div class="flight-time">
-                                        <div class="time">{{ $flight->departure_time }}</div>
-                                    </div>
-                                    <div class="flight-route">
-                                        {{ $flight->departure }} - {{ $flight->destination }}
-                                    </div>
-                                    <div class="airline-name">{{ $flight->airline->name }}</div>
-
-                                    <!-- Thêm nút hiển thị chi tiết -->
-                                    <button class="toggle-details-btn" onclick="toggleDetails({{ $flight->id }})">
-                                        Hiển thị chi tiết
-                                    </button>
+                                        alt="Airline Logo" width="70px" height="70px"
+                                    />
                                 </div>
+                                <div class="flight-code">{{ $flight->flight_code }}</div>
+                                <div class="flight-time">{{ $flight->flight_start }}</div>
+                                <div class="airline-name">{{ $flight->airline->name }}</div>
+                                <!-- Thêm nút hiển thị chi tiết -->
+                                <button class="toggle-details-btn" onclick="toggleDetails({{ $flight->id }})">
+                                    Hiển thị chi tiết
+                                </button>
+
                                 <div class="flight-details">
                                     <div class="price">
                                         @if ($flight->seat_class == 'phổ thông')
